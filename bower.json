@@ -1,0 +1,26 @@
+{
+  "name": "draw.js",
+  "authors": [
+    "Jordi Orlando <jordi.orlando@gmail.com>"
+  ],
+  "description": "A lightweight library for parametric drawing",
+  "main": "dist/draw.min.js",
+  "keywords": [
+    "draw",
+    "parametric",
+    "svg",
+    "js",
+    "javascript"
+  ],
+  "license": "GPL-3.0",
+  "homepage": "draw.D1SC0te.ch",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ],
+  "dependencies": {
+    "svg.js": "~2.2.4"
+  }
+}
