@@ -2,67 +2,58 @@ var Draw = this.Draw = function (element) {
   return new Draw.Doc(element);
 };
 
-Draw.id = 1000;
-Draw.pages = [];
+Draw.id = 0;
+// Draw.pages = [];
 
-Draw.extend = function (module, methods) {
+Draw.extend = function (element, methods) {
   for (var method in methods) {
     // If method is a function, copy it
     if (typeof methods[method] === 'function') {
-      module.prototype[method] = methods[method];
+      element.prototype[method] = methods[method];
     }
     // If methods is an array, call Draw.extend for each element of the array
     else if (method == 'require') {
-      methods[method].forEach(function (element) {
-        Draw.extend.call(this, element);
+      /*console.log(methods);
+      console.log(methods[method]);*/
+      methods[method].forEach(function (e) {
+        Draw.extend.call(element, e);
       });
     }
   }
 };
 
 Draw.create = function (config) {
-  var creation = typeof config.create == 'function' ?
-    config.create :
+  var element = typeof config.construct == 'function' ?
+    config.construct :
     function () {
+      this.attr('id', zeroPad(Draw.id++, 4));
       // this.constructor.call(this);
     };
 
   // Inherit the prototype
   if (config.inherit) {
-    console.log(config.inherit);
-    creation.prototype = new config.inherit;
+    element.prototype = Object.create(config.inherit.prototype);
+    element.prototype.constructor = element;
   }
+
+  // var methods = {};
 
   // Attach all required methods
   if (config.require) {
-    config.require.forEach(function (element) {
-      Draw.extend(creation, element);
+    config.require.forEach(function (e) {
+      Draw.extend(element, e);
     });
   }
 
   // Attach all new methods
-  if (config.extend) {
-    Draw.extend(creation, config.extend);
+  if (config.methods) {
+    Draw.extend(element, config.methods);
   }
 
-  // Attach the constructor method to the parent
-  if (config.construct) {
-    Draw.extend(config.parent || Draw.Container, config.construct);
+  // Attach the initialization method to the parent
+  if (config.init) {
+    Draw.extend(config.parent || Draw.Container, config.init);
   }
 
-  return creation;
+  return element;
 };
-
-
-
-/*function (element) {
-  if (element) {
-    // Ensure the presence of a dom element
-    element = typeof element == 'string' ?
-              document.getElementById(element) :
-              element;
-
-    element.node = element
-    return element;
-  }
-};*/

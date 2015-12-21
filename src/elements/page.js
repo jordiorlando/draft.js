@@ -1,7 +1,11 @@
 Draw.Page = Draw.create({
   inherit: Draw.Group,
 
-  extend: {
+  require: [
+    Draw.size
+  ],
+
+  methods: {
     origin: function (x, y) {
       // TODO: change to origin.x and origin.y?
       return this.attr({
@@ -11,13 +15,12 @@ Draw.Page = Draw.create({
     }
   },
 
-  construct: {
+  init: {
     page: function (name) {
       return this
         .put(new Draw.Page())
         .attr({
           type: 'page',
-          id: Draw.id++,
           name: name
         });
 

@@ -1,32 +1,40 @@
 Draw.attr = {
-  attr: function (key, val) {
-    if (key == null) {
-      key = {};
+  attr: function (prop, val) {
+    if (this.params == null) {
+      this.params = {};
+    }
 
-      for (let k in this.attr) {
-        key[k] = this.attr[k];
+    if (prop == null) {
+      /*console.log('attr(' + prop + ',' + val + ')->this: ');
+      console.log(this);*/
+
+      prop = {};
+
+      for (let p in this.params) {
+        prop[p] = this.params[p];
       }
 
-      return key;
-    } else if (typeof key === 'object') {
+      return prop;
+    } else if (typeof prop === 'object') {
       let getter = true;
 
-      for (let k in key) {
-        key[k] = this.attr(k, key[k]);
-        if (typeof key[k] === 'object') {
+      for (let p in prop) {
+        prop[p] = this.attr(p, prop[p]);
+        if (typeof prop[p] === 'object') {
           getter = false;
         }
       }
       if (getter) {
-        return key;
+        return prop;
       }
     } else if (val == null) {
-      val = this.attr[key];
-      return val == null
-        ? Draw.defaults[key]
-        : val;
+      val = this.params[prop];
+      return val == null ?
+        Draw.defaults[prop] : val;
     } else {
-      this.attr[key] = val;
+      /*console.log(prop + ', ' + val);
+      console.log(this.params);*/
+      this.params[prop] = val;
     }
 
     return this;

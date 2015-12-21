@@ -4,9 +4,9 @@ Draw.Element = Draw.create({
     Draw.size
   ],
 
-  extend: {
+  methods: {
     parent: function () {
-      return this.node.parent;
+      return this.parent;
     }
   }
 });

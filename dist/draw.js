@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Sun Dec 20 2015 21:25:08 GMT-0600 (Central Standard Time)
+* BUILT: Mon Dec 21 2015 05:03:15 GMT-0600 (CST)
 */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -30,70 +30,61 @@ var Draw = this.Draw = function (element) {
   return new Draw.Doc(element);
 };
 
-Draw.id = 1000;
-Draw.pages = [];
+Draw.id = 0;
+// Draw.pages = [];
 
-Draw.extend = function (module, methods) {
+Draw.extend = function (element, methods) {
   for (var method in methods) {
     // If method is a function, copy it
     if (typeof methods[method] === 'function') {
-      module.prototype[method] = methods[method];
+      element.prototype[method] = methods[method];
     }
     // If methods is an array, call Draw.extend for each element of the array
     else if (method == 'require') {
-      methods[method].forEach(function (element) {
-        Draw.extend.call(this, element);
+      /*console.log(methods);
+      console.log(methods[method]);*/
+      methods[method].forEach(function (e) {
+        Draw.extend.call(element, e);
       });
     }
   }
 };
 
 Draw.create = function (config) {
-  var creation = typeof config.create == 'function' ?
-    config.create :
+  var element = typeof config.construct == 'function' ?
+    config.construct :
     function () {
+      this.attr('id', zeroPad(Draw.id++, 4));
       // this.constructor.call(this);
     };
 
   // Inherit the prototype
   if (config.inherit) {
-    console.log(config.inherit);
-    creation.prototype = new config.inherit;
+    element.prototype = Object.create(config.inherit.prototype);
+    element.prototype.constructor = element;
   }
+
+  // var methods = {};
 
   // Attach all required methods
   if (config.require) {
-    config.require.forEach(function (element) {
-      Draw.extend(creation, element);
+    config.require.forEach(function (e) {
+      Draw.extend(element, e);
     });
   }
 
   // Attach all new methods
-  if (config.extend) {
-    Draw.extend(creation, config.extend);
+  if (config.methods) {
+    Draw.extend(element, config.methods);
   }
 
-  // Attach the constructor method to the parent
-  if (config.construct) {
-    Draw.extend(config.parent || Draw.Container, config.construct);
+  // Attach the initialization method to the parent
+  if (config.init) {
+    Draw.extend(config.parent || Draw.Container, config.init);
   }
 
-  return creation;
+  return element;
 };
-
-
-
-/*function (element) {
-  if (element) {
-    // Ensure the presence of a dom element
-    element = typeof element == 'string' ?
-              document.getElementById(element) :
-              element;
-
-    element.node = element
-    return element;
-  }
-};*/
 
 Draw.defaults = {
   x: 0,
@@ -106,35 +97,52 @@ Draw.defaults = {
   a: 0
 };
 
-Draw.attr = {
-  attr: function (key, val) {
-    if (key == null) {
-      key = {};
+function zeroPad(number, length) {
+  var str = '' + number;
+  while (str.length < length) {
+      str = '0' + str;
+  }
 
-      for (let k in this.attr) {
-        key[k] = this.attr[k];
+  return str;
+}
+
+Draw.attr = {
+  attr: function (prop, val) {
+    if (this.params == null) {
+      this.params = {};
+    }
+
+    if (prop == null) {
+      /*console.log('attr(' + prop + ',' + val + ')->this: ');
+      console.log(this);*/
+
+      prop = {};
+
+      for (let p in this.params) {
+        prop[p] = this.params[p];
       }
 
-      return key;
-    } else if (typeof key === 'object') {
+      return prop;
+    } else if (typeof prop === 'object') {
       let getter = true;
 
-      for (let k in key) {
-        key[k] = this.attr(k, key[k]);
-        if (typeof key[k] === 'object') {
+      for (let p in prop) {
+        prop[p] = this.attr(p, prop[p]);
+        if (typeof prop[p] === 'object') {
           getter = false;
         }
       }
       if (getter) {
-        return key;
+        return prop;
       }
     } else if (val == null) {
-      val = this.attr[key];
-      return val == null
-        ? Draw.defaults[key]
-        : val;
+      val = this.params[prop];
+      return val == null ?
+        Draw.defaults[prop] : val;
     } else {
-      this.attr[key] = val;
+      /*console.log(prop + ', ' + val);
+      console.log(this.params);*/
+      this.params[prop] = val;
     }
 
     return this;
@@ -145,7 +153,7 @@ Draw.size = {
   require: [
     Draw.attr
   ],
-  
+
   // Get/set the element's width
   width: function (width) {
     return this.attr('width', width);
@@ -262,70 +270,82 @@ Draw.transforms = {
 };
 
 Draw.Container = Draw.create({
-  extend: {
+  methods: {
     parent: function () {
-      return this.node.parent;
+      return this.parent;
     },
     child: function (i) {
-      return this.node.children[i];
-    },
-    children: function () {
-      return this.node.children;
+      return this.children[i];
     },
     put: function (element) {
-      // element.node.parent = this;
-      // this.node.children.push(element);
+      element.parent = this;
+
+      if (this.children == null) {
+        this.children = [];
+      }
+      this.children.push(element);
+
       return element;
     }
   }
 });
 
 Draw.Doc = Draw.create({
-  create: function (element) {
+  construct: function (element) {
     if (element) {
       // Ensure the presence of a DOM element
       element = typeof element == 'string' ?
                 document.getElementById(element) :
                 element;
 
-      this.node = element;
+      // this.node = {};
+      this.children = [];
+      this.dom = element;
     }
   },
 
   inherit: Draw.Container,
 
-  extend: {
-    /*docs: function () {
+  /*methods: {
+    docs: function () {
       return this.node.docs;
-    }*/
-  }
-
-  /*construct: {
-    doc: function (element) {
-      var doc = new Draw.Doc();
-
-      if (element) {
-        // Ensure the presence of a DOM element
-        element = typeof element == 'string' ?
-                  document.getElementById(element) :
-                  element;
-
-        doc.node = element;
-      }
-
-      return doc;
     }
   }*/
+
+  init: {
+    doc: function (element) {
+      this.constructor.call(this, element);
+    }
+  }
 });
 
 Draw.Group = Draw.create({
-  inherit: Draw.Container
+  inherit: Draw.Container,
+
+  require: [
+    Draw.attr
+  ],
+
+  init: {
+    group: function (name) {
+      return this
+        .put(new Draw.Group())
+        .attr({
+          type: 'group',
+          name: name
+        });
+    }
+  }
 });
 
 Draw.Page = Draw.create({
   inherit: Draw.Group,
 
-  extend: {
+  require: [
+    Draw.size
+  ],
+
+  methods: {
     origin: function (x, y) {
       // TODO: change to origin.x and origin.y?
       return this.attr({
@@ -335,13 +355,12 @@ Draw.Page = Draw.create({
     }
   },
 
-  construct: {
+  init: {
     page: function (name) {
       return this
         .put(new Draw.Page())
         .attr({
           type: 'page',
-          id: Draw.id++,
           name: name
         });
 
@@ -357,9 +376,9 @@ Draw.Element = Draw.create({
     Draw.size
   ],
 
-  extend: {
+  methods: {
     parent: function () {
-      return this.node.parent;
+      return this.parent;
     }
   }
 });
@@ -371,16 +390,55 @@ Draw.Line = Draw.create({
     Draw.move
   ],
 
-  extend: {
+  methods: {
   },
 
-  construct: {
+  init: {
     line: function (x1, y1, x2, y2) {
       return new Draw.Line();
     }
   }
 });
 
+Draw.Rect = Draw.create({
+  name: 'rect',
+
+  inherit: Draw.Element,
+
+  require: [
+    Draw.move,
+    Draw.radius
+  ],
+
+  methods: {
+    // in the butt
+    getRekt: function () {
+      return this.attr();
+    }
+  },
+
+  init: {
+    rect: function (width, height) {
+      return this.put(new Draw.Rect()).size(width, height);
+    }
+  }
+});
+
+Draw.Circle = Draw.create({
+  inherit: Draw.Element,
+
+  require: [
+    Draw.move,
+    Draw.radius
+  ],
+
+  init: {
+    circle: function (r) {
+      return this.put(new Draw.Circle()).radius(r);
+    }
+  }
+});
+
 
   return Draw;
-}));
+}));

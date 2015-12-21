@@ -16,6 +16,7 @@ var src = [
   // Main
   'src/draw.js',
   'src/defaults.js',
+  'src/helpers.js',
   // Methods
   'src/methods/attr.js',
   'src/methods/size.js',
@@ -31,7 +32,9 @@ var src = [
   // 'src/elements/model.js',
   // Elements
   'src/elements/element.js',
-  'src/elements/line.js'
+  'src/elements/line.js',
+  'src/elements/rect.js',
+  'src/elements/circle.js'
 ];
 
 var headerLong = [

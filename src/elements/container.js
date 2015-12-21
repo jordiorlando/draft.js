@@ -1,17 +1,19 @@
 Draw.Container = Draw.create({
-  extend: {
+  methods: {
     parent: function () {
-      return this.node.parent;
+      return this.parent;
     },
     child: function (i) {
-      return this.node.children[i];
-    },
-    children: function () {
-      return this.node.children;
+      return this.children[i];
     },
     put: function (element) {
-      element.node.parent = this;
-      this.node.children.push(element);
+      element.parent = this;
+
+      if (this.children == null) {
+        this.children = [];
+      }
+      this.children.push(element);
+
       return element;
     }
   }

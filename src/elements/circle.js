@@ -6,10 +6,7 @@ Draw.Circle = Draw.create({
     Draw.radius
   ],
 
-  extend: {
-  },
-
-  construct: {
+  init: {
     circle: function (r) {
       return this.put(new Draw.Circle()).radius(r);
     }
