@@ -1,5 +1,5 @@
 Draw.transforms = {
-  inherit: [
+  require: [
     Draw.transform
   ],
   // Translate the element relative to its current position

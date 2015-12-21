@@ -15,15 +15,22 @@ var pkg = require('./package.json');
 var src = [
   // Main
   'src/draw.js',
+  'src/defaults.js',
   // Methods
   'src/methods/attr.js',
   'src/methods/size.js',
   'src/methods/move.js',
+  'src/methods/radius.js',
   'src/methods/transform.js',
   'src/methods/transforms.js',
+  // Containers
+  'src/elements/container.js',
+  'src/elements/doc.js',
+  'src/elements/group.js',
+  'src/elements/page.js',
+  // 'src/elements/model.js',
   // Elements
   'src/elements/element.js',
-  'src/elements/page.js',
   'src/elements/line.js'
 ];
 

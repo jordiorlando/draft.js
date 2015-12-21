@@ -8,12 +8,12 @@ Draw.attr = {
       }
 
       return key;
-    } else if (typeof key == 'object') {
+    } else if (typeof key === 'object') {
       let getter = true;
 
       for (let k in key) {
         key[k] = this.attr(k, key[k]);
-        if (typeof key[k] == 'object') {
+        if (typeof key[k] === 'object') {
           getter = false;
         }
       }

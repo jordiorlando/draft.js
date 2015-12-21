@@ -1,5 +1,5 @@
 Draw.move = {
-  inherit: [
+  require: [
     Draw.attr
   ],
   // Get/set the element's x position

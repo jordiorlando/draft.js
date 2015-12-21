@@ -1,12 +1,16 @@
-Draw.Line = function () {
-  Draw.inherit.call(this, Draw.size);
-  Draw.inherit.call(this, Draw.move);
-  Draw.inherit.call(this, Draw.transforms);
+Draw.Line = Draw.create({
+  inherit: Draw.Element,
 
-  return this;
-};
+  require: [
+    Draw.move
+  ],
 
-Draw.line = function (x1, y1, x2, y2) {
-  var line = new Draw.Line();
-  return line;
-};
+  extend: {
+  },
+
+  construct: {
+    line: function (x1, y1, x2, y2) {
+      return new Draw.Line();
+    }
+  }
+});

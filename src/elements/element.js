@@ -1,6 +1,12 @@
-Draw.Element = function () {
-  Draw.inherit.call(this, Draw.size);
-  Draw.inherit.call(this, Draw.move);
+Draw.Element = Draw.create({
+  require: [
+    Draw.attr,
+    Draw.size
+  ],
 
-  return this;
-};
+  extend: {
+    parent: function () {
+      return this.node.parent;
+    }
+  }
+});

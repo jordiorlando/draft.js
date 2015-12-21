@@ -1,12 +1,13 @@
-Draw.Page = Draw.create({
+Draw.Model = Draw.create({
   inherit: Draw.Group,
 
   extend: {
-    origin: function (x, y) {
+    origin: function (x, y, z) {
       // TODO: change to origin.x and origin.y?
       return this.attr({
         originX: x,
-        originY: y
+        originY: y,
+        originZ: z
       });
     }
   },
@@ -14,15 +15,12 @@ Draw.Page = Draw.create({
   construct: {
     page: function (name) {
       return this
-        .put(new Draw.Page())
+        .put(new Draw.Model())
         .attr({
-          type: 'page',
+          type: 'model',
           id: Draw.id++,
           name: name
         });
-
-      // Draw.pages.push(page);
-      // return page;
     }
   }
 });
