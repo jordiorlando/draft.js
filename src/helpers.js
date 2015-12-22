@@ -6,3 +6,11 @@ function zeroPad(number, length) {
 
   return str;
 }
+
+function elementType(fun) {
+  for (var element in Draw) {
+    if (fun.constructor == Draw[element]) {
+      return element.toLowerCase();
+    }
+  }
+}

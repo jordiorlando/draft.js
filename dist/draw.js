@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Mon Dec 21 2015 05:03:15 GMT-0600 (CST)
+* BUILT: Mon Dec 21 2015 19:14:42 GMT-0600 (Central Standard Time)
 */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -30,7 +30,9 @@ var Draw = this.Draw = function (element) {
   return new Draw.Doc(element);
 };
 
+// TODO: separate ID counters for each type of element
 Draw.id = 0;
+// TODO: separate array containers for each type of element
 // Draw.pages = [];
 
 Draw.extend = function (element, methods) {
@@ -53,8 +55,12 @@ Draw.extend = function (element, methods) {
 Draw.create = function (config) {
   var element = typeof config.construct == 'function' ?
     config.construct :
-    function () {
-      this.attr('id', zeroPad(Draw.id++, 4));
+    function (name) {
+      this.prop({
+        id: zeroPad(++Draw.id, 4),
+        name: name,
+        type: elementType(this)
+      });
       // this.constructor.call(this);
     };
 
@@ -106,65 +112,75 @@ function zeroPad(number, length) {
   return str;
 }
 
-Draw.attr = {
-  attr: function (prop, val) {
-    if (this.params == null) {
-      this.params = {};
+function elementType(fun) {
+  for (var element in Draw) {
+    if (fun.constructor == Draw[element]) {
+      return element.toLowerCase();
     }
+  }
+}
 
+Draw.prop = {
+  prop: function (prop, val) {
+    // Make sure this.properties is initialized
+    this.properties = this.properties || {};
+
+    // Act as a full properties getter if prop is null/undefined
     if (prop == null) {
-      /*console.log('attr(' + prop + ',' + val + ')->this: ');
-      console.log(this);*/
-
       prop = {};
 
-      for (let p in this.params) {
-        prop[p] = this.params[p];
+      for (let p in this.properties) {
+        prop[p] = this.properties[p];
       }
 
       return prop;
-    } else if (typeof prop === 'object') {
-      let getter = true;
+    }
+    // Act as a getter if prop is an object with only null values.
+    // Act as a setter if prop is an object with at least one non-null value.
+    else if (typeof prop === 'object') {
+      let setter = false;
 
       for (let p in prop) {
-        prop[p] = this.attr(p, prop[p]);
-        if (typeof prop[p] === 'object') {
-          getter = false;
-        }
+        // Get this.properties[p] and save it to prop[p]
+        prop[p] = this.prop(p, prop[p]);
+        // If the returned value is an object, prop[p] is non-null, so act like
+        // a setter.
+        setter |= typeof prop[p] === 'object';
       }
-      if (getter) {
-        return prop;
-      }
-    } else if (val == null) {
-      val = this.params[prop];
-      return val == null ?
-        Draw.defaults[prop] : val;
-    } else {
-      /*console.log(prop + ', ' + val);
-      console.log(this.params);*/
-      this.params[prop] = val;
+
+      return setter ? this : prop;
+    }
+    // Act as an individual property getter if val is null/undefined
+    else if (val == null) {
+      val = this.properties[prop];
+      return val == null ? Draw.defaults[prop] : val;
+    }
+    // Act as an individual property setter if both prop and val are defined
+    else {
+      this.properties[prop] = val;
     }
 
+    // prop() is chainable if 'this' is returned
     return this;
   }
 };
 
 Draw.size = {
   require: [
-    Draw.attr
+    Draw.prop
   ],
 
   // Get/set the element's width
   width: function (width) {
-    return this.attr('width', width);
+    return this.prop('width', width);
   },
   // Get/set the element's height
   height: function (height) {
-    return this.attr('height', height);
+    return this.prop('height', height);
   },
   // Get/set the element's width & height
   size: function (width, height) {
-    return this.attr({
+    return this.prop({
       width: width,
       height: height
     });
@@ -173,21 +189,21 @@ Draw.size = {
 
 Draw.move = {
   require: [
-    Draw.attr
+    Draw.prop
   ],
   // Get/set the element's x position
   x: function (x) {
-    return this.attr('x', x);
+    return this.prop('x', x);
   },
 
   // Get/set the element's y position
   y: function (y) {
-    return this.attr('y', y);
+    return this.prop('y', y);
   },
 
   // Get/set the element's position
   move: function (x, y) {
-    return this.attr({
+    return this.prop({
       x: x,
       y: y
     });
@@ -196,19 +212,19 @@ Draw.move = {
 
 Draw.radius = {
   require: [
-    Draw.attr
+    Draw.prop
   ],
   // Get/set the element's x radius
   rx: function (rx) {
-    return this.attr('rx', rx);
+    return this.prop('rx', rx);
   },
   // Get/set the element's y radius
   ry: function (ry) {
-    return this.attr('ry', ry);
+    return this.prop('ry', ry);
   },
   // Get/set the element's radius
   radius: function (rx, xy) {
-    return this.attr({
+    return this.prop({
       rx: rx,
       ry: ry
     });
@@ -217,16 +233,16 @@ Draw.radius = {
 
 Draw.transform = {
   require: [
-    Draw.attr
+    Draw.prop
   ],
   transform: function (obj) {
     // TODO: make this work with actual transformation matrices
     for (var k in obj) {
       obj[k] = obj[k] == null ?
-        obj[k] : this.attr(k) + obj[k];
+        obj[k] : this.prop(k) + obj[k];
     }
 
-    return this.attr(obj);
+    return this.prop(obj);
   }
 };
 
@@ -323,17 +339,12 @@ Draw.Group = Draw.create({
   inherit: Draw.Container,
 
   require: [
-    Draw.attr
+    Draw.prop
   ],
 
   init: {
     group: function (name) {
-      return this
-        .put(new Draw.Group())
-        .attr({
-          type: 'group',
-          name: name
-        });
+      return this.put(new Draw.Group(name));
     }
   }
 });
@@ -348,7 +359,7 @@ Draw.Page = Draw.create({
   methods: {
     origin: function (x, y) {
       // TODO: change to origin.x and origin.y?
-      return this.attr({
+      return this.prop({
         originX: x,
         originY: y
       });
@@ -357,12 +368,7 @@ Draw.Page = Draw.create({
 
   init: {
     page: function (name) {
-      return this
-        .put(new Draw.Page())
-        .attr({
-          type: 'page',
-          name: name
-        });
+      return this.put(new Draw.Page(name));
 
       // Draw.pages.push(page);
       // return page;
@@ -372,7 +378,7 @@ Draw.Page = Draw.create({
 
 Draw.Element = Draw.create({
   require: [
-    Draw.attr,
+    Draw.prop,
     Draw.size
   ],
 
@@ -401,8 +407,6 @@ Draw.Line = Draw.create({
 });
 
 Draw.Rect = Draw.create({
-  name: 'rect',
-
   inherit: Draw.Element,
 
   require: [
@@ -413,7 +417,7 @@ Draw.Rect = Draw.create({
   methods: {
     // in the butt
     getRekt: function () {
-      return this.attr();
+      return this.prop();
     }
   },
 
@@ -441,4 +445,4 @@ Draw.Circle = Draw.create({
 
 
   return Draw;
-}));
+}));

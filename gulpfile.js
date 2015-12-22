@@ -18,7 +18,7 @@ var src = [
   'src/defaults.js',
   'src/helpers.js',
   // Methods
-  'src/methods/attr.js',
+  'src/methods/prop.js',
   'src/methods/size.js',
   'src/methods/move.js',
   'src/methods/radius.js',

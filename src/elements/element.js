@@ -1,6 +1,6 @@
 Draw.Element = Draw.create({
   require: [
-    Draw.attr,
+    Draw.prop,
     Draw.size
   ],
 

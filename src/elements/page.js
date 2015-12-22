@@ -8,7 +8,7 @@ Draw.Page = Draw.create({
   methods: {
     origin: function (x, y) {
       // TODO: change to origin.x and origin.y?
-      return this.attr({
+      return this.prop({
         originX: x,
         originY: y
       });
@@ -17,15 +17,9 @@ Draw.Page = Draw.create({
 
   init: {
     page: function (name) {
-      return this
-        .put(new Draw.Page())
-        .attr({
-          type: 'page',
-          name: name
-        });
+      return this.put(new Draw.Page(name));
 
       // Draw.pages.push(page);
-      // return page;
     }
   }
 });

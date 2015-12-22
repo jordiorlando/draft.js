@@ -1,14 +1,14 @@
 Draw.transform = {
   require: [
-    Draw.attr
+    Draw.prop
   ],
   transform: function (obj) {
     // TODO: make this work with actual transformation matrices
     for (var k in obj) {
       obj[k] = obj[k] == null ?
-        obj[k] : this.attr(k) + obj[k];
+        obj[k] : this.prop(k) + obj[k];
     }
 
-    return this.attr(obj);
+    return this.prop(obj);
   }
 };

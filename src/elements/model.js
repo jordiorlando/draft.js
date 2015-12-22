@@ -4,7 +4,7 @@ Draw.Model = Draw.create({
   methods: {
     origin: function (x, y, z) {
       // TODO: change to origin.x and origin.y?
-      return this.attr({
+      return this.prop({
         originX: x,
         originY: y,
         originZ: z
@@ -16,7 +16,7 @@ Draw.Model = Draw.create({
     page: function (name) {
       return this
         .put(new Draw.Model())
-        .attr({
+        .prop({
           type: 'model',
           name: name
         });

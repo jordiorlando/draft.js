@@ -1,18 +1,18 @@
 Draw.radius = {
   require: [
-    Draw.attr
+    Draw.prop
   ],
   // Get/set the element's x radius
   rx: function (rx) {
-    return this.attr('rx', rx);
+    return this.prop('rx', rx);
   },
   // Get/set the element's y radius
   ry: function (ry) {
-    return this.attr('ry', ry);
+    return this.prop('ry', ry);
   },
   // Get/set the element's radius
   radius: function (rx, xy) {
-    return this.attr({
+    return this.prop({
       rx: rx,
       ry: ry
     });

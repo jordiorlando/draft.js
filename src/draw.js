@@ -2,19 +2,20 @@ var Draw = this.Draw = function (element) {
   return new Draw.Doc(element);
 };
 
+// TODO: separate ID counters for each type of element
 Draw.id = 0;
+// TODO: separate array containers for each type of element
 // Draw.pages = [];
 
+// This function takes an existing element and copies the supplied methods to it
 Draw.extend = function (element, methods) {
   for (var method in methods) {
     // If method is a function, copy it
     if (typeof methods[method] === 'function') {
       element.prototype[method] = methods[method];
     }
-    // If methods is an array, call Draw.extend for each element of the array
+    // If method is an array, call Draw.extend for each element of the array
     else if (method == 'require') {
-      /*console.log(methods);
-      console.log(methods[method]);*/
       methods[method].forEach(function (e) {
         Draw.extend.call(element, e);
       });
@@ -22,11 +23,16 @@ Draw.extend = function (element, methods) {
   }
 };
 
+// This function creates a new element class from a configuration object
 Draw.create = function (config) {
   var element = typeof config.construct == 'function' ?
     config.construct :
-    function () {
-      this.attr('id', zeroPad(Draw.id++, 4));
+    function (name) {
+      this.prop({
+        id: zeroPad(++Draw.id, 4),
+        name: name,
+        type: elementType(this)
+      });
       // this.constructor.call(this);
     };
 
