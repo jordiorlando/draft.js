@@ -1,6 +1,6 @@
-Draw.move = {
+Draft.move = {
   require: [
-    Draw.prop
+    Draft.prop
   ],
   // Get/set the element's x position
   x: function (x) {

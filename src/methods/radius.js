@@ -1,6 +1,6 @@
-Draw.radius = {
+Draft.radius = {
   require: [
-    Draw.prop
+    Draft.prop
   ],
   // Get/set the element's x radius
   rx: function (rx) {

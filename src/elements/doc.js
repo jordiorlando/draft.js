@@ -1,4 +1,4 @@
-Draw.Doc = Draw.create({
+Draft.Doc = Draft.create({
   construct: function (element) {
     if (element) {
       // Ensure the presence of a DOM element
@@ -12,7 +12,7 @@ Draw.Doc = Draw.create({
     }
   },
 
-  inherit: Draw.Container,
+  inherit: Draft.Container,
 
   /*methods: {
     docs: function () {

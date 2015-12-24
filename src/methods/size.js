@@ -1,6 +1,6 @@
-Draw.size = {
+Draft.size = {
   require: [
-    Draw.prop
+    Draft.prop
   ],
 
   // Get/set the element's width

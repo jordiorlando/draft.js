@@ -1,4 +1,4 @@
-Draw.prop = {
+Draft.prop = {
   prop: function (prop, val) {
     // Make sure this.properties is initialized
     this.properties = this.properties || {};
@@ -31,7 +31,7 @@ Draw.prop = {
     // Act as an individual property getter if val is null/undefined
     else if (val == null) {
       val = this.properties[prop];
-      return val == null ? Draw.defaults[prop] : val;
+      return val == null ? Draft.defaults[prop] : val;
     }
     // Act as an individual property setter if both prop and val are defined
     else {

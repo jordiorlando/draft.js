@@ -1,4 +1,4 @@
-var doc = Draw('canvas');
+var doc = Draft('canvas');
 
 var page1 = doc.page('test_page_1');
 page1.width(500).height(200);

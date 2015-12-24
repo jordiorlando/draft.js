@@ -1,6 +1,6 @@
-Draw.transform = {
+Draft.transform = {
   require: [
-    Draw.prop
+    Draft.prop
   ],
   transform: function (obj) {
     // TODO: make this work with actual transformation matrices

@@ -1,7 +1,7 @@
-Draw.Container = Draw.create({
+Draft.Container = Draft.create({
   require: [
-    // TODO: make Draw.tree into a separate plugin
-    Draw.tree
+    // TODO: make Draft.tree into a separate plugin
+    Draft.tree
   ],
 
   methods: {

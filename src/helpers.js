@@ -8,16 +8,16 @@ function zeroPad(number, length) {
 }
 
 function elementType(element) {
-  for (var e in Draw) {
-    if (element.constructor == Draw[e]) {
+  for (var e in Draft) {
+    if (element.constructor == Draft[e]) {
       return e.toLowerCase();
     }
   }
 }
 
 function elementID(element) {
-  return Draw.prop.prop.call(element, 'type') +
-    Draw.prop.prop.call(element, 'id');
+  return Draft.prop.prop.call(element, 'type') +
+    Draft.prop.prop.call(element, 'id');
 }
 
 function updateDOM(element) {

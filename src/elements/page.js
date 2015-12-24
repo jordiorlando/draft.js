@@ -1,8 +1,8 @@
-Draw.Page = Draw.create({
-  inherit: Draw.Group,
+Draft.Page = Draft.create({
+  inherit: Draft.Group,
 
   require: [
-    Draw.size
+    Draft.size
   ],
 
   methods: {
@@ -17,9 +17,9 @@ Draw.Page = Draw.create({
 
   init: {
     page: function (name) {
-      return this.put(new Draw.Page(name));
+      return this.put(new Draft.Page(name));
 
-      // Draw.pages.push(page);
+      // Draft.pages.push(page);
     }
   }
 });

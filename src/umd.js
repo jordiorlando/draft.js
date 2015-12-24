@@ -12,11 +12,11 @@
       };
   } else {
     // Browser globals (root is window)
-    root.Draw = factory(root, root.document);
+    root.Draft = factory(root, root.document);
   }
 }(typeof window !== "undefined" ? window : this, function (window, document) {
 
 <%= contents %>
 
-  return Draw;
+  return Draft;
 }));

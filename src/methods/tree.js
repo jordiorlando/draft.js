@@ -1,6 +1,6 @@
-Draw.tree = {
+Draft.tree = {
   require: [
-    Draw.json
+    Draft.json
   ],
 
   createTree: function () {

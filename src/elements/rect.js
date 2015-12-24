@@ -1,9 +1,9 @@
-Draw.Rect = Draw.create({
-  inherit: Draw.Element,
+Draft.Rect = Draft.create({
+  inherit: Draft.Element,
 
   require: [
-    Draw.move,
-    Draw.radius
+    Draft.move,
+    Draft.radius
   ],
 
   methods: {
@@ -15,7 +15,7 @@ Draw.Rect = Draw.create({
 
   init: {
     rect: function (width, height) {
-      return this.put(new Draw.Rect()).size(width, height);
+      return this.put(new Draft.Rect()).size(width, height);
     }
   }
 });

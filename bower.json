@@ -1,19 +1,19 @@
 {
-  "name": "draw.js",
+  "name": "draft.js",
   "authors": [
     "Jordi Orlando <jordi.orlando@gmail.com>"
   ],
-  "description": "A lightweight library for parametric drawing",
-  "main": "dist/draw.min.js",
+  "description": "A lightweight library for parametric design",
+  "main": "dist/draft.min.js",
   "keywords": [
-    "draw",
+    "draft",
     "parametric",
     "svg",
     "js",
     "javascript"
   ],
   "license": "GPL-3.0",
-  "homepage": "draw.D1SC0te.ch",
+  "homepage": "draft.D1SC0te.ch",
   "ignore": [
     "**/.*",
     "node_modules",

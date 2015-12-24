@@ -1,13 +1,13 @@
-Draw.Group = Draw.create({
-  inherit: Draw.Container,
+Draft.Group = Draft.create({
+  inherit: Draft.Container,
 
   require: [
-    Draw.prop
+    Draft.prop
   ],
 
   init: {
     group: function (name) {
-      return this.put(new Draw.Group(name));
+      return this.put(new Draft.Group(name));
     }
   }
 });

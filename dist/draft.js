@@ -1,7 +1,7 @@
 /*
-* draw.js - A lightweight library for parametric drawing
+* draft.js - A lightweight library for parametric design
 * version v0.0.0
-* draw.D1SC0te.ch
+* draft.D1SC0te.ch
 *
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
@@ -22,30 +22,30 @@
       };
   } else {
     // Browser globals (root is window)
-    root.Draw = factory(root, root.document);
+    root.Draft = factory(root, root.document);
   }
 }(typeof window !== "undefined" ? window : this, function (window, document) {
 
-var Draw = this.Draw = function (element) {
-  return new Draw.Doc(element);
+var Draft = this.Draft = function (element) {
+  return new Draft.Doc(element);
 };
 
 // TODO: separate ID counters for each type of element
-Draw.id = 0;
+Draft.id = 0;
 // TODO: separate array containers for each type of element
-// Draw.pages = [];
+// Draft.pages = [];
 
 // This function takes an existing element and copies the supplied methods to it
-Draw.extend = function (element, methods) {
+Draft.extend = function (element, methods) {
   for (var method in methods) {
     // If method is a function, copy it
     if (typeof methods[method] === 'function') {
       element.prototype[method] = methods[method];
     }
-    // If method is an array, call Draw.extend for each element of the array
+    // If method is an array, call Draft.extend for each element of the array
     else if (method == 'require') {
       methods[method].forEach(function (e) {
-        Draw.extend(element, e);
+        Draft.extend(element, e);
       });
     }
   }
@@ -54,12 +54,12 @@ Draw.extend = function (element, methods) {
 };
 
 // This function creates a new element class from a configuration object
-Draw.create = function (config) {
+Draft.create = function (config) {
   var element = typeof config.construct == 'function' ?
     config.construct :
     function (name) {
       this.prop({
-        id: zeroPad(++Draw.id, 4),
+        id: zeroPad(++Draft.id, 4),
         name: name,
         type: elementType(this)
       });
@@ -77,24 +77,24 @@ Draw.create = function (config) {
   // Attach all required methods
   if (config.require) {
     config.require.forEach(function (e) {
-      Draw.extend(element, e);
+      Draft.extend(element, e);
     });
   }
 
   // Attach all new methods
   if (config.methods) {
-    Draw.extend(element, config.methods);
+    Draft.extend(element, config.methods);
   }
 
   // Attach the initialization method to the parent
   if (config.init) {
-    Draw.extend(config.parent || Draw.Container, config.init);
+    Draft.extend(config.parent || Draft.Container, config.init);
   }
 
   return element;
 };
 
-Draw.defaults = {
+Draft.defaults = {
   x: 0,
   y: 0,
   width: 0,
@@ -115,16 +115,16 @@ function zeroPad(number, length) {
 }
 
 function elementType(element) {
-  for (var e in Draw) {
-    if (element.constructor == Draw[e]) {
+  for (var e in Draft) {
+    if (element.constructor == Draft[e]) {
       return e.toLowerCase();
     }
   }
 }
 
 function elementID(element) {
-  return Draw.prop.prop.call(element, 'type') +
-    Draw.prop.prop.call(element, 'id');
+  return Draft.prop.prop.call(element, 'type') +
+    Draft.prop.prop.call(element, 'id');
 }
 
 function updateDOM(element) {
@@ -138,15 +138,15 @@ function updateDOM(element) {
   }
 }
 
-Draw.json = {
+Draft.json = {
   stringify: function (replacer) {
     return JSON.stringify(this, replacer, 2);
   }
 };
 
-Draw.tree = {
+Draft.tree = {
   require: [
-    Draw.json
+    Draft.json
   ],
 
   createTree: function () {
@@ -193,7 +193,7 @@ Draw.tree = {
   }
 };
 
-Draw.prop = {
+Draft.prop = {
   prop: function (prop, val) {
     // Make sure this.properties is initialized
     this.properties = this.properties || {};
@@ -226,7 +226,7 @@ Draw.prop = {
     // Act as an individual property getter if val is null/undefined
     else if (val == null) {
       val = this.properties[prop];
-      return val == null ? Draw.defaults[prop] : val;
+      return val == null ? Draft.defaults[prop] : val;
     }
     // Act as an individual property setter if both prop and val are defined
     else {
@@ -240,9 +240,9 @@ Draw.prop = {
   }
 };
 
-Draw.size = {
+Draft.size = {
   require: [
-    Draw.prop
+    Draft.prop
   ],
 
   // Get/set the element's width
@@ -262,9 +262,9 @@ Draw.size = {
   }
 };
 
-Draw.move = {
+Draft.move = {
   require: [
-    Draw.prop
+    Draft.prop
   ],
   // Get/set the element's x position
   x: function (x) {
@@ -285,9 +285,9 @@ Draw.move = {
   }
 };
 
-Draw.radius = {
+Draft.radius = {
   require: [
-    Draw.prop
+    Draft.prop
   ],
   // Get/set the element's x radius
   rx: function (rx) {
@@ -306,9 +306,9 @@ Draw.radius = {
   }
 };
 
-Draw.transform = {
+Draft.transform = {
   require: [
-    Draw.prop
+    Draft.prop
   ],
   transform: function (obj) {
     // TODO: make this work with actual transformation matrices
@@ -321,9 +321,9 @@ Draw.transform = {
   }
 };
 
-Draw.transforms = {
+Draft.transforms = {
   require: [
-    Draw.transform
+    Draft.transform
   ],
   // Translate the element relative to its current position
   translate: function (x, y) {
@@ -360,10 +360,10 @@ Draw.transforms = {
   }
 };
 
-Draw.Container = Draw.create({
+Draft.Container = Draft.create({
   require: [
-    // TODO: make Draw.tree into a separate plugin
-    Draw.tree
+    // TODO: make Draft.tree into a separate plugin
+    Draft.tree
   ],
 
   methods: {
@@ -384,7 +384,7 @@ Draw.Container = Draw.create({
   }
 });
 
-Draw.Doc = Draw.create({
+Draft.Doc = Draft.create({
   construct: function (element) {
     if (element) {
       // Ensure the presence of a DOM element
@@ -398,7 +398,7 @@ Draw.Doc = Draw.create({
     }
   },
 
-  inherit: Draw.Container,
+  inherit: Draft.Container,
 
   /*methods: {
     docs: function () {
@@ -413,25 +413,25 @@ Draw.Doc = Draw.create({
   }
 });
 
-Draw.Group = Draw.create({
-  inherit: Draw.Container,
+Draft.Group = Draft.create({
+  inherit: Draft.Container,
 
   require: [
-    Draw.prop
+    Draft.prop
   ],
 
   init: {
     group: function (name) {
-      return this.put(new Draw.Group(name));
+      return this.put(new Draft.Group(name));
     }
   }
 });
 
-Draw.Page = Draw.create({
-  inherit: Draw.Group,
+Draft.Page = Draft.create({
+  inherit: Draft.Group,
 
   require: [
-    Draw.size
+    Draft.size
   ],
 
   methods: {
@@ -446,17 +446,17 @@ Draw.Page = Draw.create({
 
   init: {
     page: function (name) {
-      return this.put(new Draw.Page(name));
+      return this.put(new Draft.Page(name));
 
-      // Draw.pages.push(page);
+      // Draft.pages.push(page);
     }
   }
 });
 
-Draw.Element = Draw.create({
+Draft.Element = Draft.create({
   require: [
-    Draw.prop,
-    Draw.size
+    Draft.prop,
+    Draft.size
   ],
 
   methods: {
@@ -466,11 +466,11 @@ Draw.Element = Draw.create({
   }
 });
 
-Draw.Line = Draw.create({
-  inherit: Draw.Element,
+Draft.Line = Draft.create({
+  inherit: Draft.Element,
 
   require: [
-    Draw.move
+    Draft.move
   ],
 
   methods: {
@@ -478,17 +478,17 @@ Draw.Line = Draw.create({
 
   init: {
     line: function (x1, y1, x2, y2) {
-      return new Draw.Line();
+      return new Draft.Line();
     }
   }
 });
 
-Draw.Rect = Draw.create({
-  inherit: Draw.Element,
+Draft.Rect = Draft.create({
+  inherit: Draft.Element,
 
   require: [
-    Draw.move,
-    Draw.radius
+    Draft.move,
+    Draft.radius
   ],
 
   methods: {
@@ -500,17 +500,17 @@ Draw.Rect = Draw.create({
 
   init: {
     rect: function (width, height) {
-      return this.put(new Draw.Rect()).size(width, height);
+      return this.put(new Draft.Rect()).size(width, height);
     }
   }
 });
 
-Draw.Circle = Draw.create({
-  inherit: Draw.Element,
+Draft.Circle = Draft.create({
+  inherit: Draft.Element,
 
   require: [
-    Draw.move/*,
-    Draw.radius*/
+    Draft.move/*,
+    Draft.radius*/
   ],
 
   methods: {
@@ -521,11 +521,11 @@ Draw.Circle = Draw.create({
 
   init: {
     circle: function (r) {
-      return this.put(new Draw.Circle()).radius(r);
+      return this.put(new Draft.Circle()).radius(r);
     }
   }
 });
 
 
-  return Draw;
+  return Draft;
 }));

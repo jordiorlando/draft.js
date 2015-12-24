@@ -1,8 +1,8 @@
-Draw.Line = Draw.create({
-  inherit: Draw.Element,
+Draft.Line = Draft.create({
+  inherit: Draft.Element,
 
   require: [
-    Draw.move
+    Draft.move
   ],
 
   methods: {
@@ -10,7 +10,7 @@ Draw.Line = Draw.create({
 
   init: {
     line: function (x1, y1, x2, y2) {
-      return new Draw.Line();
+      return new Draft.Line();
     }
   }
 });

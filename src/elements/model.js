@@ -1,5 +1,5 @@
-Draw.Model = Draw.create({
-  inherit: Draw.Group,
+Draft.Model = Draft.create({
+  inherit: Draft.Group,
 
   methods: {
     origin: function (x, y, z) {
@@ -15,7 +15,7 @@ Draw.Model = Draw.create({
   init: {
     page: function (name) {
       return this
-        .put(new Draw.Model())
+        .put(new Draft.Model())
         .prop({
           type: 'model',
           name: name

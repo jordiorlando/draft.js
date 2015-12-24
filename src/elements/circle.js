@@ -1,9 +1,9 @@
-Draw.Circle = Draw.create({
-  inherit: Draw.Element,
+Draft.Circle = Draft.create({
+  inherit: Draft.Element,
 
   require: [
-    Draw.move/*,
-    Draw.radius*/
+    Draft.move/*,
+    Draft.radius*/
   ],
 
   methods: {
@@ -14,7 +14,7 @@ Draw.Circle = Draw.create({
 
   init: {
     circle: function (r) {
-      return this.put(new Draw.Circle()).radius(r);
+      return this.put(new Draft.Circle()).radius(r);
     }
   }
 });

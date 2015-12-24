@@ -14,7 +14,7 @@ var pkg = require('./package.json');
 
 var src = [
   // Main
-  'src/draw.js',
+  'src/draft.js',
   'src/defaults.js',
   'src/helpers.js',
   // Methods
@@ -65,7 +65,7 @@ gulp.task('unify', ['clean'], function () {
   pkg.buildDate = Date();
 
   return gulp.src(src)
-    .pipe(concat('draw.js', { newLine: '\n' }))
+    .pipe(concat('draft.js', { newLine: '\n' }))
     .pipe(wrap({ src: 'src/umd.js' }))
     .pipe(header(headerLong, { pkg: pkg }))
     .pipe(gulp.dest('dist'))
@@ -73,7 +73,7 @@ gulp.task('unify', ['clean'], function () {
 });
 
 gulp.task('minify', ['unify'], function () {
-  return gulp.src('dist/draw.js')
+  return gulp.src('dist/draft.js')
     .pipe(babel({ presets: ['es2015'] })) // TODO: remove this
     .pipe(uglify())
     .pipe(rename({ suffix:'.min' }))

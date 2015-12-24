@@ -1,7 +1,7 @@
-Draw.Element = Draw.create({
+Draft.Element = Draft.create({
   require: [
-    Draw.prop,
-    Draw.size
+    Draft.prop,
+    Draft.size
   ],
 
   methods: {
