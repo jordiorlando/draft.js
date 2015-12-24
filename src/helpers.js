@@ -7,10 +7,26 @@ function zeroPad(number, length) {
   return str;
 }
 
-function elementType(fun) {
-  for (var element in Draw) {
-    if (fun.constructor == Draw[element]) {
-      return element.toLowerCase();
+function elementType(element) {
+  for (var e in Draw) {
+    if (element.constructor == Draw[e]) {
+      return e.toLowerCase();
     }
+  }
+}
+
+function elementID(element) {
+  return Draw.prop.prop.call(element, 'type') +
+    Draw.prop.prop.call(element, 'id');
+}
+
+function updateDOM(element) {
+  if (element.dom) {
+    if (element.dom.tree) {
+      element.updateTree();
+    }
+  }
+  if (element.parent) {
+    updateDOM(element.parent);
   }
 }

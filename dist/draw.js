@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Mon Dec 21 2015 19:14:42 GMT-0600 (Central Standard Time)
+* BUILT: Wed Dec 23 2015 19:08:30 GMT-0600 (CST)
 */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -35,23 +35,25 @@ Draw.id = 0;
 // TODO: separate array containers for each type of element
 // Draw.pages = [];
 
+// This function takes an existing element and copies the supplied methods to it
 Draw.extend = function (element, methods) {
   for (var method in methods) {
     // If method is a function, copy it
     if (typeof methods[method] === 'function') {
       element.prototype[method] = methods[method];
     }
-    // If methods is an array, call Draw.extend for each element of the array
+    // If method is an array, call Draw.extend for each element of the array
     else if (method == 'require') {
-      /*console.log(methods);
-      console.log(methods[method]);*/
       methods[method].forEach(function (e) {
-        Draw.extend.call(element, e);
+        Draw.extend(element, e);
       });
     }
   }
+
+  return methods;
 };
 
+// This function creates a new element class from a configuration object
 Draw.create = function (config) {
   var element = typeof config.construct == 'function' ?
     config.construct :
@@ -112,13 +114,84 @@ function zeroPad(number, length) {
   return str;
 }
 
-function elementType(fun) {
-  for (var element in Draw) {
-    if (fun.constructor == Draw[element]) {
-      return element.toLowerCase();
+function elementType(element) {
+  for (var e in Draw) {
+    if (element.constructor == Draw[e]) {
+      return e.toLowerCase();
     }
   }
 }
+
+function elementID(element) {
+  return Draw.prop.prop.call(element, 'type') +
+    Draw.prop.prop.call(element, 'id');
+}
+
+function updateDOM(element) {
+  if (element.dom) {
+    if (element.dom.tree) {
+      element.updateTree();
+    }
+  }
+  if (element.parent) {
+    updateDOM(element.parent);
+  }
+}
+
+Draw.json = {
+  stringify: function (replacer) {
+    return JSON.stringify(this, replacer, 2);
+  }
+};
+
+Draw.tree = {
+  require: [
+    Draw.json
+  ],
+
+  createTree: function () {
+    var tree = document.createElement('div');
+    tree.className = 'element-tree';
+
+    // tree.appendChild(document.createElement('span'));
+    // tree.firstChild.textContent = 'Document Model:';
+
+    var pre = document.createElement('pre');
+    tree.appendChild(pre);
+
+    // Make sure this.dom is initialized
+    this.dom = this.dom || {};
+    this.dom.tree = tree;
+
+    return this.updateTree();
+  },
+
+  updateTree: function () {
+    var replacer = function (key, value) {
+      if (key == "dom" || key == "parent" || key == "id" || key == "type") {
+        return undefined;
+      } else if (key == "children") {
+        var obj = {};
+        value.forEach(function (element) {
+          obj[elementID(element)] = element;
+        });
+        return obj;
+      }
+      return value;
+    };
+
+    var treeString = this.stringify(replacer).split('"').join('');
+    this.dom.tree.firstChild.textContent = elementID(this) + ': ' + treeString;
+
+    var longestLine = treeString.split('\n').reduce(function (a, b) {
+      return a.length > b.length ? a : b;
+    });
+    // FIXME: change 84 to a non-hardcoded value
+    this.dom.tree.style.width = Math.min(longestLine.length + 4, 84) + 'ch';
+
+    return this.dom.tree;
+  }
+};
 
 Draw.prop = {
   prop: function (prop, val) {
@@ -160,6 +233,8 @@ Draw.prop = {
       this.properties[prop] = val;
     }
 
+    updateDOM(this);
+    
     // prop() is chainable if 'this' is returned
     return this;
   }
@@ -223,7 +298,7 @@ Draw.radius = {
     return this.prop('ry', ry);
   },
   // Get/set the element's radius
-  radius: function (rx, xy) {
+  radius: function (rx, ry) {
     return this.prop({
       rx: rx,
       ry: ry
@@ -286,6 +361,11 @@ Draw.transforms = {
 };
 
 Draw.Container = Draw.create({
+  require: [
+    // TODO: make Draw.tree into a separate plugin
+    Draw.tree
+  ],
+
   methods: {
     parent: function () {
       return this.parent;
@@ -296,9 +376,7 @@ Draw.Container = Draw.create({
     put: function (element) {
       element.parent = this;
 
-      if (this.children == null) {
-        this.children = [];
-      }
+      this.children = this.children || [];
       this.children.push(element);
 
       return element;
@@ -371,7 +449,6 @@ Draw.Page = Draw.create({
       return this.put(new Draw.Page(name));
 
       // Draw.pages.push(page);
-      // return page;
     }
   }
 });
@@ -432,9 +509,15 @@ Draw.Circle = Draw.create({
   inherit: Draw.Element,
 
   require: [
-    Draw.move,
-    Draw.radius
+    Draw.move/*,
+    Draw.radius*/
   ],
+
+  methods: {
+    radius: function (r) {
+      return this.prop('r', r);
+    }
+  },
 
   init: {
     circle: function (r) {
@@ -445,4 +528,4 @@ Draw.Circle = Draw.create({
 
 
   return Draw;
-}));
+}));

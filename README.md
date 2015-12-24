@@ -1,6 +1,6 @@
 # draw.js
 
-A lightweight library for 2D parametric CAD.
+**draw.js** is a lightweight library for 2D/3D parametric CAD.
 
 draw.js is licensed under the terms of the [GPL-3.0](https://www.gnu.org/licenses/gpl.html).
 

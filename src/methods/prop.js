@@ -38,6 +38,8 @@ Draw.prop = {
       this.properties[prop] = val;
     }
 
+    updateDOM(this);
+    
     // prop() is chainable if 'this' is returned
     return this;
   }

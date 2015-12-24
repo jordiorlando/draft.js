@@ -1,4 +1,9 @@
 Draw.Container = Draw.create({
+  require: [
+    // TODO: make Draw.tree into a separate plugin
+    Draw.tree
+  ],
+
   methods: {
     parent: function () {
       return this.parent;
@@ -9,9 +14,7 @@ Draw.Container = Draw.create({
     put: function (element) {
       element.parent = this;
 
-      if (this.children == null) {
-        this.children = [];
-      }
+      this.children = this.children || [];
       this.children.push(element);
 
       return element;

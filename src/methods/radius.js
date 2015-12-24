@@ -11,7 +11,7 @@ Draw.radius = {
     return this.prop('ry', ry);
   },
   // Get/set the element's radius
-  radius: function (rx, xy) {
+  radius: function (rx, ry) {
     return this.prop({
       rx: rx,
       ry: ry

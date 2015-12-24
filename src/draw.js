@@ -17,10 +17,12 @@ Draw.extend = function (element, methods) {
     // If method is an array, call Draw.extend for each element of the array
     else if (method == 'require') {
       methods[method].forEach(function (e) {
-        Draw.extend.call(element, e);
+        Draw.extend(element, e);
       });
     }
   }
+
+  return methods;
 };
 
 // This function creates a new element class from a configuration object

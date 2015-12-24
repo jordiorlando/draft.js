@@ -18,10 +18,14 @@ var src = [
   'src/defaults.js',
   'src/helpers.js',
   // Methods
+  'src/methods/json.js',
+  'src/methods/tree.js',
+
   'src/methods/prop.js',
   'src/methods/size.js',
   'src/methods/move.js',
   'src/methods/radius.js',
+  
   'src/methods/transform.js',
   'src/methods/transforms.js',
   // Containers
