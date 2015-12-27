@@ -30,10 +30,9 @@ Draft.create = function (config) {
   var element = typeof config.construct == 'function' ?
     config.construct :
     function (name) {
+      // TODO: change this?
       this.prop({
-        id: zeroPad(++Draft.id, 4),
-        name: name,
-        type: elementType(this)
+        name: name || null
       });
       // this.constructor.call(this);
     };

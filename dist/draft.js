@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Wed Dec 23 2015 19:08:30 GMT-0600 (CST)
+* BUILT: Sat Dec 26 2015 22:28:16 GMT-0600 (CST)
 */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -58,10 +58,9 @@ Draft.create = function (config) {
   var element = typeof config.construct == 'function' ?
     config.construct :
     function (name) {
+      // TODO: change this?
       this.prop({
-        id: zeroPad(++Draft.id, 4),
-        name: name,
-        type: elementType(this)
+        name: name || null
       });
       // this.constructor.call(this);
     };
@@ -95,16 +94,102 @@ Draft.create = function (config) {
 };
 
 Draft.defaults = {
-  x: 0,
-  y: 0,
-  width: 0,
+  system: 'cartesian',
+  units: 'px',
+  /*width: 0,
   length: 0,
-  originX: 0,
-  originY: 0,
-  r: 0,
-  a: 0
+  r: 0, // radius
+  a: 0, // angle*/
+
+  // Cartesian coordinates
+  cartesian: {
+    layer: 1,
+    vars: [
+      'x',
+      'y',
+      'z'
+    ],
+    web: [
+      function (pos) {
+        return pos[0];
+      },
+      function (pos) {
+        return height - pos[1];
+      },
+      function (pos) {
+        return pos[2];
+      },
+      // Full position
+      function (pos) {
+        return [
+          pos[0],
+          height - pos[1],
+          pos[2]
+        ];
+      }
+    ],
+    polar: [
+      function (pos) {
+        return Math.sqrt(Math.pow(pos[0], 2) + Math.pow(pos[1], 2));
+      },
+      function (pos) {
+        return Math.atan2(pos[1], pos[0]);
+      },
+      function (pos) {
+        return pos[2];
+      },
+      // Full position
+      function (pos) {
+        return [
+          Math.sqrt(Math.pow(pos[0], 2) + Math.pow(pos[1], 2)),
+          Math.atan2(pos[1], pos[0]),
+          pos[2]
+        ];
+      }
+    ],
+    origin: {
+      x: 0,
+      y: 'height'
+    }
+  },
+
+  // Polar/Cylindrical coordinates
+  polar: {
+    layer: 2,
+    vars: [
+      'rho',
+      'phi',
+      'z'
+    ],
+    cartesian: [
+      function (pos) {
+        return pos[0] * Math.cos(pos[1] * (Math.PI / 180));
+      },
+      function (pos) {
+        return pos[0] * Math.sin(pos[1] * (Math.PI / 180));
+      },
+      function (pos) {
+        return pos[2];
+      }
+    ],
+    origin: {
+      x: 'width/2',
+      y: 'height/2'
+    }
+  },
+
+  // Spherical coordinates
+  spherical: {
+    layer: 2,
+    vars: [
+      'rho',
+      'phi',
+      'theta'
+    ]
+  }
 };
 
+// Pad a number with zeroes until the number of digits is equal to length
 function zeroPad(number, length) {
   var str = '' + number;
   while (str.length < length) {
@@ -114,6 +199,13 @@ function zeroPad(number, length) {
   return str;
 }
 
+// Get the parent doc of an element
+function elementDoc(element) {
+  return elementType(element.parent) == 'doc' ?
+    element.parent : elementDoc(element.parent);
+}
+
+// Get the type of an element
 function elementType(element) {
   for (var e in Draft) {
     if (element.constructor == Draft[e]) {
@@ -122,9 +214,16 @@ function elementType(element) {
   }
 }
 
+// Get a unique ID based on the number of instances of a type of element
 function elementID(element) {
-  return Draft.prop.prop.call(element, 'type') +
-    Draft.prop.prop.call(element, 'id');
+  return elementDoc(element).elements[elementType(element)].length;
+}
+
+// Construct a unique ID from the element's type and ID
+function domID(element) {
+  return 'DraftJS_' +
+    element.properties.type + '_' +
+    zeroPad(element.properties.id, 4);
 }
 
 function updateDOM(element) {
@@ -173,7 +272,7 @@ Draft.tree = {
       } else if (key == "children") {
         var obj = {};
         value.forEach(function (element) {
-          obj[elementID(element)] = element;
+          obj[domID(element)] = element;
         });
         return obj;
       }
@@ -181,7 +280,7 @@ Draft.tree = {
     };
 
     var treeString = this.stringify(replacer).split('"').join('');
-    this.dom.tree.firstChild.textContent = elementID(this) + ': ' + treeString;
+    this.dom.tree.firstChild.textContent = domID(this) + ': ' + treeString;
 
     var longestLine = treeString.split('\n').reduce(function (a, b) {
       return a.length > b.length ? a : b;
@@ -223,10 +322,18 @@ Draft.prop = {
 
       return setter ? this : prop;
     }
-    // Act as an individual property getter if val is null/undefined
-    else if (val == null) {
-      val = this.properties[prop];
-      return val == null ? Draft.defaults[prop] : val;
+    // Delete the property if val is null
+    else if (val === null) {
+      delete this.properties[prop];
+    }
+    // Act as an individual property getter if val is undefined
+    else if (val === undefined) {
+      /*val = this.properties[prop];
+      return val === undefined ? Draft.defaults[prop] || 0 : val;*/
+
+      // If prop is undefined, set it to the default OR 0
+      return this.properties[prop] ||
+        this.prop(prop, Draft.defaults[prop] || 0);
     }
     // Act as an individual property setter if both prop and val are defined
     else {
@@ -234,9 +341,54 @@ Draft.prop = {
     }
 
     updateDOM(this);
-    
+
     // prop() is chainable if 'this' is returned
     return this;
+  }
+};
+
+Draft.system = {
+  require: [
+    Draft.prop
+  ],
+
+  // Cartesian:
+  // - page.system('cartesian')
+  // - (x, y)
+  // - x is right, y is up, z is out of the page (right-hand)
+  // - global origin (0, 0) is at bottom-left
+  //
+  // Polar:
+  // - page.system('polar')
+  // - (r, phi)
+  // - phi is counter-clockwise, with 0 pointing to the right
+  // - global pole (0, 0) is at center
+  //
+  // TODO: remove this?
+  // Web/SVG:
+  // - page.system('web')
+  // - (x, y)
+  // - x is right, y is down, z is out of the page (left-hand)
+  // - global origin (0, 0) is at top-left
+
+  // TODO: switch phi for theta?
+  // TODO: Spherical (p, theta, phi), Cylindrical (p, phi, z)
+  system: function (system) {
+    /*if (this.prop('system') != system) {
+      // TODO: recursively convert all elements to new system?
+    }*/
+    return this.prop('system', system);
+  }
+};
+
+Draft.units = {
+  require: [
+    Draft.prop
+  ],
+
+  // Get/set the element's measurement units
+  units: function (units) {
+    return this.prop('units', units);
   }
 };
 
@@ -266,7 +418,7 @@ Draft.move = {
   require: [
     Draft.prop
   ],
-  // Get/set the element's x position
+  /*// Get/set the element's x position
   x: function (x) {
     return this.prop('x', x);
   },
@@ -274,14 +426,15 @@ Draft.move = {
   // Get/set the element's y position
   y: function (y) {
     return this.prop('y', y);
-  },
+  },*/
 
   // Get/set the element's position
-  move: function (x, y) {
-    return this.prop({
-      x: x,
-      y: y
-    });
+  move: function () {
+    var pos = {};
+    for (var i = 0; i < arguments.length; i++) {
+      pos[Draft.defaults[this.prop('system')].vars[i]] = arguments[i];
+    }
+    return this.prop(pos);
   }
 };
 
@@ -361,7 +514,9 @@ Draft.transforms = {
 };
 
 Draft.Container = Draft.create({
+  // TODO: inherit from Draft.Element?
   require: [
+    Draft.prop,
     // TODO: make Draft.tree into a separate plugin
     Draft.tree
   ],
@@ -370,16 +525,35 @@ Draft.Container = Draft.create({
     parent: function () {
       return this.parent;
     },
-    child: function (i) {
-      return this.children[i];
+    child: function (child) {
+      return this.children[child];
     },
-    put: function (element) {
+    push: function (element) {
+      // Add a reference to the element's parent
       element.parent = this;
 
+      // Initialize children array and add the element to the end
       this.children = this.children || [];
       this.children.push(element);
 
+      // Add the element to its type array
+      var doc = elementDoc(element);
+      var type = elementType(element);
+      doc.elements = doc.elements || {};
+      doc.elements[type] = doc.elements[type] || [];
+      doc.elements[type].push(element);
+
+      // Set the element's basic properties
+      element.prop({
+        type: type,
+        id: elementID(element)
+      });
+
       return element;
+    },
+    // FIXME: figure out why this only updates the tree when saved to a var
+    add: function (element) {
+      return this.push(element);
     }
   }
 });
@@ -388,17 +562,13 @@ Draft.Doc = Draft.create({
   construct: function (element) {
     if (element) {
       // Ensure the presence of a DOM element
-      element = typeof element == 'string' ?
-                document.getElementById(element) :
-                element;
-
-      // this.node = {};
-      this.children = [];
-      this.dom = element;
+      this.dom = typeof element == 'string' ?
+        document.getElementById(element) :
+        element;
     }
   },
 
-  inherit: Draft.Container,
+  inherit: Draft.Container
 
   /*methods: {
     docs: function () {
@@ -406,23 +576,43 @@ Draft.Doc = Draft.create({
     }
   }*/
 
-  init: {
-    doc: function (element) {
-      this.constructor.call(this, element);
+  /*init: {
+    doc: function (element, name) {
+      if (element) {
+        // Ensure the presence of a DOM element
+        element = typeof element == 'string' ?
+          document.getElementById(element) :
+          element;
+
+        var doc = new Draft.Doc(name);
+
+        // this.node = {};
+        doc.children = [];
+        doc.dom = element;
+
+        return doc;
+      }
+
+      // this.constructor.call(this, element);
     }
-  }
+  }*/
 });
 
 Draft.Group = Draft.create({
   inherit: Draft.Container,
 
   require: [
-    Draft.prop
+    Draft.system,
+    Draft.units
   ],
 
   init: {
     group: function (name) {
-      return this.put(new Draft.Group(name));
+      // TODO: move this .prop call somewhere else?
+      return this.add(new Draft.Group(name)).prop({
+        system: this.system(),
+        units: this.units()
+      }).move(0, 0);
     }
   }
 });
@@ -435,28 +625,35 @@ Draft.Page = Draft.create({
   ],
 
   methods: {
+    // Set the page's origin relative to its (0, 0) position
+    // TODO: remove this?
     origin: function (x, y) {
-      // TODO: change to origin.x and origin.y?
       return this.prop({
-        originX: x,
-        originY: y
+        'origin.x': x,
+        'origin.y': y
       });
     }
   },
 
   init: {
     page: function (name) {
-      return this.put(new Draft.Page(name));
+      // TODO: move this .prop call somewhere else?
+      return this.add(new Draft.Page(name)).prop({
+        system: Draft.defaults.system,
+        units: Draft.defaults.units
+      });
 
       // Draft.pages.push(page);
     }
-  }
+  },
+
+  parent: Draft.Doc
 });
 
 Draft.Element = Draft.create({
   require: [
-    Draft.prop,
-    Draft.size
+    Draft.size,
+    Draft.move
   ],
 
   methods: {
@@ -469,16 +666,12 @@ Draft.Element = Draft.create({
 Draft.Line = Draft.create({
   inherit: Draft.Element,
 
-  require: [
-    Draft.move
-  ],
-
   methods: {
   },
 
   init: {
     line: function (x1, y1, x2, y2) {
-      return new Draft.Line();
+      return this.add(new Draft.Line());
     }
   }
 });
@@ -487,7 +680,6 @@ Draft.Rect = Draft.create({
   inherit: Draft.Element,
 
   require: [
-    Draft.move,
     Draft.radius
   ],
 
@@ -500,7 +692,7 @@ Draft.Rect = Draft.create({
 
   init: {
     rect: function (width, height) {
-      return this.put(new Draft.Rect()).size(width, height);
+      return this.add(new Draft.Rect()).size(width, height);
     }
   }
 });
@@ -509,8 +701,7 @@ Draft.Circle = Draft.create({
   inherit: Draft.Element,
 
   require: [
-    Draft.move/*,
-    Draft.radius*/
+    /*raft.radius*/
   ],
 
   methods: {
@@ -521,7 +712,7 @@ Draft.Circle = Draft.create({
 
   init: {
     circle: function (r) {
-      return this.put(new Draft.Circle()).radius(r);
+      return this.add(new Draft.Circle()).radius(r);
     }
   }
 });
