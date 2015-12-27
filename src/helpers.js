@@ -1,3 +1,4 @@
+// Pad a number with zeroes until the number of digits is equal to length
 function zeroPad(number, length) {
   var str = '' + number;
   while (str.length < length) {
@@ -7,6 +8,13 @@ function zeroPad(number, length) {
   return str;
 }
 
+// Get the parent doc of an element
+function elementDoc(element) {
+  return elementType(element.parent) == 'doc' ?
+    element.parent : elementDoc(element.parent);
+}
+
+// Get the type of an element
 function elementType(element) {
   for (var e in Draft) {
     if (element.constructor == Draft[e]) {
@@ -15,9 +23,16 @@ function elementType(element) {
   }
 }
 
+// Get a unique ID based on the number of instances of a type of element
 function elementID(element) {
-  return Draft.prop.prop.call(element, 'type') +
-    Draft.prop.prop.call(element, 'id');
+  return elementDoc(element).elements[elementType(element)].length;
+}
+
+// Construct a unique ID from the element's type and ID
+function domID(element) {
+  return 'DraftJS_' +
+    element.properties.type + '_' +
+    zeroPad(element.properties.id, 4);
 }
 
 function updateDOM(element) {

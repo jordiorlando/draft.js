@@ -27,7 +27,7 @@ Draft.tree = {
       } else if (key == "children") {
         var obj = {};
         value.forEach(function (element) {
-          obj[elementID(element)] = element;
+          obj[domID(element)] = element;
         });
         return obj;
       }
@@ -35,7 +35,7 @@ Draft.tree = {
     };
 
     var treeString = this.stringify(replacer).split('"').join('');
-    this.dom.tree.firstChild.textContent = elementID(this) + ': ' + treeString;
+    this.dom.tree.firstChild.textContent = domID(this) + ': ' + treeString;
 
     var longestLine = treeString.split('\n').reduce(function (a, b) {
       return a.length > b.length ? a : b;
