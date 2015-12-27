@@ -2,7 +2,6 @@ Draft.Rect = Draft.create({
   inherit: Draft.Element,
 
   require: [
-    Draft.move,
     Draft.radius
   ],
 
@@ -15,7 +14,7 @@ Draft.Rect = Draft.create({
 
   init: {
     rect: function (width, height) {
-      return this.put(new Draft.Rect()).size(width, height);
+      return this.add(new Draft.Rect()).size(width, height);
     }
   }
 });
