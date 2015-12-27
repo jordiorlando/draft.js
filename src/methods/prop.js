@@ -28,10 +28,18 @@ Draft.prop = {
 
       return setter ? this : prop;
     }
-    // Act as an individual property getter if val is null/undefined
-    else if (val == null) {
-      val = this.properties[prop];
-      return val == null ? Draft.defaults[prop] : val;
+    // Delete the property if val is null
+    else if (val === null) {
+      delete this.properties[prop];
+    }
+    // Act as an individual property getter if val is undefined
+    else if (val === undefined) {
+      /*val = this.properties[prop];
+      return val === undefined ? Draft.defaults[prop] || 0 : val;*/
+
+      // If prop is undefined, set it to the default OR 0
+      return this.properties[prop] ||
+        this.prop(prop, Draft.defaults[prop] || 0);
     }
     // Act as an individual property setter if both prop and val are defined
     else {
@@ -39,7 +47,7 @@ Draft.prop = {
     }
 
     updateDOM(this);
-    
+
     // prop() is chainable if 'this' is returned
     return this;
   }
