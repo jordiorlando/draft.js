@@ -5,10 +5,19 @@ const header = require('gulp-header');
 const jasmine = require('gulp-jasmine');
 const rename = require('gulp-rename');
 const size = require('gulp-size');
+const sourcemaps = require("gulp-sourcemaps");
 const uglify = require('gulp-uglify');
-const wrap = require('gulp-wrap');
+const wrap = require("gulp-wrap");
+var wrapContent = '<%= data.contents %>';
+// const wrapJS = require("gulp-wrap-js");
+// var wrapContent = '{%= body %}';
+const del = require('del');
 
-var del = require('del');
+
+
+var name = 'Draft';
+
+
 
 var pkg = require('./package.json');
 
@@ -41,6 +50,31 @@ var src = [
   'src/elements/circle.js'
 ];
 
+var umdTop = [
+  '(function (root, factory) {',
+  '  if (typeof define === \'function\' && define.amd) {',
+  '    // AMD. Register as an anonymous module.',
+  '    define(function () {',
+  '      return factory(root, root.document);',
+  '    });',
+  '  } else if (typeof module === \'object\' && module.exports) {',
+  '    // Node. Does not work with strict CommonJS.',
+  '    module.exports = root.document ? factory(root, root.document) :',
+  '      function (w) {',
+  '        return factory(w, w.document);',
+  '      };',
+  '  } else {',
+  '    // Browser globals (root is window)',
+  '    root.<%= data.name %> = factory(root, root.document);',
+  '  }',
+  '}(typeof window !== "undefined" ? window : this, function (window, document) {'
+].join('\n');
+var umdBottom = [
+  '  return <%= data.name %>;',
+  '}));'
+].join('\n');
+var umd = [umdTop, wrapContent, umdBottom].join('\n');
+
 var headerLong = [
   '/*',
   '* <%= pkg.name %> - <%= pkg.description %>',
@@ -66,19 +100,27 @@ gulp.task('unify', ['clean'], function () {
 
   return gulp.src(src)
     .pipe(concat('draft.js', { newLine: '\n' }))
-    .pipe(wrap({ src: 'src/umd.js' }))
+    .pipe(wrap(umd, {name: name}, {variable: 'data'}))
+    // .pipe(wrapJS(umd, {indent: {style: '  '}}))
     .pipe(header(headerLong, { pkg: pkg }))
     .pipe(gulp.dest('dist'))
     .pipe(size({showFiles: true, title: 'Full'}));
 });
 
+// FIXME: minified distribution doesn't work, the UMD headers are mangled
 gulp.task('minify', ['unify'], function () {
   return gulp.src('dist/draft.js')
-    .pipe(babel({ presets: ['es2015'] })) // TODO: remove this
+    .pipe(sourcemaps.init())
+    .pipe(babel({
+      presets: ['es2015'],
+      // plugins: ["transform-es2015-modules-umd"]
+    }))
+    // .pipe(concat('draft.js', { newLine: '\n' }))
+    // .pipe(wrapJS(umd, {indent: {style: '  '}}))
     .pipe(uglify())
     .pipe(rename({ suffix:'.min' }))
     .pipe(size({ showFiles: true, title: 'Minified' }))
-    .pipe(header(headerShort, { pkg: pkg }))
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('dist'))
     .pipe(size({ showFiles: true, gzip: true, title: 'Gzipped' }));
 });

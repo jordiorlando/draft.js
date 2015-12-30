@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Tue Dec 29 2015 16:53:12 GMT-0600 (CST)
+* BUILT: Wed Dec 30 2015 06:27:38 GMT-0600 (CST)
 */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -25,7 +25,6 @@
     root.Draft = factory(root, root.document);
   }
 }(typeof window !== "undefined" ? window : this, function (window, document) {
-
 var Draft = this.Draft = function (element) {
   return new Draft.Doc(element);
 };
@@ -663,7 +662,6 @@ Draft.Circle = Draft.create({
     }
   }
 });
-
 
   return Draft;
 }));
