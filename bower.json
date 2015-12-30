@@ -19,8 +19,5 @@
     "node_modules",
     "bower_components",
     "test"
-  ],
-  "dependencies": {
-    "svg.js": "~2.2.4"
-  }
+  ]
 }
