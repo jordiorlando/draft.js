@@ -28,18 +28,9 @@ function elementID(element) {
   return elementDoc(element).elements[elementType(element)].length;
 }
 
-// Construct a unique ID from the element's type and ID
-function domID(element) {
-  return 'DraftJS_' +
-    element.properties.type + '_' +
-    zeroPad(element.properties.id, 4);
-}
-
 function updateDOM(element) {
-  if (element.dom) {
-    if (element.dom.tree) {
-      element.updateTree();
-    }
+  if (element.dom && element.dom.treeView) {
+    element.updateTreeView();
   }
   if (element.parent) {
     updateDOM(element.parent);

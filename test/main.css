@@ -5,7 +5,7 @@ body {
   margin: 0;
 }
 
-.element-tree {
+.tree-view {
   background: #fff;
   font-size: 12px;
   font-family: 'Source Code Pro', Courier, monospace;
@@ -18,7 +18,7 @@ body {
 
   /*width: 84ch !important;*/
 }
-.element-tree pre {
+.tree-view pre {
   background: #f7f7f7;
   font-family: inherit;
   width: inherit;
@@ -29,7 +29,7 @@ body {
   word-break: break-all;
   white-space: pre-wrap;
 }
-.element-tree span {
+.tree-view span {
   font-size: 16px;
   margin-bottom: 8px;
   display: block;

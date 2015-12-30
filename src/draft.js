@@ -62,5 +62,12 @@ Draft.create = function (config) {
     Draft.extend(config.parent || Draft.Container, config.init);
   }
 
+  // Construct a unique ID from the element's type and ID
+  Draft.domID = function (element) {
+    return 'DraftJS_' +
+      element.properties.type + '_' +
+      zeroPad(element.properties.id, 4);
+  };
+
   return element;
 };

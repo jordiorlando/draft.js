@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Sat Dec 26 2015 22:28:16 GMT-0600 (CST)
+* BUILT: Tue Dec 29 2015 16:53:12 GMT-0600 (CST)
 */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -89,6 +89,13 @@ Draft.create = function (config) {
   if (config.init) {
     Draft.extend(config.parent || Draft.Container, config.init);
   }
+
+  // Construct a unique ID from the element's type and ID
+  Draft.domID = function (element) {
+    return 'DraftJS_' +
+      element.properties.type + '_' +
+      zeroPad(element.properties.id, 4);
+  };
 
   return element;
 };
@@ -219,18 +226,9 @@ function elementID(element) {
   return elementDoc(element).elements[elementType(element)].length;
 }
 
-// Construct a unique ID from the element's type and ID
-function domID(element) {
-  return 'DraftJS_' +
-    element.properties.type + '_' +
-    zeroPad(element.properties.id, 4);
-}
-
 function updateDOM(element) {
-  if (element.dom) {
-    if (element.dom.tree) {
-      element.updateTree();
-    }
+  if (element.dom && element.dom.treeView) {
+    element.updateTreeView();
   }
   if (element.parent) {
     updateDOM(element.parent);
@@ -240,55 +238,6 @@ function updateDOM(element) {
 Draft.json = {
   stringify: function (replacer) {
     return JSON.stringify(this, replacer, 2);
-  }
-};
-
-Draft.tree = {
-  require: [
-    Draft.json
-  ],
-
-  createTree: function () {
-    var tree = document.createElement('div');
-    tree.className = 'element-tree';
-
-    // tree.appendChild(document.createElement('span'));
-    // tree.firstChild.textContent = 'Document Model:';
-
-    var pre = document.createElement('pre');
-    tree.appendChild(pre);
-
-    // Make sure this.dom is initialized
-    this.dom = this.dom || {};
-    this.dom.tree = tree;
-
-    return this.updateTree();
-  },
-
-  updateTree: function () {
-    var replacer = function (key, value) {
-      if (key == "dom" || key == "parent" || key == "id" || key == "type") {
-        return undefined;
-      } else if (key == "children") {
-        var obj = {};
-        value.forEach(function (element) {
-          obj[domID(element)] = element;
-        });
-        return obj;
-      }
-      return value;
-    };
-
-    var treeString = this.stringify(replacer).split('"').join('');
-    this.dom.tree.firstChild.textContent = domID(this) + ': ' + treeString;
-
-    var longestLine = treeString.split('\n').reduce(function (a, b) {
-      return a.length > b.length ? a : b;
-    });
-    // FIXME: change 84 to a non-hardcoded value
-    this.dom.tree.style.width = Math.min(longestLine.length + 4, 84) + 'ch';
-
-    return this.dom.tree;
   }
 };
 
@@ -516,9 +465,7 @@ Draft.transforms = {
 Draft.Container = Draft.create({
   // TODO: inherit from Draft.Element?
   require: [
-    Draft.prop,
-    // TODO: make Draft.tree into a separate plugin
-    Draft.tree
+    Draft.prop
   ],
 
   methods: {
@@ -551,7 +498,7 @@ Draft.Container = Draft.create({
 
       return element;
     },
-    // FIXME: figure out why this only updates the tree when saved to a var
+    // FIXME: figure out why this only updates the tree view when saved to a var
     add: function (element) {
       return this.push(element);
     }
@@ -701,7 +648,7 @@ Draft.Circle = Draft.create({
   inherit: Draft.Element,
 
   require: [
-    /*raft.radius*/
+    /*Draft.radius*/
   ],
 
   methods: {

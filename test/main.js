@@ -13,7 +13,5 @@ var circle1 = page1.circle(50);
 var page2 = doc.page('test_page_2');
 page2.size(215.9, 279.4);
 
-doc.dom.appendChild(page1.createTree());
-doc.dom.appendChild(page2.createTree());
 
 // page1.prop('name', 'reallyreallyreally_long_name_for_page1_that_just_keeps_going_on_and_on_and_on_and_oh_my_god_its_still_going');

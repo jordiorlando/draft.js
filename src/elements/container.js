@@ -1,9 +1,7 @@
 Draft.Container = Draft.create({
   // TODO: inherit from Draft.Element?
   require: [
-    Draft.prop,
-    // TODO: make Draft.tree into a separate plugin
-    Draft.tree
+    Draft.prop
   ],
 
   methods: {
@@ -36,7 +34,7 @@ Draft.Container = Draft.create({
 
       return element;
     },
-    // FIXME: figure out why this only updates the tree when saved to a var
+    // FIXME: figure out why this only updates the tree view when saved to a var
     add: function (element) {
       return this.push(element);
     }
