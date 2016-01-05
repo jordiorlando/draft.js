@@ -1,7 +1,4 @@
-Draft.radius = {
-  require: [
-    Draft.prop
-  ],
+methods.radius = {
   // Get/set the element's x radius
   rx: function (rx) {
     return this.prop('rx', rx);

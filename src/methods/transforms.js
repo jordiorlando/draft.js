@@ -1,6 +1,6 @@
-Draft.transforms = {
+methods.transforms = {
   require: [
-    Draft.transform
+    'transform'
   ],
   // Translate the element relative to its current position
   translate: function (x, y) {

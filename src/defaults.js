@@ -1,4 +1,4 @@
-Draft.defaults = {
+const defaults = {
   system: 'cartesian',
   units: 'px',
   /*width: 0,

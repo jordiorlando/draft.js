@@ -10,8 +10,9 @@ function zeroPad(number, length) {
 
 // Get the parent doc of an element
 function elementDoc(element) {
-  return elementType(element.parent) == 'doc' ?
-    element.parent : elementDoc(element.parent);
+  // console.log(elementType(element) || element instanceof Draft);
+  return element instanceof Draft ?
+    element : elementDoc(element.parent);
 }
 
 // Get the type of an element

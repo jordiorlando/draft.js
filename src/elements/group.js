@@ -1,18 +1,16 @@
-Draft.Group = Draft.create({
-  inherit: Draft.Container,
+Draft.Group = class Group extends Draft.Container {
+};
 
-  require: [
-    Draft.system,
-    Draft.units
-  ],
+Draft.Group.extend([
+  'system',
+  'units'
+]);
 
-  init: {
-    group: function (name) {
-      // TODO: move this .prop call somewhere else?
-      return this.add(new Draft.Group(name)).prop({
-        system: this.system(),
-        units: this.units()
-      }).move(0, 0);
-    }
+Draft.Container.extend({
+  group: function(name) {
+    return this.add(new Draft.Group(name)).prop({
+      system: this.system(),
+      units: this.units()
+    });
   }
 });

@@ -1,8 +1,4 @@
-Draft.system = {
-  require: [
-    Draft.prop
-  ],
-
+methods.system = {
   // Cartesian:
   // - page.system('cartesian')
   // - (x, y)

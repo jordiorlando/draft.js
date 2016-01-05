@@ -1,7 +1,4 @@
-Draft.transform = {
-  require: [
-    Draft.prop
-  ],
+methods.transform = {
   transform: function (obj) {
     // TODO: make this work with actual transformation matrices
     for (var k in obj) {

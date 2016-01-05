@@ -1,8 +1,4 @@
-Draft.size = {
-  require: [
-    Draft.prop
-  ],
-
+methods.size = {
   // Get/set the element's width
   width: function (width) {
     return this.prop('width', width);

@@ -1,19 +1,11 @@
-Draft.Circle = Draft.create({
-  inherit: Draft.Element,
+Draft.Circle = class Circle extends Draft.Element {
+  radius(r) {
+    return this.prop('r', r);
+  }
+};
 
-  require: [
-    /*Draft.radius*/
-  ],
-
-  methods: {
-    radius: function (r) {
-      return this.prop('r', r);
-    }
-  },
-
-  init: {
-    circle: function (r) {
-      return this.add(new Draft.Circle()).radius(r);
-    }
+Draft.Container.extend({
+  circle: function (r) {
+    return this.add(new Draft.Circle()).radius(r);
   }
 });

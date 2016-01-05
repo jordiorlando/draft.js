@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Wed Dec 30 2015 06:27:38 GMT-0600 (CST)
+* BUILT: Tue Jan 05 2016 06:43:08 GMT-0600 (CST)
 */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -25,81 +25,69 @@
     root.Draft = factory(root, root.document);
   }
 }(typeof window !== "undefined" ? window : this, function (window, document) {
-var Draft = this.Draft = function (element) {
-  return new Draft.Doc(element);
-};
+// TODO: come up with a better location for methods
+var methods = {};
 
-// TODO: separate ID counters for each type of element
-Draft.id = 0;
-// TODO: separate array containers for each type of element
-// Draft.pages = [];
+var Draft = this.Draft = class Draft {
+  constructor(element) {
+    this.elements = {};
+    this.children = [];
 
-// This function takes an existing element and copies the supplied methods to it
-Draft.extend = function (element, methods) {
-  for (var method in methods) {
-    // If method is a function, copy it
-    if (typeof methods[method] === 'function') {
-      element.prototype[method] = methods[method];
-    }
-    // If method is an array, call Draft.extend for each element of the array
-    else if (method == 'require') {
-      methods[method].forEach(function (e) {
-        Draft.extend(element, e);
-      });
+    if (element) {
+      // Ensure the presence of a DOM element
+      this.dom = typeof element == 'string' ?
+        document.getElementById(element) :
+        element;
     }
   }
 
-  return methods;
-};
+  push(parent, child) {
+    // Add a reference to the child's parent
+    child.parent = parent;
 
-// This function creates a new element class from a configuration object
-Draft.create = function (config) {
-  var element = typeof config.construct == 'function' ?
-    config.construct :
-    function (name) {
-      // TODO: change this?
-      this.prop({
-        name: name || null
-      });
-      // this.constructor.call(this);
-    };
+    // Add the child to the end of the children array
+    parent.children.push(child);
 
-  // Inherit the prototype
-  if (config.inherit) {
-    element.prototype = Object.create(config.inherit.prototype);
-    element.prototype.constructor = element;
-  }
+    // Add the child to its type array
+    var type = elementType(child);
+    this.elements[type] = this.elements[type] || [];
+    this.elements[type].push(child);
 
-  // var methods = {};
-
-  // Attach all required methods
-  if (config.require) {
-    config.require.forEach(function (e) {
-      Draft.extend(element, e);
+    // Set the child's basic properties
+    child.prop({
+      type: type,
+      id: elementID(child)
     });
+
+    return child;
   }
 
-  // Attach all new methods
-  if (config.methods) {
-    Draft.extend(element, config.methods);
-  }
+  // This function takes an element and copies the supplied methods to it
+  static extend(element, source) {
+    if (typeof source === 'string') {
+      Draft.extend(element, methods[source]);
+    } else if (typeof source === 'object') {
+      for (let key in source) {
+        if (typeof source[key] === 'function') {
+          element.prototype[key] = source[key];
+        } else {
+          Draft.extend(element, source[key]);
+        }
+      }
+    }
 
-  // Attach the initialization method to the parent
-  if (config.init) {
-    Draft.extend(config.parent || Draft.Container, config.init);
+    return source;
   }
 
   // Construct a unique ID from the element's type and ID
-  Draft.domID = function (element) {
+  static domID(element) {
     return 'DraftJS_' +
       element.properties.type + '_' +
       zeroPad(element.properties.id, 4);
-  };
-
-  return element;
+  }
 };
 
-Draft.defaults = {
+const defaults = {
   system: 'cartesian',
   units: 'px',
   /*width: 0,
@@ -207,8 +195,9 @@ function zeroPad(number, length) {
 
 // Get the parent doc of an element
 function elementDoc(element) {
-  return elementType(element.parent) == 'doc' ?
-    element.parent : elementDoc(element.parent);
+  // console.log(elementType(element) || element instanceof Draft);
+  return element instanceof Draft ?
+    element : elementDoc(element.parent);
 }
 
 // Get the type of an element
@@ -234,72 +223,13 @@ function updateDOM(element) {
   }
 }
 
-Draft.json = {
+methods.json = {
   stringify: function (replacer) {
     return JSON.stringify(this, replacer, 2);
   }
 };
 
-Draft.prop = {
-  prop: function (prop, val) {
-    // Make sure this.properties is initialized
-    this.properties = this.properties || {};
-
-    // Act as a full properties getter if prop is null/undefined
-    if (prop == null) {
-      prop = {};
-
-      for (let p in this.properties) {
-        prop[p] = this.properties[p];
-      }
-
-      return prop;
-    }
-    // Act as a getter if prop is an object with only null values.
-    // Act as a setter if prop is an object with at least one non-null value.
-    else if (typeof prop === 'object') {
-      let setter = false;
-
-      for (let p in prop) {
-        // Get this.properties[p] and save it to prop[p]
-        prop[p] = this.prop(p, prop[p]);
-        // If the returned value is an object, prop[p] is non-null, so act like
-        // a setter.
-        setter |= typeof prop[p] === 'object';
-      }
-
-      return setter ? this : prop;
-    }
-    // Delete the property if val is null
-    else if (val === null) {
-      delete this.properties[prop];
-    }
-    // Act as an individual property getter if val is undefined
-    else if (val === undefined) {
-      /*val = this.properties[prop];
-      return val === undefined ? Draft.defaults[prop] || 0 : val;*/
-
-      // If prop is undefined, set it to the default OR 0
-      return this.properties[prop] ||
-        this.prop(prop, Draft.defaults[prop] || 0);
-    }
-    // Act as an individual property setter if both prop and val are defined
-    else {
-      this.properties[prop] = val;
-    }
-
-    updateDOM(this);
-
-    // prop() is chainable if 'this' is returned
-    return this;
-  }
-};
-
-Draft.system = {
-  require: [
-    Draft.prop
-  ],
-
+methods.system = {
   // Cartesian:
   // - page.system('cartesian')
   // - (x, y)
@@ -329,22 +259,14 @@ Draft.system = {
   }
 };
 
-Draft.units = {
-  require: [
-    Draft.prop
-  ],
-
+methods.units = {
   // Get/set the element's measurement units
   units: function (units) {
     return this.prop('units', units);
   }
 };
 
-Draft.size = {
-  require: [
-    Draft.prop
-  ],
-
+methods.size = {
   // Get/set the element's width
   width: function (width) {
     return this.prop('width', width);
@@ -362,10 +284,7 @@ Draft.size = {
   }
 };
 
-Draft.move = {
-  require: [
-    Draft.prop
-  ],
+methods.move = {
   /*// Get/set the element's x position
   x: function (x) {
     return this.prop('x', x);
@@ -380,16 +299,13 @@ Draft.move = {
   move: function () {
     var pos = {};
     for (var i = 0; i < arguments.length; i++) {
-      pos[Draft.defaults[this.prop('system')].vars[i]] = arguments[i];
+      pos[defaults[this.prop('system')].vars[i]] = arguments[i];
     }
     return this.prop(pos);
   }
 };
 
-Draft.radius = {
-  require: [
-    Draft.prop
-  ],
+methods.radius = {
   // Get/set the element's x radius
   rx: function (rx) {
     return this.prop('rx', rx);
@@ -407,10 +323,7 @@ Draft.radius = {
   }
 };
 
-Draft.transform = {
-  require: [
-    Draft.prop
-  ],
+methods.transform = {
   transform: function (obj) {
     // TODO: make this work with actual transformation matrices
     for (var k in obj) {
@@ -422,9 +335,9 @@ Draft.transform = {
   }
 };
 
-Draft.transforms = {
+methods.transforms = {
   require: [
-    Draft.transform
+    'transform'
   ],
   // Translate the element relative to its current position
   translate: function (x, y) {
@@ -461,205 +374,172 @@ Draft.transforms = {
   }
 };
 
-Draft.Container = Draft.create({
-  // TODO: inherit from Draft.Element?
-  require: [
-    Draft.prop
-  ],
+// Draft.Element =
+Draft.Element = class Element {
+  constructor(name) {
+    // Make sure this.properties is initialized
+    this.properties = {};
 
-  methods: {
-    parent: function () {
-      return this.parent;
-    },
-    child: function (child) {
-      return this.children[child];
-    },
-    push: function (element) {
-      // Add a reference to the element's parent
-      element.parent = this;
-
-      // Initialize children array and add the element to the end
-      this.children = this.children || [];
-      this.children.push(element);
-
-      // Add the element to its type array
-      var doc = elementDoc(element);
-      var type = elementType(element);
-      doc.elements = doc.elements || {};
-      doc.elements[type] = doc.elements[type] || [];
-      doc.elements[type].push(element);
-
-      // Set the element's basic properties
-      element.prop({
-        type: type,
-        id: elementID(element)
-      });
-
-      return element;
-    },
-    // FIXME: figure out why this only updates the tree view when saved to a var
-    add: function (element) {
-      return this.push(element);
-    }
+    this.prop({
+      name: name || null
+    });
   }
-});
 
-Draft.Doc = Draft.create({
-  construct: function (element) {
-    if (element) {
-      // Ensure the presence of a DOM element
-      this.dom = typeof element == 'string' ?
-        document.getElementById(element) :
-        element;
-    }
-  },
+  static extend(source) {
+    return Draft.extend(this, source);
+  }
 
-  inherit: Draft.Container
+  prop(prop, val) {
+    // Act as a full properties getter if prop is null/undefined
+    if (prop == null) {
+      prop = {};
 
-  /*methods: {
-    docs: function () {
-      return this.node.docs;
-    }
-  }*/
-
-  /*init: {
-    doc: function (element, name) {
-      if (element) {
-        // Ensure the presence of a DOM element
-        element = typeof element == 'string' ?
-          document.getElementById(element) :
-          element;
-
-        var doc = new Draft.Doc(name);
-
-        // this.node = {};
-        doc.children = [];
-        doc.dom = element;
-
-        return doc;
+      for (let p in this.properties) {
+        prop[p] = this.properties[p];
       }
 
-      // this.constructor.call(this, element);
+      return prop;
     }
-  }*/
-});
+    // Act as a getter if prop is an object with only null values.
+    // Act as a setter if prop is an object with at least one non-null value.
+    else if (typeof prop === 'object') {
+      let setter = false;
 
-Draft.Group = Draft.create({
-  inherit: Draft.Container,
+      for (let p in prop) {
+        // Get this.properties[p] and save it to prop[p]
+        prop[p] = this.prop(p, prop[p]);
+        // If the returned value is an object, prop[p] is non-null, so act like
+        // a setter.
+        setter |= typeof prop[p] === 'object';
+      }
 
-  require: [
-    Draft.system,
-    Draft.units
-  ],
-
-  init: {
-    group: function (name) {
-      // TODO: move this .prop call somewhere else?
-      return this.add(new Draft.Group(name)).prop({
-        system: this.system(),
-        units: this.units()
-      }).move(0, 0);
+      return setter ? this : prop;
     }
+    // Delete the property if val is null
+    else if (val === null) {
+      delete this.properties[prop];
+    }
+    // Act as an individual property getter if val is undefined
+    else if (val === undefined) {
+      /*val = this.properties[prop];
+      return val === undefined ? defaults[prop] || 0 : val;*/
+
+      // If prop is undefined, set it to the default OR 0
+      return this.properties[prop] ||
+        this.prop(prop, defaults[prop] || 0);
+    }
+    // Act as an individual property setter if both prop and val are defined
+    else {
+      this.properties[prop] = val;
+    }
+
+    updateDOM(this);
+
+    // prop() is chainable if 'this' is returned
+    return this;
+  }
+
+  parent() {
+    return this.parent;
+  }
+};
+
+Draft.Element.extend([
+  'size',
+  'move'
+]);
+
+Draft.Container = class Container extends Draft.Element {
+  constructor() {
+    super();
+
+    // Initialize children array
+    this.children = [];
+  }
+
+  child(child) {
+    return this.children[child];
+  }
+
+  add(element) {
+    return elementDoc(this).push(this, element);
+  }
+};
+
+// Draft.extend(Draft, Draft.Container);
+
+Draft.Group = class Group extends Draft.Container {
+};
+
+Draft.Group.extend([
+  'system',
+  'units'
+]);
+
+Draft.Container.extend({
+  group: function(name) {
+    return this.add(new Draft.Group(name)).prop({
+      system: this.system(),
+      units: this.units()
+    });
   }
 });
 
-Draft.Page = Draft.create({
-  inherit: Draft.Group,
+Draft.Page = class Page extends Draft.Group {
+  // Set the page's origin relative to its (0, 0) position
+  // TODO: remove this?
+  origin(x, y) {
+    return this.prop({
+      'origin.x': x,
+      'origin.y': y
+    });
+  }
+};
 
-  require: [
-    Draft.size
-  ],
-
-  methods: {
-    // Set the page's origin relative to its (0, 0) position
-    // TODO: remove this?
-    origin: function (x, y) {
-      return this.prop({
-        'origin.x': x,
-        'origin.y': y
-      });
-    }
-  },
-
-  init: {
-    page: function (name) {
-      // TODO: move this .prop call somewhere else?
-      return this.add(new Draft.Page(name)).prop({
-        system: Draft.defaults.system,
-        units: Draft.defaults.units
-      });
-
-      // Draft.pages.push(page);
-    }
-  },
-
-  parent: Draft.Doc
-});
-
-Draft.Element = Draft.create({
-  require: [
-    Draft.size,
-    Draft.move
-  ],
-
-  methods: {
-    parent: function () {
-      return this.parent;
-    }
+// TODO: make this modular like the others, and de-dupe the prop code
+Draft.extend(Draft, {
+  page: function(name) {
+    return this.push(this, new Draft.Page(name)).prop({
+      system: defaults.system,
+      units: defaults.units
+    });
   }
 });
 
-Draft.Line = Draft.create({
-  inherit: Draft.Element,
+Draft.Line = class Line extends Draft.Element {
+};
 
-  methods: {
-  },
-
-  init: {
-    line: function (x1, y1, x2, y2) {
-      return this.add(new Draft.Line());
-    }
+Draft.Container.extend({
+  line: function (x1, y1, x2, y2) {
+    return this.add(new Draft.Line());
   }
 });
 
-Draft.Rect = Draft.create({
-  inherit: Draft.Element,
+Draft.Rect = class Rect extends Draft.Element {
+  get rekt() {
+    return Math.floor(Math.random() * 101) + '% rekt';
+  }
+};
 
-  require: [
-    Draft.radius
-  ],
+Draft.Rect.extend([
+  'radius'
+]);
 
-  methods: {
-    // in the butt
-    getRekt: function () {
-      return this.prop();
-    }
-  },
-
-  init: {
-    rect: function (width, height) {
-      return this.add(new Draft.Rect()).size(width, height);
-    }
+Draft.Container.extend({
+  rect: function(width, height) {
+    return this.add(new Draft.Rect()).size(width, height);
   }
 });
 
-Draft.Circle = Draft.create({
-  inherit: Draft.Element,
+Draft.Circle = class Circle extends Draft.Element {
+  radius(r) {
+    return this.prop('r', r);
+  }
+};
 
-  require: [
-    /*Draft.radius*/
-  ],
-
-  methods: {
-    radius: function (r) {
-      return this.prop('r', r);
-    }
-  },
-
-  init: {
-    circle: function (r) {
-      return this.add(new Draft.Circle()).radius(r);
-    }
+Draft.Container.extend({
+  circle: function (r) {
+    return this.add(new Draft.Circle()).radius(r);
   }
 });
 

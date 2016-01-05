@@ -1,7 +1,4 @@
-Draft.move = {
-  require: [
-    Draft.prop
-  ],
+methods.move = {
   /*// Get/set the element's x position
   x: function (x) {
     return this.prop('x', x);
@@ -16,7 +13,7 @@ Draft.move = {
   move: function () {
     var pos = {};
     for (var i = 0; i < arguments.length; i++) {
-      pos[Draft.defaults[this.prop('system')].vars[i]] = arguments[i];
+      pos[defaults[this.prop('system')].vars[i]] = arguments[i];
     }
     return this.prop(pos);
   }
