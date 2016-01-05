@@ -48,23 +48,23 @@ var src = [
 ];
 
 var umdTop = [
-  '(function (root, factory) {',
+  '(function(root, factory) {',
   '  if (typeof define === \'function\' && define.amd) {',
   '    // AMD. Register as an anonymous module.',
-  '    define(function () {',
+  '    define(function() {',
   '      return factory(root, root.document);',
   '    });',
   '  } else if (typeof module === \'object\' && module.exports) {',
   '    // Node. Does not work with strict CommonJS.',
   '    module.exports = root.document ? factory(root, root.document) :',
-  '      function (w) {',
+  '      function(w) {',
   '        return factory(w, w.document);',
   '      };',
   '  } else {',
   '    // Browser globals (root is window)',
   '    root.<%= data.name %> = factory(root, root.document);',
   '  }',
-  '}(typeof window !== "undefined" ? window : this, function (window, document) {'
+  '}(typeof window !== "undefined" ? window : this, function(window, document) {'
 ].join('\n');
 var umdBottom = [
   '  return <%= data.name %>;',
@@ -89,11 +89,11 @@ var headerShort = '/*<%= pkg.name %> v<%= pkg.version %> <%= pkg.license %>*/';
 
 
 
-gulp.task('clean', function () {
+gulp.task('clean', function() {
 	del.sync(['dist/*']);
 });
 
-gulp.task('unify', ['clean'], function () {
+gulp.task('unify', ['clean'], function() {
   pkg.buildDate = Date();
 
   return gulp.src(src)
@@ -117,7 +117,7 @@ gulp.task('unify', ['clean'], function () {
 });
 
 // FIXME: minified distribution doesn't work, the UMD headers are mangled
-gulp.task('minify', ['unify'], function () {
+gulp.task('minify', ['unify'], function() {
   return gulp.src(src)
     .pipe(sourcemaps.init())
     .pipe(concat('draft.min.js', { newLine: '\n' }))
@@ -132,4 +132,4 @@ gulp.task('minify', ['unify'], function () {
     .pipe(size({ showFiles: true, gzip: true, title: 'Gzipped' }));
 });
 
-gulp.task('default', ['clean', 'unify', 'minify'], function () {});
+gulp.task('default', ['clean', 'unify', 'minify'], function() {});

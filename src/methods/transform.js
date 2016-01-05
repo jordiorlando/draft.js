@@ -1,5 +1,5 @@
 methods.transform = {
-  transform: function (obj) {
+  transform: function(obj) {
     // TODO: make this work with actual transformation matrices
     for (var k in obj) {
       obj[k] = obj[k] == null ?

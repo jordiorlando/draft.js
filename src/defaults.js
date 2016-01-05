@@ -15,17 +15,17 @@ const defaults = {
       'z'
     ],
     web: [
-      function (pos) {
+      function(pos) {
         return pos[0];
       },
-      function (pos) {
+      function(pos) {
         return height - pos[1];
       },
-      function (pos) {
+      function(pos) {
         return pos[2];
       },
       // Full position
-      function (pos) {
+      function(pos) {
         return [
           pos[0],
           height - pos[1],
@@ -34,17 +34,17 @@ const defaults = {
       }
     ],
     polar: [
-      function (pos) {
+      function(pos) {
         return Math.sqrt(Math.pow(pos[0], 2) + Math.pow(pos[1], 2));
       },
-      function (pos) {
+      function(pos) {
         return Math.atan2(pos[1], pos[0]);
       },
-      function (pos) {
+      function(pos) {
         return pos[2];
       },
       // Full position
-      function (pos) {
+      function(pos) {
         return [
           Math.sqrt(Math.pow(pos[0], 2) + Math.pow(pos[1], 2)),
           Math.atan2(pos[1], pos[0]),
@@ -67,13 +67,13 @@ const defaults = {
       'z'
     ],
     cartesian: [
-      function (pos) {
+      function(pos) {
         return pos[0] * Math.cos(pos[1] * (Math.PI / 180));
       },
-      function (pos) {
+      function(pos) {
         return pos[0] * Math.sin(pos[1] * (Math.PI / 180));
       },
-      function (pos) {
+      function(pos) {
         return pos[2];
       }
     ],

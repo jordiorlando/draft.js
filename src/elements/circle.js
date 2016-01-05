@@ -5,7 +5,7 @@ Draft.Circle = class Circle extends Draft.Element {
 };
 
 Draft.Container.extend({
-  circle: function (r) {
+  circle: function(r) {
     return this.add(new Draft.Circle()).radius(r);
   }
 });

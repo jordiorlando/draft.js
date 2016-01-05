@@ -1,14 +1,14 @@
 methods.radius = {
   // Get/set the element's x radius
-  rx: function (rx) {
+  rx: function(rx) {
     return this.prop('rx', rx);
   },
   // Get/set the element's y radius
-  ry: function (ry) {
+  ry: function(ry) {
     return this.prop('ry', ry);
   },
   // Get/set the element's radius
-  radius: function (rx, ry) {
+  radius: function(rx, ry) {
     return this.prop({
       rx: rx,
       ry: ry

@@ -1,11 +1,13 @@
 // TODO: come up with a better location for methods
 var methods = {};
 
+// TODO: let Draft extend Container
 var Draft = this.Draft = class Draft {
   constructor(element) {
     this.elements = {};
     this.children = [];
 
+    // TODO: get rid of DOM dependence
     if (element) {
       // Ensure the presence of a DOM element
       this.dom = typeof element == 'string' ?

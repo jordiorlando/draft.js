@@ -20,7 +20,7 @@ methods.system = {
 
   // TODO: switch phi for theta?
   // TODO: Spherical (p, theta, phi), Cylindrical (p, phi, z)
-  system: function (system) {
+  system: function(system) {
     /*if (this.prop('system') != system) {
       // TODO: recursively convert all elements to new system?
     }*/

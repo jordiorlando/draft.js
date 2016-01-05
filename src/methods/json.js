@@ -1,5 +1,5 @@
 methods.json = {
-  stringify: function (replacer) {
+  stringify: function(replacer) {
     return JSON.stringify(this, replacer, 2);
   }
 };

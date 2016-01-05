@@ -1,16 +1,16 @@
 methods.move = {
   /*// Get/set the element's x position
-  x: function (x) {
+  x: function(x) {
     return this.prop('x', x);
   },
 
   // Get/set the element's y position
-  y: function (y) {
+  y: function(y) {
     return this.prop('y', y);
   },*/
 
   // Get/set the element's position
-  move: function () {
+  move: function() {
     var pos = {};
     for (var i = 0; i < arguments.length; i++) {
       pos[defaults[this.prop('system')].vars[i]] = arguments[i];
