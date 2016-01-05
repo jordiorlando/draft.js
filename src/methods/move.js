@@ -1,7 +1,4 @@
 Draft.move = {
-  require: [
-    Draft.prop
-  ],
   /*// Get/set the element's x position
   x: function (x) {
     return this.prop('x', x);

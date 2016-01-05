@@ -1,10 +1,6 @@
 Draft.Page = Draft.create({
   inherit: Draft.Group,
 
-  require: [
-    Draft.size
-  ],
-
   methods: {
     // Set the page's origin relative to its (0, 0) position
     // TODO: remove this?

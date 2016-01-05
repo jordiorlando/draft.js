@@ -28,7 +28,6 @@ var src = [
   'src/helpers.js',
   // Methods
   'src/methods/json.js',
-  'src/methods/prop.js',
   'src/methods/system.js',
   'src/methods/units.js',
 
@@ -39,12 +38,12 @@ var src = [
   'src/methods/transform.js',
   'src/methods/transforms.js',
   // Containers
+  'src/elements/element.js',
   'src/elements/container.js',
   'src/elements/doc.js',
   'src/elements/group.js',
   'src/elements/page.js',
   // Elements
-  'src/elements/element.js',
   'src/elements/line.js',
   'src/elements/rect.js',
   'src/elements/circle.js'

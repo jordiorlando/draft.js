@@ -1,9 +1,9 @@
 Draft.Circle = Draft.create({
   inherit: Draft.Element,
 
-  require: [
-    /*Draft.radius*/
-  ],
+  /*require: [
+    Draft.radius
+  ],*/
 
   methods: {
     radius: function (r) {

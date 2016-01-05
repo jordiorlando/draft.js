@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Mon Jan 04 2016 23:17:09 GMT-0600 (CST)
+* BUILT: Mon Jan 04 2016 23:39:06 GMT-0600 (CST)
 */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -240,66 +240,7 @@ Draft.json = {
   }
 };
 
-Draft.prop = {
-  prop: function (prop, val) {
-    // Make sure this.properties is initialized
-    this.properties = this.properties || {};
-
-    // Act as a full properties getter if prop is null/undefined
-    if (prop == null) {
-      prop = {};
-
-      for (let p in this.properties) {
-        prop[p] = this.properties[p];
-      }
-
-      return prop;
-    }
-    // Act as a getter if prop is an object with only null values.
-    // Act as a setter if prop is an object with at least one non-null value.
-    else if (typeof prop === 'object') {
-      let setter = false;
-
-      for (let p in prop) {
-        // Get this.properties[p] and save it to prop[p]
-        prop[p] = this.prop(p, prop[p]);
-        // If the returned value is an object, prop[p] is non-null, so act like
-        // a setter.
-        setter |= typeof prop[p] === 'object';
-      }
-
-      return setter ? this : prop;
-    }
-    // Delete the property if val is null
-    else if (val === null) {
-      delete this.properties[prop];
-    }
-    // Act as an individual property getter if val is undefined
-    else if (val === undefined) {
-      /*val = this.properties[prop];
-      return val === undefined ? Draft.defaults[prop] || 0 : val;*/
-
-      // If prop is undefined, set it to the default OR 0
-      return this.properties[prop] ||
-        this.prop(prop, Draft.defaults[prop] || 0);
-    }
-    // Act as an individual property setter if both prop and val are defined
-    else {
-      this.properties[prop] = val;
-    }
-
-    updateDOM(this);
-
-    // prop() is chainable if 'this' is returned
-    return this;
-  }
-};
-
 Draft.system = {
-  require: [
-    Draft.prop
-  ],
-
   // Cartesian:
   // - page.system('cartesian')
   // - (x, y)
@@ -330,10 +271,6 @@ Draft.system = {
 };
 
 Draft.units = {
-  require: [
-    Draft.prop
-  ],
-
   // Get/set the element's measurement units
   units: function (units) {
     return this.prop('units', units);
@@ -341,10 +278,6 @@ Draft.units = {
 };
 
 Draft.size = {
-  require: [
-    Draft.prop
-  ],
-
   // Get/set the element's width
   width: function (width) {
     return this.prop('width', width);
@@ -363,9 +296,6 @@ Draft.size = {
 };
 
 Draft.move = {
-  require: [
-    Draft.prop
-  ],
   /*// Get/set the element's x position
   x: function (x) {
     return this.prop('x', x);
@@ -387,9 +317,6 @@ Draft.move = {
 };
 
 Draft.radius = {
-  require: [
-    Draft.prop
-  ],
   // Get/set the element's x radius
   rx: function (rx) {
     return this.prop('rx', rx);
@@ -408,9 +335,6 @@ Draft.radius = {
 };
 
 Draft.transform = {
-  require: [
-    Draft.prop
-  ],
   transform: function (obj) {
     // TODO: make this work with actual transformation matrices
     for (var k in obj) {
@@ -460,6 +384,72 @@ Draft.transforms = {
     });*/
   }
 };
+
+Draft.Element = Draft.create({
+  require: [
+    Draft.size,
+    Draft.move
+  ],
+
+  methods: {
+    prop: function (prop, val) {
+      // Make sure this.properties is initialized
+      this.properties = this.properties || {};
+
+      // Act as a full properties getter if prop is null/undefined
+      if (prop == null) {
+        prop = {};
+
+        for (let p in this.properties) {
+          prop[p] = this.properties[p];
+        }
+
+        return prop;
+      }
+      // Act as a getter if prop is an object with only null values.
+      // Act as a setter if prop is an object with at least one non-null value.
+      else if (typeof prop === 'object') {
+        let setter = false;
+
+        for (let p in prop) {
+          // Get this.properties[p] and save it to prop[p]
+          prop[p] = this.prop(p, prop[p]);
+          // If the returned value is an object, prop[p] is non-null, so act like
+          // a setter.
+          setter |= typeof prop[p] === 'object';
+        }
+
+        return setter ? this : prop;
+      }
+      // Delete the property if val is null
+      else if (val === null) {
+        delete this.properties[prop];
+      }
+      // Act as an individual property getter if val is undefined
+      else if (val === undefined) {
+        /*val = this.properties[prop];
+        return val === undefined ? Draft.defaults[prop] || 0 : val;*/
+
+        // If prop is undefined, set it to the default OR 0
+        return this.properties[prop] ||
+          this.prop(prop, Draft.defaults[prop] || 0);
+      }
+      // Act as an individual property setter if both prop and val are defined
+      else {
+        this.properties[prop] = val;
+      }
+
+      updateDOM(this);
+
+      // prop() is chainable if 'this' is returned
+      return this;
+    },
+
+    parent: function () {
+      return this.parent;
+    }
+  }
+});
 
 Draft.Container = Draft.create({
   inherit: Draft.Element,
@@ -563,10 +553,6 @@ Draft.Group = Draft.create({
 Draft.Page = Draft.create({
   inherit: Draft.Group,
 
-  require: [
-    Draft.size
-  ],
-
   methods: {
     // Set the page's origin relative to its (0, 0) position
     // TODO: remove this?
@@ -593,25 +579,8 @@ Draft.Page = Draft.create({
   parent: Draft.Doc
 });
 
-Draft.Element = Draft.create({
-  require: [
-    Draft.prop,
-    Draft.size,
-    Draft.move
-  ],
-
-  methods: {
-    parent: function () {
-      return this.parent;
-    }
-  }
-});
-
 Draft.Line = Draft.create({
   inherit: Draft.Element,
-
-  methods: {
-  },
 
   init: {
     line: function (x1, y1, x2, y2) {
@@ -644,9 +613,9 @@ Draft.Rect = Draft.create({
 Draft.Circle = Draft.create({
   inherit: Draft.Element,
 
-  require: [
-    /*Draft.radius*/
-  ],
+  /*require: [
+    Draft.radius
+  ],*/
 
   methods: {
     radius: function (r) {
