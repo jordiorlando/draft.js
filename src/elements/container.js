@@ -1,8 +1,5 @@
 Draft.Container = Draft.create({
-  // TODO: inherit from Draft.Element?
-  require: [
-    Draft.prop
-  ],
+  inherit: Draft.Element,
 
   methods: {
     parent: function () {

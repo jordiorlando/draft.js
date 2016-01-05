@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Wed Dec 30 2015 06:27:38 GMT-0600 (CST)
+* BUILT: Mon Jan 04 2016 23:17:09 GMT-0600 (CST)
 */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -462,10 +462,7 @@ Draft.transforms = {
 };
 
 Draft.Container = Draft.create({
-  // TODO: inherit from Draft.Element?
-  require: [
-    Draft.prop
-  ],
+  inherit: Draft.Element,
 
   methods: {
     parent: function () {
@@ -598,6 +595,7 @@ Draft.Page = Draft.create({
 
 Draft.Element = Draft.create({
   require: [
+    Draft.prop,
     Draft.size,
     Draft.move
   ],

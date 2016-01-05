@@ -1,5 +1,6 @@
 Draft.Element = Draft.create({
   require: [
+    Draft.prop,
     Draft.size,
     Draft.move
   ],
