@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Wed Jan 06 2016 05:59:05 GMT-0600 (CST)
+* BUILT: Wed Jan 06 2016 15:06:51 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -267,7 +267,13 @@ function elementID(element) {
 
 function updateDOM(element) {
   if (element.dom && element.dom.treeView) {
-    element.updateTreeView();
+    var event = new CustomEvent('update', {
+      detail: {
+        element: element
+      }
+    });
+
+    element.dom.treeView.dispatchEvent(event);
   }
   if (element.parent) {
     updateDOM(element.parent);
@@ -482,11 +488,25 @@ Draft.Element = class Element {
     }
     // Act as an individual property setter if both prop and val are defined
     else {
+      var event = new CustomEvent('update', {
+        detail: {
+          type: this.properties.type,
+          prop: prop,
+          val: val
+        },
+        bubbles: true
+      });
+
+      for (let elem in this.dom) {
+        this.dom[elem].dispatchEvent(event);
+      }
+
       // TODO: clean up this.parent.units()
       this.properties[prop] = prop !== 'id' && isFinite(val) ?
         val + this.parent.units() || defaults.units : val;
     }
 
+    // TODO: fix tree-view
     updateDOM(this);
 
     // prop() is chainable if 'this' is returned

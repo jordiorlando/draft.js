@@ -31,7 +31,13 @@ function elementID(element) {
 
 function updateDOM(element) {
   if (element.dom && element.dom.treeView) {
-    element.updateTreeView();
+    var event = new CustomEvent('update', {
+      detail: {
+        element: element
+      }
+    });
+
+    element.dom.treeView.dispatchEvent(event);
   }
   if (element.parent) {
     updateDOM(element.parent);
