@@ -3,6 +3,7 @@ Draft.Element = class Element {
   constructor(name) {
     // Make sure this.properties is initialized
     this.properties = {};
+    this.dom = {};
 
     this.prop({
       name: name || null
@@ -54,7 +55,9 @@ Draft.Element = class Element {
     }
     // Act as an individual property setter if both prop and val are defined
     else {
-      this.properties[prop] = val;
+      // TODO: clean up this.parent.units()
+      this.properties[prop] = prop !== 'id' && isFinite(val) ?
+        val + this.parent.units() || defaults.units : val;
     }
 
     updateDOM(this);

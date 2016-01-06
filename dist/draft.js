@@ -6,36 +6,38 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Tue Jan 05 2016 06:43:08 GMT-0600 (CST)
+* BUILT: Wed Jan 06 2016 05:59:05 GMT-0600 (CST)
 */
-(function (root, factory) {
+(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(function () {
+    define(function() {
       return factory(root, root.document);
     });
   } else if (typeof module === 'object' && module.exports) {
     // Node. Does not work with strict CommonJS.
     module.exports = root.document ? factory(root, root.document) :
-      function (w) {
+      function(w) {
         return factory(w, w.document);
       };
   } else {
     // Browser globals (root is window)
     root.Draft = factory(root, root.document);
   }
-}(typeof window !== "undefined" ? window : this, function (window, document) {
+}(typeof window !== "undefined" ? window : this, function(window, document) {
 // TODO: come up with a better location for methods
 var methods = {};
 
+// TODO: let Draft extend Container (get rid of custom push() and units())
 var Draft = this.Draft = class Draft {
   constructor(element) {
     this.elements = {};
     this.children = [];
 
+    // TODO: get rid of DOM dependence
     if (element) {
       // Ensure the presence of a DOM element
-      this.dom = typeof element == 'string' ?
+      this.dom = typeof element === 'string' ?
         document.getElementById(element) :
         element;
     }
@@ -62,6 +64,10 @@ var Draft = this.Draft = class Draft {
     return child;
   }
 
+  units() {
+    return defaults.units;
+  }
+
   // This function takes an element and copies the supplied methods to it
   static extend(element, source) {
     if (typeof source === 'string') {
@@ -85,6 +91,47 @@ var Draft = this.Draft = class Draft {
       element.properties.type + '_' +
       zeroPad(element.properties.id, 4);
   }
+
+  // Using standard 96dpi resolution
+  // TODO: configurable dpi setting
+  // TODO: safety checks
+  static px(length) {
+    var num = parseFloat(length, 10);
+    var units = typeof length === 'string' ? length.slice(-2) : 'px';
+
+    // Remain unchanged if units are already px
+    if (units == 'px') {
+      return num;
+    }
+    // Points and picas (pt, pc)
+    else if (units == 'pt') {
+      return Draft.px(num / 72 + 'in');
+    } else if (units == 'pc') {
+      return Draft.px(num * 12 + 'pt');
+    }
+    // Imperial units (in, ft, yd, mi)
+    else if (units == 'in') {
+      return num * 96;
+    } else if (units == 'ft') {
+      return Draft.px(num * 12 + 'in');
+    } else if (units == 'yd') {
+      return Draft.px(num * 3 + 'ft');
+    } else if (units == 'mi') {
+      return Draft.px(num * 1760 + 'yd');
+    }
+    // Metric units (mm, cm, m, km)
+    else if (units.endsWith('m')) {
+      if (units == 'mm') {
+        num *= 1;
+      } else if (units == 'cm') {
+        num *= 10;
+      } else if (units == 'km') {
+        num *= 1000000;
+      }
+
+      return Draft.px(num / 25.4 + 'in');
+    }
+  }
 };
 
 const defaults = {
@@ -104,17 +151,17 @@ const defaults = {
       'z'
     ],
     web: [
-      function (pos) {
+      function(pos) {
         return pos[0];
       },
-      function (pos) {
+      function(pos) {
         return height - pos[1];
       },
-      function (pos) {
+      function(pos) {
         return pos[2];
       },
       // Full position
-      function (pos) {
+      function(pos) {
         return [
           pos[0],
           height - pos[1],
@@ -123,17 +170,17 @@ const defaults = {
       }
     ],
     polar: [
-      function (pos) {
+      function(pos) {
         return Math.sqrt(Math.pow(pos[0], 2) + Math.pow(pos[1], 2));
       },
-      function (pos) {
+      function(pos) {
         return Math.atan2(pos[1], pos[0]);
       },
-      function (pos) {
+      function(pos) {
         return pos[2];
       },
       // Full position
-      function (pos) {
+      function(pos) {
         return [
           Math.sqrt(Math.pow(pos[0], 2) + Math.pow(pos[1], 2)),
           Math.atan2(pos[1], pos[0]),
@@ -156,13 +203,13 @@ const defaults = {
       'z'
     ],
     cartesian: [
-      function (pos) {
+      function(pos) {
         return pos[0] * Math.cos(pos[1] * (Math.PI / 180));
       },
-      function (pos) {
+      function(pos) {
         return pos[0] * Math.sin(pos[1] * (Math.PI / 180));
       },
-      function (pos) {
+      function(pos) {
         return pos[2];
       }
     ],
@@ -182,6 +229,10 @@ const defaults = {
     ]
   }
 };
+
+function isLength(length) {
+
+}
 
 // Pad a number with zeroes until the number of digits is equal to length
 function zeroPad(number, length) {
@@ -224,7 +275,7 @@ function updateDOM(element) {
 }
 
 methods.json = {
-  stringify: function (replacer) {
+  stringify: function(replacer) {
     return JSON.stringify(this, replacer, 2);
   }
 };
@@ -251,7 +302,7 @@ methods.system = {
 
   // TODO: switch phi for theta?
   // TODO: Spherical (p, theta, phi), Cylindrical (p, phi, z)
-  system: function (system) {
+  system: function(system) {
     /*if (this.prop('system') != system) {
       // TODO: recursively convert all elements to new system?
     }*/
@@ -261,22 +312,22 @@ methods.system = {
 
 methods.units = {
   // Get/set the element's measurement units
-  units: function (units) {
+  units: function(units) {
     return this.prop('units', units);
   }
 };
 
 methods.size = {
   // Get/set the element's width
-  width: function (width) {
+  width: function(width) {
     return this.prop('width', width);
   },
   // Get/set the element's height
-  height: function (height) {
+  height: function(height) {
     return this.prop('height', height);
   },
   // Get/set the element's width & height
-  size: function (width, height) {
+  size: function(width, height) {
     return this.prop({
       width: width,
       height: height
@@ -286,17 +337,17 @@ methods.size = {
 
 methods.move = {
   /*// Get/set the element's x position
-  x: function (x) {
+  x: function(x) {
     return this.prop('x', x);
   },
 
   // Get/set the element's y position
-  y: function (y) {
+  y: function(y) {
     return this.prop('y', y);
   },*/
 
   // Get/set the element's position
-  move: function () {
+  move: function() {
     var pos = {};
     for (var i = 0; i < arguments.length; i++) {
       pos[defaults[this.prop('system')].vars[i]] = arguments[i];
@@ -307,15 +358,15 @@ methods.move = {
 
 methods.radius = {
   // Get/set the element's x radius
-  rx: function (rx) {
+  rx: function(rx) {
     return this.prop('rx', rx);
   },
   // Get/set the element's y radius
-  ry: function (ry) {
+  ry: function(ry) {
     return this.prop('ry', ry);
   },
   // Get/set the element's radius
-  radius: function (rx, ry) {
+  radius: function(rx, ry) {
     return this.prop({
       rx: rx,
       ry: ry
@@ -324,7 +375,7 @@ methods.radius = {
 };
 
 methods.transform = {
-  transform: function (obj) {
+  transform: function(obj) {
     // TODO: make this work with actual transformation matrices
     for (var k in obj) {
       obj[k] = obj[k] == null ?
@@ -340,14 +391,14 @@ methods.transforms = {
     'transform'
   ],
   // Translate the element relative to its current position
-  translate: function (x, y) {
+  translate: function(x, y) {
     return this.transform({
       x: x,
       y: y
     });
   },
   // Scale the element relative to its current size
-  scale: function (x, y, cx, cy) {
+  scale: function(x, y, cx, cy) {
     /*return this.transform({
       x: x,
       y: y,
@@ -356,7 +407,7 @@ methods.transforms = {
     });*/
   },
   // Rotate the element relative to its current angle
-  rotate: function (a, cx, cy) {
+  rotate: function(a, cx, cy) {
     /*return this.transform({
       a: a,
       cx: cx,
@@ -364,7 +415,7 @@ methods.transforms = {
     });*/
   },
   // Skew the element relative to its current skew
-  skew: function (ax, ay, cx, cy) {
+  skew: function(ax, ay, cx, cy) {
     /*return this.transform({
       ax: ax,
       ay: ay,
@@ -379,6 +430,7 @@ Draft.Element = class Element {
   constructor(name) {
     // Make sure this.properties is initialized
     this.properties = {};
+    this.dom = {};
 
     this.prop({
       name: name || null
@@ -430,7 +482,9 @@ Draft.Element = class Element {
     }
     // Act as an individual property setter if both prop and val are defined
     else {
-      this.properties[prop] = val;
+      // TODO: clean up this.parent.units()
+      this.properties[prop] = prop !== 'id' && isFinite(val) ?
+        val + this.parent.units() || defaults.units : val;
     }
 
     updateDOM(this);
@@ -510,7 +564,7 @@ Draft.Line = class Line extends Draft.Element {
 };
 
 Draft.Container.extend({
-  line: function (x1, y1, x2, y2) {
+  line: function(x1, y1, x2, y2) {
     return this.add(new Draft.Line());
   }
 });
@@ -538,7 +592,7 @@ Draft.Circle = class Circle extends Draft.Element {
 };
 
 Draft.Container.extend({
-  circle: function (r) {
+  circle: function(r) {
     return this.add(new Draft.Circle()).radius(r);
   }
 });
