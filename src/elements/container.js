@@ -1,6 +1,6 @@
 Draft.Container = class Container extends Draft.Element {
-  constructor() {
-    super();
+  constructor(name) {
+    super(name);
 
     // Initialize children array
     this.children = [];
