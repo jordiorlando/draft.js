@@ -6,18 +6,18 @@ var Draft = this.Draft = class Draft {
   constructor(element) {
     this.elements = {};
     this.children = [];
-    this.node = document.createElement('object');
+
+    // Create DOM node
+    this.dom = {};
+    this.dom.node = document.createElement('object');
   }
 
   push(parent, child) {
-    // Add a reference to the child's parent
+    // Add a reference to the child's parent and containing doc
     child.parent = parent;
     child.doc = parent == this ? this : parent.doc;
 
-    // TODO: change to dom.node
-    child.node = document.createElement('object');
-    child.node.element = child;
-    parent.node.appendChild(child.node);
+    parent.dom.node.appendChild(child.dom.node);
 
     // Add the child to the end of the children array
     parent.children.push(child);

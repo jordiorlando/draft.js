@@ -1,10 +1,14 @@
 // Draft.Element =
 Draft.Element = class Element {
   constructor(name) {
+    // Create DOM node
+    this.dom = {};
+    this.dom.node = document.createElement('object');
+    // Store a circular reference in the node
+    this.dom.node.element = this;
+
     // Make sure this.properties is initialized
     this.properties = {};
-    this.dom = {};
-
     this.prop({
       name: name || null
     });
@@ -68,7 +72,7 @@ Draft.Element = class Element {
         bubbles: true
       });
 
-      this.node.dispatchEvent(event);
+      this.dom.node.dispatchEvent(event);
     }
 
     // prop() is chainable if 'this' is returned

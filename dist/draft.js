@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Thu Jan 07 2016 04:25:05 GMT-0600 (CST)
+* BUILT: Thu Jan 07 2016 04:47:48 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -33,18 +33,18 @@ var Draft = this.Draft = class Draft {
   constructor(element) {
     this.elements = {};
     this.children = [];
-    this.node = document.createElement('object');
+
+    // Create DOM node
+    this.dom = {};
+    this.dom.node = document.createElement('object');
   }
 
   push(parent, child) {
-    // Add a reference to the child's parent
+    // Add a reference to the child's parent and containing doc
     child.parent = parent;
     child.doc = parent == this ? this : parent.doc;
 
-    // TODO: change to dom.node
-    child.node = document.createElement('object');
-    child.node.element = child;
-    parent.node.appendChild(child.node);
+    parent.dom.node.appendChild(child.dom.node);
 
     // Add the child to the end of the children array
     parent.children.push(child);
@@ -412,10 +412,14 @@ methods.transforms = {
 // Draft.Element =
 Draft.Element = class Element {
   constructor(name) {
+    // Create DOM node
+    this.dom = {};
+    this.dom.node = document.createElement('object');
+    // Store a circular reference in the node
+    this.dom.node.element = this;
+
     // Make sure this.properties is initialized
     this.properties = {};
-    this.dom = {};
-
     this.prop({
       name: name || null
     });
@@ -467,7 +471,7 @@ Draft.Element = class Element {
     // Act as an individual property setter if both prop and val are defined
     else {
       // TODO: clean up this.parent.units()
-      this.properties[prop] = prop !== 'id' && isFinite(val) ?
+      this.properties[prop] = prop != 'id' && isFinite(val) ?
         val + this.parent.units() || defaults.units : val;
 
       var event = new CustomEvent('update', {
@@ -479,7 +483,7 @@ Draft.Element = class Element {
         bubbles: true
       });
 
-      this.node.dispatchEvent(event);
+      this.dom.node.dispatchEvent(event);
     }
 
     // prop() is chainable if 'this' is returned
@@ -497,8 +501,8 @@ Draft.Element.extend([
 ]);
 
 Draft.Container = class Container extends Draft.Element {
-  constructor() {
-    super();
+  constructor(name) {
+    super(name);
 
     // Initialize children array
     this.children = [];
