@@ -31,7 +31,7 @@ Draft.Element = class Element {
     }
     // Act as a getter if prop is an object with only null values.
     // Act as a setter if prop is an object with at least one non-null value.
-    else if (typeof prop === 'object') {
+    else if (typeof prop == 'object') {
       let setter = false;
 
       for (let p in prop) {
@@ -39,7 +39,7 @@ Draft.Element = class Element {
         prop[p] = this.prop(p, prop[p]);
         // If the returned value is an object, prop[p] is non-null, so act like
         // a setter.
-        setter |= typeof prop[p] === 'object';
+        setter |= typeof prop[p] == 'object';
       }
 
       return setter ? this : prop;
@@ -60,7 +60,7 @@ Draft.Element = class Element {
     // Act as an individual property setter if both prop and val are defined
     else {
       // TODO: clean up this.parent.units()
-      this.properties[prop] = prop !== 'id' && isFinite(val) ?
+      this.properties[prop] = prop != 'id' && isFinite(val) ?
         val + this.parent.units() || defaults.units : val;
 
       var event = new CustomEvent('update', {

@@ -44,11 +44,11 @@ var Draft = this.Draft = class Draft {
 
   // This function takes an element and copies the supplied methods to it
   static extend(element, source) {
-    if (typeof source === 'string') {
+    if (typeof source == 'string') {
       Draft.extend(element, methods[source]);
-    } else if (typeof source === 'object') {
+    } else if (typeof source == 'object') {
       for (let key in source) {
-        if (typeof source[key] === 'function') {
+        if (typeof source[key] == 'function') {
           element.prototype[key] = source[key];
         } else {
           Draft.extend(element, source[key]);
@@ -71,7 +71,7 @@ var Draft = this.Draft = class Draft {
   // TODO: safety checks
   static px(length) {
     var num = parseFloat(length, 10);
-    var units = typeof length === 'string' ? length.slice(-2) : 'px';
+    var units = typeof length == 'string' ? length.slice(-2) : 'px';
 
     // Remain unchanged if units are already px
     if (units == 'px') {
