@@ -55,8 +55,13 @@ Draft.Element = class Element {
     }
     // Act as an individual property setter if both prop and val are defined
     else {
+      // TODO: clean up this.parent.units()
+      this.properties[prop] = prop !== 'id' && isFinite(val) ?
+        val + this.parent.units() || defaults.units : val;
+
       var event = new CustomEvent('update', {
         detail: {
+          element: this,
           type: this.properties.type,
           prop: prop,
           val: val
@@ -64,17 +69,8 @@ Draft.Element = class Element {
         bubbles: true
       });
 
-      for (let elem in this.dom) {
-        this.dom[elem].dispatchEvent(event);
-      }
-
-      // TODO: clean up this.parent.units()
-      this.properties[prop] = prop !== 'id' && isFinite(val) ?
-        val + this.parent.units() || defaults.units : val;
+      this.node.dispatchEvent(event);
     }
-
-    // TODO: fix tree-view
-    updateDOM(this);
 
     // prop() is chainable if 'this' is returned
     return this;

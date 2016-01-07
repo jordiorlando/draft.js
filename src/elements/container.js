@@ -11,7 +11,7 @@ Draft.Container = class Container extends Draft.Element {
   }
 
   add(element) {
-    return elementDoc(this).push(this, element);
+    return this.doc.push(this, element);
   }
 };
 

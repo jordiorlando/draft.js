@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Wed Jan 06 2016 15:06:51 GMT-0600 (CST)
+* BUILT: Wed Jan 06 2016 20:27:48 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -33,19 +33,18 @@ var Draft = this.Draft = class Draft {
   constructor(element) {
     this.elements = {};
     this.children = [];
-
-    // TODO: get rid of DOM dependence
-    if (element) {
-      // Ensure the presence of a DOM element
-      this.dom = typeof element === 'string' ?
-        document.getElementById(element) :
-        element;
-    }
+    this.node = document.createElement('object');
   }
 
   push(parent, child) {
     // Add a reference to the child's parent
     child.parent = parent;
+    child.doc = parent == this ? this : parent.doc;
+
+    // TODO: change to dom.node
+    child.node = document.createElement('object');
+    child.node.element = child;
+    parent.node.appendChild(child.node);
 
     // Add the child to the end of the children array
     parent.children.push(child);
@@ -244,13 +243,6 @@ function zeroPad(number, length) {
   return str;
 }
 
-// Get the parent doc of an element
-function elementDoc(element) {
-  // console.log(elementType(element) || element instanceof Draft);
-  return element instanceof Draft ?
-    element : elementDoc(element.parent);
-}
-
 // Get the type of an element
 function elementType(element) {
   for (var e in Draft) {
@@ -262,7 +254,7 @@ function elementType(element) {
 
 // Get a unique ID based on the number of instances of a type of element
 function elementID(element) {
-  return elementDoc(element).elements[elementType(element)].length;
+  return element.doc.elements[elementType(element)].length;
 }
 
 function updateDOM(element) {
@@ -488,8 +480,13 @@ Draft.Element = class Element {
     }
     // Act as an individual property setter if both prop and val are defined
     else {
+      // TODO: clean up this.parent.units()
+      this.properties[prop] = prop !== 'id' && isFinite(val) ?
+        val + this.parent.units() || defaults.units : val;
+
       var event = new CustomEvent('update', {
         detail: {
+          element: this,
           type: this.properties.type,
           prop: prop,
           val: val
@@ -497,17 +494,8 @@ Draft.Element = class Element {
         bubbles: true
       });
 
-      for (let elem in this.dom) {
-        this.dom[elem].dispatchEvent(event);
-      }
-
-      // TODO: clean up this.parent.units()
-      this.properties[prop] = prop !== 'id' && isFinite(val) ?
-        val + this.parent.units() || defaults.units : val;
+      this.node.dispatchEvent(event);
     }
-
-    // TODO: fix tree-view
-    updateDOM(this);
 
     // prop() is chainable if 'this' is returned
     return this;
@@ -536,7 +524,7 @@ Draft.Container = class Container extends Draft.Element {
   }
 
   add(element) {
-    return elementDoc(this).push(this, element);
+    return this.doc.push(this, element);
   }
 };
 

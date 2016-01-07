@@ -6,19 +6,18 @@ var Draft = this.Draft = class Draft {
   constructor(element) {
     this.elements = {};
     this.children = [];
-
-    // TODO: get rid of DOM dependence
-    if (element) {
-      // Ensure the presence of a DOM element
-      this.dom = typeof element === 'string' ?
-        document.getElementById(element) :
-        element;
-    }
+    this.node = document.createElement('object');
   }
 
   push(parent, child) {
     // Add a reference to the child's parent
     child.parent = parent;
+    child.doc = parent == this ? this : parent.doc;
+
+    // TODO: change to dom.node
+    child.node = document.createElement('object');
+    child.node.element = child;
+    parent.node.appendChild(child.node);
 
     // Add the child to the end of the children array
     parent.children.push(child);
