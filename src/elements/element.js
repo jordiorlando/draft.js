@@ -61,7 +61,6 @@ Draft.Element = class Element {
 
       var event = new CustomEvent('update', {
         detail: {
-          element: this,
           type: this.properties.type,
           prop: prop,
           val: val

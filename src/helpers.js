@@ -19,20 +19,6 @@ function elementType(element) {
 
 // Get a unique ID based on the number of instances of a type of element
 function elementID(element) {
+  // TODO: change elementType to element.properties.type?
   return element.doc.elements[elementType(element)].length;
-}
-
-function updateDOM(element) {
-  if (element.dom && element.dom.treeView) {
-    var event = new CustomEvent('update', {
-      detail: {
-        element: element
-      }
-    });
-
-    element.dom.treeView.dispatchEvent(event);
-  }
-  if (element.parent) {
-    updateDOM(element.parent);
-  }
 }

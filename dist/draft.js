@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Wed Jan 06 2016 20:27:48 GMT-0600 (CST)
+* BUILT: Thu Jan 07 2016 04:17:19 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -254,22 +254,8 @@ function elementType(element) {
 
 // Get a unique ID based on the number of instances of a type of element
 function elementID(element) {
+  // TODO: change elementType to element.properties.type?
   return element.doc.elements[elementType(element)].length;
-}
-
-function updateDOM(element) {
-  if (element.dom && element.dom.treeView) {
-    var event = new CustomEvent('update', {
-      detail: {
-        element: element
-      }
-    });
-
-    element.dom.treeView.dispatchEvent(event);
-  }
-  if (element.parent) {
-    updateDOM(element.parent);
-  }
 }
 
 methods.json = {
@@ -486,7 +472,6 @@ Draft.Element = class Element {
 
       var event = new CustomEvent('update', {
         detail: {
-          element: this,
           type: this.properties.type,
           prop: prop,
           val: val
