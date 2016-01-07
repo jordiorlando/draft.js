@@ -40,6 +40,8 @@ var Draft = this.Draft = class Draft {
     return defaults.units;
   }
 
+  // TODO: move these static methods to helper object, and extend Draft
+
   // This function takes an element and copies the supplied methods to it
   static extend(element, source) {
     if (typeof source === 'string') {
@@ -102,6 +104,8 @@ var Draft = this.Draft = class Draft {
       }
 
       return Draft.px(num / 25.4 + 'in');
+    } else {
+      return false;
     }
   }
 };

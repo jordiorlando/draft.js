@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Thu Jan 07 2016 04:17:19 GMT-0600 (CST)
+* BUILT: Thu Jan 07 2016 04:25:05 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -66,6 +66,8 @@ var Draft = this.Draft = class Draft {
   units() {
     return defaults.units;
   }
+
+  // TODO: move these static methods to helper object, and extend Draft
 
   // This function takes an element and copies the supplied methods to it
   static extend(element, source) {
@@ -129,6 +131,8 @@ var Draft = this.Draft = class Draft {
       }
 
       return Draft.px(num / 25.4 + 'in');
+    } else {
+      return false;
     }
   }
 };
@@ -228,10 +232,6 @@ const defaults = {
     ]
   }
 };
-
-function isLength(length) {
-
-}
 
 // Pad a number with zeroes until the number of digits is equal to length
 function zeroPad(number, length) {
