@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Thu Jan 07 2016 04:47:48 GMT-0600 (CST)
+* BUILT: Thu Jan 07 2016 05:04:48 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -50,13 +50,12 @@ var Draft = this.Draft = class Draft {
     parent.children.push(child);
 
     // Add the child to its type array
-    var type = elementType(child);
+    var type = child.prop('type');
     this.elements[type] = this.elements[type] || [];
     this.elements[type].push(child);
 
     // Set the child's basic properties
     child.prop({
-      type: type,
       id: elementID(child)
     });
 
@@ -71,11 +70,11 @@ var Draft = this.Draft = class Draft {
 
   // This function takes an element and copies the supplied methods to it
   static extend(element, source) {
-    if (typeof source === 'string') {
+    if (typeof source == 'string') {
       Draft.extend(element, methods[source]);
-    } else if (typeof source === 'object') {
+    } else if (typeof source == 'object') {
       for (let key in source) {
-        if (typeof source[key] === 'function') {
+        if (typeof source[key] == 'function') {
           element.prototype[key] = source[key];
         } else {
           Draft.extend(element, source[key]);
@@ -89,8 +88,8 @@ var Draft = this.Draft = class Draft {
   // Construct a unique ID from the element's type and ID
   static domID(element) {
     return 'DraftJS_' +
-      element.properties.type + '_' +
-      zeroPad(element.properties.id, 4);
+      element.prop('type') + '_' +
+      zeroPad(element.prop('id'), 4);
   }
 
   // Using standard 96dpi resolution
@@ -98,7 +97,7 @@ var Draft = this.Draft = class Draft {
   // TODO: safety checks
   static px(length) {
     var num = parseFloat(length, 10);
-    var units = typeof length === 'string' ? length.slice(-2) : 'px';
+    var units = typeof length == 'string' ? length.slice(-2) : 'px';
 
     // Remain unchanged if units are already px
     if (units == 'px') {
@@ -254,8 +253,7 @@ function elementType(element) {
 
 // Get a unique ID based on the number of instances of a type of element
 function elementID(element) {
-  // TODO: change elementType to element.properties.type?
-  return element.doc.elements[elementType(element)].length;
+  return element.doc.elements[element.prop('type')].length;
 }
 
 methods.json = {
@@ -421,7 +419,8 @@ Draft.Element = class Element {
     // Make sure this.properties is initialized
     this.properties = {};
     this.prop({
-      name: name || null
+      name: name || null,
+      type: elementType(this)
     });
   }
 
@@ -442,7 +441,7 @@ Draft.Element = class Element {
     }
     // Act as a getter if prop is an object with only null values.
     // Act as a setter if prop is an object with at least one non-null value.
-    else if (typeof prop === 'object') {
+    else if (typeof prop == 'object') {
       let setter = false;
 
       for (let p in prop) {
@@ -450,7 +449,7 @@ Draft.Element = class Element {
         prop[p] = this.prop(p, prop[p]);
         // If the returned value is an object, prop[p] is non-null, so act like
         // a setter.
-        setter |= typeof prop[p] === 'object';
+        setter |= typeof prop[p] == 'object';
       }
 
       return setter ? this : prop;

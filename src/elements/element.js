@@ -10,7 +10,8 @@ Draft.Element = class Element {
     // Make sure this.properties is initialized
     this.properties = {};
     this.prop({
-      name: name || null
+      name: name || null,
+      type: elementType(this)
     });
   }
 

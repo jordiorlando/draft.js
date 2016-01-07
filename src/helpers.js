@@ -19,6 +19,5 @@ function elementType(element) {
 
 // Get a unique ID based on the number of instances of a type of element
 function elementID(element) {
-  // TODO: change elementType to element.properties.type?
-  return element.doc.elements[elementType(element)].length;
+  return element.doc.elements[element.prop('type')].length;
 }

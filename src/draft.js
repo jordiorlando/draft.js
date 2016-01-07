@@ -23,13 +23,12 @@ var Draft = this.Draft = class Draft {
     parent.children.push(child);
 
     // Add the child to its type array
-    var type = elementType(child);
+    var type = child.prop('type');
     this.elements[type] = this.elements[type] || [];
     this.elements[type].push(child);
 
     // Set the child's basic properties
     child.prop({
-      type: type,
       id: elementID(child)
     });
 
@@ -62,8 +61,8 @@ var Draft = this.Draft = class Draft {
   // Construct a unique ID from the element's type and ID
   static domID(element) {
     return 'DraftJS_' +
-      element.properties.type + '_' +
-      zeroPad(element.properties.id, 4);
+      element.prop('type') + '_' +
+      zeroPad(element.prop('id'), 4);
   }
 
   // Using standard 96dpi resolution
