@@ -22,3 +22,8 @@ function elementType(element) {
 function elementID(element) {
   return element.doc.elements[element.prop('type')].length;
 }
+
+// TODO:10 create an actual 'Unit' class for every unit instance
+function unit(val) {
+  return val == null ? val : val + '_u';
+}

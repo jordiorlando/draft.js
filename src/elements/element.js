@@ -73,9 +73,14 @@ Draft.Element = class Element {
     }
     // Act as an individual property setter if both prop and val are defined
     else {
-      // TODO: clean up this.parent.units()
-      this.properties[prop] = prop != 'id' && isFinite(val) ?
-        val + this.parent.units() || defaults.units : val;
+      // HACK:10 should use an actual unit data type, not just strings
+      if (String(val).endsWith('_u')) {
+        val = val.slice(0, -2);
+        val = isFinite(val) ?
+          val + this.parent.prop('units') || defaults.units : val;
+      }
+
+      this.properties[prop] = val;
 
       var event = new CustomEvent('update', {
         detail: {

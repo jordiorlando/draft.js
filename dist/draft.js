@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license GPL-3.0
 *
-* BUILT: Thu Jan 07 2016 05:04:48 GMT-0600 (CST)
+* BUILT: Fri Jan 08 2016 01:45:06 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -25,77 +25,71 @@
     root.Draft = factory(root, root.document);
   }
 }(typeof window !== "undefined" ? window : this, function(window, document) {
-// TODO: come up with a better location for methods
-var methods = {};
+var Draft = this.Draft = {
+  mixins: {},
 
-// TODO: let Draft extend Container (get rid of custom push() and units())
-var Draft = this.Draft = class Draft {
-  constructor(element) {
-    this.elements = {};
-    this.children = [];
+  // TODO:20 add thank you to Olical for Heir
+  /**
+   * Causes your desired class to inherit from a source class. This uses
+   * prototypical inheritance so you can override methods without ruining
+   * the parent class.
+   *
+   * This will alter the actual destination class though, it does not
+   * create a new class.
+   *
+   * @param {Function} destination The target class for the inheritance.
+   * @param {Function} source Class to inherit from.
+   * @param {Boolean} addSuper Should we add the _super property to the prototype? Defaults to true.
+   */
+  inherit: function(destination, source, addSuper) {
+    var proto = destination.prototype = Object.create(source.prototype);
+    proto.constructor = destination;
 
-    // Create DOM node
-    this.dom = {};
-    this.dom.node = document.createElement('object');
-  }
+    if (addSuper || typeof addSuper === 'undefined') {
+        destination._super = source.prototype;
+    }
+  },
 
-  push(parent, child) {
-    // Add a reference to the child's parent and containing doc
-    child.parent = parent;
-    child.doc = parent == this ? this : parent.doc;
+  /**
+   * Mixes the specified object into your class. This can be used to add
+   * certain capabilities and helper methods to a class that is already
+   * inheriting from some other class. You can mix in as many object as
+   * you want, but only inherit from one.
+   *
+   * These values are mixed into the actual prototype object of your
+   * class, they are not added to the prototype chain like inherit.
+   *
+   * @param {Function} destination Class to mix the object into.
+   * @param {Object} source Object to mix into the class.
+   */
+  mixin: function(destination, source) {
+    // Uses `Object.prototype.hasOwnPropety` rather than `object.hasOwnProperty`
+    // as it could be overwritten.
+    var hasOwnProperty = function(object, key) {
+      return Object.prototype.hasOwnProperty.call(object, key);
+    };
 
-    parent.dom.node.appendChild(child.dom.node);
-
-    // Add the child to the end of the children array
-    parent.children.push(child);
-
-    // Add the child to its type array
-    var type = child.prop('type');
-    this.elements[type] = this.elements[type] || [];
-    this.elements[type].push(child);
-
-    // Set the child's basic properties
-    child.prop({
-      id: elementID(child)
-    });
-
-    return child;
-  }
-
-  units() {
-    return defaults.units;
-  }
-
-  // TODO: move these static methods to helper object, and extend Draft
-
-  // This function takes an element and copies the supplied methods to it
-  static extend(element, source) {
-    if (typeof source == 'string') {
-      Draft.extend(element, methods[source]);
-    } else if (typeof source == 'object') {
-      for (let key in source) {
-        if (typeof source[key] == 'function') {
-          element.prototype[key] = source[key];
-        } else {
-          Draft.extend(element, source[key]);
-        }
+    for (var key in source) {
+      if (hasOwnProperty(source, key)) {
+        destination.prototype[key] = source[key];
       }
     }
+  },
 
-    return source;
-  }
+  // DOING:0 rename methods to mixins
 
   // Construct a unique ID from the element's type and ID
-  static domID(element) {
+  domID: function(element) {
     return 'DraftJS_' +
       element.prop('type') + '_' +
       zeroPad(element.prop('id'), 4);
-  }
+  },
 
   // Using standard 96dpi resolution
-  // TODO: configurable dpi setting
-  // TODO: safety checks
-  static px(length) {
+  // BACKLOG:50 configurable dpi setting
+  // TODO:50 safety checks
+  // TODO:60 use regexes
+  px: function(length) {
     var num = parseFloat(length, 10);
     var units = typeof length == 'string' ? length.slice(-2) : 'px';
 
@@ -242,6 +236,7 @@ function zeroPad(number, length) {
   return str;
 }
 
+// HACK:0 need a better way of getting an element's type
 // Get the type of an element
 function elementType(element) {
   for (var e in Draft) {
@@ -256,13 +251,12 @@ function elementID(element) {
   return element.doc.elements[element.prop('type')].length;
 }
 
-methods.json = {
-  stringify: function(replacer) {
-    return JSON.stringify(this, replacer, 2);
-  }
-};
+// TODO:10 create an actual 'Unit' class for every unit instance
+function unit(val) {
+  return val == null ? val : val + '_u';
+}
 
-methods.system = {
+Draft.mixins.system = {
   // Cartesian:
   // - page.system('cartesian')
   // - (x, y)
@@ -275,90 +269,90 @@ methods.system = {
   // - phi is counter-clockwise, with 0 pointing to the right
   // - global pole (0, 0) is at center
   //
-  // TODO: remove this?
+  // BACKLOG:30 remove svg coordinates?
   // Web/SVG:
   // - page.system('web')
   // - (x, y)
   // - x is right, y is down, z is out of the page (left-hand)
   // - global origin (0, 0) is at top-left
 
-  // TODO: switch phi for theta?
-  // TODO: Spherical (p, theta, phi), Cylindrical (p, phi, z)
+  // BACKLOG:10 switch phi for theta?
+  // BACKLOG:0 Spherical (p, theta, phi), Cylindrical (p, phi, z)
   system: function(system) {
     /*if (this.prop('system') != system) {
-      // TODO: recursively convert all elements to new system?
+      // BACKLOG:20 recursively convert all elements to new system?
     }*/
     return this.prop('system', system);
   }
 };
 
-methods.units = {
+Draft.mixins.units = {
   // Get/set the element's measurement units
   units: function(units) {
     return this.prop('units', units);
   }
 };
 
-methods.size = {
+Draft.mixins.size = {
   // Get/set the element's width
   width: function(width) {
-    return this.prop('width', width);
+    return this.prop('width', unit(width));
   },
   // Get/set the element's height
   height: function(height) {
-    return this.prop('height', height);
+    return this.prop('height', unit(height));
   },
   // Get/set the element's width & height
   size: function(width, height) {
     return this.prop({
-      width: width,
-      height: height
+      width: unit(width),
+      height: unit(height)
     });
   }
 };
 
-methods.move = {
+Draft.mixins.move = {
   /*// Get/set the element's x position
   x: function(x) {
-    return this.prop('x', x);
+    return this.prop('x', unit(x));
   },
 
   // Get/set the element's y position
   y: function(y) {
-    return this.prop('y', y);
+    return this.prop('y', unit(y));
   },*/
 
   // Get/set the element's position
   move: function() {
     var pos = {};
     for (var i = 0; i < arguments.length; i++) {
-      pos[defaults[this.prop('system')].vars[i]] = arguments[i];
+      pos[defaults[this.prop('system')].vars[i]] = unit(arguments[i]);
     }
     return this.prop(pos);
   }
 };
 
-methods.radius = {
+Draft.mixins.radius = {
   // Get/set the element's x radius
   rx: function(rx) {
-    return this.prop('rx', rx);
+    return this.prop('rx', unit(rx));
   },
   // Get/set the element's y radius
   ry: function(ry) {
-    return this.prop('ry', ry);
+    return this.prop('ry', unit(ry));
   },
   // Get/set the element's radius
   radius: function(rx, ry) {
     return this.prop({
-      rx: rx,
-      ry: ry
+      rx: unit(rx),
+      ry: unit(ry)
     });
   }
 };
 
-methods.transform = {
+Draft.mixins.transform = {
   transform: function(obj) {
-    // TODO: make this work with actual transformation matrices
+    // TODO:30 make this work with actual transformation matrices
     for (var k in obj) {
       obj[k] = obj[k] == null ?
         obj[k] : this.prop(k) + obj[k];
@@ -368,7 +362,7 @@ methods.transform = {
   }
 };
 
-methods.transforms = {
+Draft.mixins.transforms = {
   require: [
     'transform'
   ],
@@ -407,10 +401,16 @@ methods.transforms = {
   }
 };
 
+Draft.mixins.json = {
+  stringify: function(replacer) {
+    return JSON.stringify(this, replacer, 2);
+  }
+};
+
 // Draft.Element =
 Draft.Element = class Element {
-  constructor(name) {
-    // Create DOM node
+  constructor() {
+    // DOING:10 create DOM node
     this.dom = {};
     this.dom.node = document.createElement('object');
     // Store a circular reference in the node
@@ -418,16 +418,29 @@ Draft.Element = class Element {
 
     // Make sure this.properties is initialized
     this.properties = {};
-    this.prop({
-      name: name || null,
-      type: elementType(this)
-    });
+    this.prop('type', elementType(this));
   }
 
-  static extend(source) {
-    return Draft.extend(this, source);
+  static inherit(source, addSuper) {
+    Draft.inherit(this, source, addSuper);
   }
 
+  static mixin(source) {
+    Draft.mixin(this, source);
+  }
+
+  // TODO:40 merge this with mixin()?
+  static require(source) {
+    if (typeof source == 'string') {
+      this.mixin(Draft.mixins[source]);
+    } else if (source instanceof Array) {
+      for (var mixin of source) {
+        this.require(mixin);
+      }
+    }
+  }
+
+  // TODO:70 rename properties to _properties?
   prop(prop, val) {
     // Act as a full properties getter if prop is null/undefined
     if (prop == null) {
@@ -469,9 +482,14 @@ Draft.Element = class Element {
     }
     // Act as an individual property setter if both prop and val are defined
     else {
-      // TODO: clean up this.parent.units()
-      this.properties[prop] = prop != 'id' && isFinite(val) ?
-        val + this.parent.units() || defaults.units : val;
+      // HACK:10 should use an actual unit data type, not just strings
+      if (String(val).endsWith('_u')) {
+        val = val.slice(0, -2);
+        val = isFinite(val) ?
+          val + this.parent.prop('units') || defaults.units : val;
+      }
+
+      this.properties[prop] = val;
 
       var event = new CustomEvent('update', {
         detail: {
@@ -488,78 +506,118 @@ Draft.Element = class Element {
     // prop() is chainable if 'this' is returned
     return this;
   }
-
-  parent() {
-    return this.parent;
-  }
 };
 
-Draft.Element.extend([
+// TODO:0 remove these dependencies from Draft.Element
+Draft.Element.require([
   'size',
   'move'
 ]);
 
 Draft.Container = class Container extends Draft.Element {
   constructor(name) {
-    super(name);
+    super();
+
+    // Set a name if given
+    this.prop('name', name || null);
 
     // Initialize children array
     this.children = [];
   }
 
-  child(child) {
+  /*child(child) {
     return this.children[child];
+  }*/
+
+  push(child) {
+    // Add a reference to the child's parent and containing doc
+    child.parent = this;
+    child.doc = this.doc || this;
+
+    this.dom.node.appendChild(child.dom.node);
+
+    // Add the child to its type array
+    let type = child.prop('type');
+    child.doc.elements[type] = child.doc.elements[type] || [];
+    child.doc.elements[type].push(child);
+    // Set the child's basic properties
+    child.prop('id', elementID(child));
+
+    // Add the child to the end of the children array
+    this.children.push(child);
+
+    return this;
   }
 
-  add(element) {
-    return this.doc.push(this, element);
+  add(child) {
+    this.push(child);
+    return child;
   }
 };
 
-// Draft.extend(Draft, Draft.Container);
+Draft.Doc = class Doc extends Draft.Container {
+  constructor(name) {
+    super(name);
 
-Draft.Group = class Group extends Draft.Container {
+    // Initialize elements container
+    this.elements = {};
+
+    this.prop({
+      system: defaults.system,
+      units: defaults.units
+    });
+  }
 };
 
-Draft.Group.extend([
+Draft.doc = function(name) {
+  return new Draft.Doc(name);
+};
+
+/*Draft.mixin(Draft, {
+  doc: function(name) {
+    return new Draft.Doc(name);
+  }
+});*/
+
+Draft.Group = class Group extends Draft.Container {};
+
+Draft.Group.require([
   'system',
   'units'
 ]);
 
-Draft.Container.extend({
-  group: function(name) {
+Draft.Container.mixin({
+  group: function() {
     return this.add(new Draft.Group(name)).prop({
-      system: this.system(),
-      units: this.units()
+      system: this.prop('system'),
+      units: this.prop('units')
     });
   }
 });
 
 Draft.Page = class Page extends Draft.Group {
+  // BACKLOG:40 remove page.origin?
   // Set the page's origin relative to its (0, 0) position
-  // TODO: remove this?
   origin(x, y) {
     return this.prop({
-      'origin.x': x,
-      'origin.y': y
+      'origin.x': Draft.px(x),
+      'origin.y': Draft.px(y)
     });
   }
 };
 
-// TODO: make this modular like the others, and de-dupe the prop code
-Draft.extend(Draft, {
+Draft.Doc.mixin({
   page: function(name) {
-    return this.push(this, new Draft.Page(name)).prop({
-      system: defaults.system,
-      units: defaults.units
+    return this.add(new Draft.Page(name)).prop({
+      system: this.prop('system'),
+      units: this.prop('units')
     });
   }
 });
 
-Draft.Line = class Line extends Draft.Element {
-};
+Draft.Line = class Line extends Draft.Element {};
 
-Draft.Container.extend({
+Draft.Container.mixin({
   line: function(x1, y1, x2, y2) {
     return this.add(new Draft.Line());
   }
@@ -571,11 +629,9 @@ Draft.Rect = class Rect extends Draft.Element {
   }
 };
 
-Draft.Rect.extend([
-  'radius'
-]);
+Draft.Rect.require('radius');
 
-Draft.Container.extend({
+Draft.Container.mixin({
   rect: function(width, height) {
     return this.add(new Draft.Rect()).size(width, height);
   }
@@ -583,11 +639,11 @@ Draft.Container.extend({
 
 Draft.Circle = class Circle extends Draft.Element {
   radius(r) {
-    return this.prop('r', r);
+    return this.prop('r', unit(r));
   }
 };
 
-Draft.Container.extend({
+Draft.Container.mixin({
   circle: function(r) {
     return this.add(new Draft.Circle()).radius(r);
   }
