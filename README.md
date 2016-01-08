@@ -37,8 +37,7 @@ Include the library at the top of your html file:
 </body>
 ```
 
-Create a new document and add a page to it:
-Create a new page inside of an existing html element:
+Write a new script and include it after your html content:
 
 ```javascript
 // Create a new Draft document and add a page to it
