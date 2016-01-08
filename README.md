@@ -5,6 +5,11 @@ _inspired by [SVG.js](https://github.com/wout/svg.js)_
 
 draft.js is licensed under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
+## Currently only works in browsers that support the following ES2015 features (Firefox 45+ recommended):
+- classes
+- let and const
+- for...of
+
 ## Installation
 
 Prebuilt distributions can be found on the [releases](https://github.com/D1SC0tech/draft.js/releases) page.
