@@ -1,4 +1,5 @@
 # draft.js
+_inspired by [SVG.js](https://github.com/wout/svg.js)_
 
 **draft.js** is a lightweight library for 2D/3D parametric design.
 
@@ -32,32 +33,34 @@ Include the library at the top of your html file:
   <script src="draft.js/dist/draft.min.js"></script>
 </head>
 <body>
-  <div id="canvas" style="width: 100%; height: 100%"></div>
+  <div id="view" style="width: 100%; height: 100%"></div>
 </body>
 ```
 
+Create a new document and add a page to it:
 Create a new page inside of an existing html element:
 
 ```javascript
-var page = Draft.canvas('canvas').page('page_1');
-var rect = page.rect(100, 200).fill('#f1c');
+// Create a new Draft document and add a page to it
+var doc = Draft.doc('my_document');
+var page = doc.page('page_1').size(600, 400);
+
+// Add some shapes to the page
+var rect = page.rect(200, 150).fill('#18f');
+var circle = page.circle(50).fill('#f1c');
+
+// Use the draft-svg plugin to render
+var view = document.getElementById('view');
+view.appendChild(page.svg());
 ```
 
 ## Contributing
 
-Follow the [Google JavaScript Style Guide](https://google.github.io/styleguide/javascriptguide.xml) for the most part, with the following notable exceptions:
-- Always put the operator at the beginning of the next line if it will not fit
+- Follow the [Google JavaScript Style Guide](https://google.github.io/styleguide/javascriptguide.xml)
+- Indent with two spaces
+- Use semicolons at the ends of lines
 
-```javascript
-var x = a
-  + b
-  - c;
+## Acknowledgements
 
-var x = (a == b)
-  ? c
-  : d;
-
-var x = foo
-  .bar()
-  .baz();
-```
+- [Wout Fierens](https://github.com/wout), [Ulrich-Matthias Schäfer](https://github.com/Fuzzyma), and all the other contributors to the SVG.js library.
+- [Oliver Caldwell](https://github.com/Olical) for creating [Heir](https://github.com/Olical/Heir), a tiny script for object inheritance and mixins.
