@@ -4,7 +4,7 @@
 * draft.D1SC0te.ch
 *
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
-* license GPL-3.0
+* license MIT
 *
 * BUILT: Mon Jan 04 2016 23:39:06 GMT-0600 (CST)
 */

@@ -10,7 +10,7 @@
     "javascript"
   ],
   "homepage": "draft.D1SC0te.ch",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "author": "Jordi Orlando <jordi.orlando@gmail.com>",
   "main": "dist/draft.min.js",
   "repository": {
