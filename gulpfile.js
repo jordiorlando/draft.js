@@ -21,6 +21,7 @@ var pkg = require('./package.json');
 var src = [
   // Main
   'src/draft.js',
+  'src/inherit.js',
   'src/defaults.js',
   'src/helpers.js',
 

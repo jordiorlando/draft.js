@@ -20,7 +20,7 @@ Draft.Element = class Element {
     Draft.mixin(this, source);
   }
 
-  // TODO:40 merge this with mixin()?
+  // TODO:40 merge require() with mixin()?
   static require(source) {
     if (typeof source == 'string') {
       this.mixin(Draft.mixins[source]);

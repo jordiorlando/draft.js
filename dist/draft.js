@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license MIT
 *
-* BUILT: Fri Jan 08 2016 02:18:40 GMT-0600 (CST)
+* BUILT: Fri Jan 08 2016 03:04:16 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -27,56 +27,6 @@
 }(typeof window !== "undefined" ? window : this, function(window, document) {
 var Draft = this.Draft = {
   mixins: {},
-
-  // TODO:20 add thank you to Olical for Heir
-  /**
-   * Causes your desired class to inherit from a source class. This uses
-   * prototypical inheritance so you can override methods without ruining
-   * the parent class.
-   *
-   * This will alter the actual destination class though, it does not
-   * create a new class.
-   *
-   * @param {Function} destination The target class for the inheritance.
-   * @param {Function} source Class to inherit from.
-   * @param {Boolean} addSuper Should we add the _super property to the prototype? Defaults to true.
-   */
-  inherit: function(destination, source, addSuper) {
-    var proto = destination.prototype = Object.create(source.prototype);
-    proto.constructor = destination;
-
-    if (addSuper || typeof addSuper === 'undefined') {
-        destination._super = source.prototype;
-    }
-  },
-
-  /**
-   * Mixes the specified object into your class. This can be used to add
-   * certain capabilities and helper methods to a class that is already
-   * inheriting from some other class. You can mix in as many object as
-   * you want, but only inherit from one.
-   *
-   * These values are mixed into the actual prototype object of your
-   * class, they are not added to the prototype chain like inherit.
-   *
-   * @param {Function} destination Class to mix the object into.
-   * @param {Object} source Object to mix into the class.
-   */
-  mixin: function(destination, source) {
-    // Uses `Object.prototype.hasOwnPropety` rather than `object.hasOwnProperty`
-    // as it could be overwritten.
-    var hasOwnProperty = function(object, key) {
-      return Object.prototype.hasOwnProperty.call(object, key);
-    };
-
-    for (var key in source) {
-      if (hasOwnProperty(source, key)) {
-        destination.prototype[key] = source[key];
-      }
-    }
-  },
-
-  // DOING:0 rename methods to mixins
 
   // Construct a unique ID from the element's type and ID
   domID: function(element) {
@@ -126,6 +76,57 @@ var Draft = this.Draft = {
       return Draft.px(num / 25.4 + 'in');
     } else {
       return false;
+    }
+  }
+};
+
+// These methods are adapted from Oliver Caldwell's Heir script, which he has
+// released under the Unlicense (public domain).
+// GitHub Repository: https://github.com/Olical/Heir
+
+/**
+ * Causes your desired class to inherit from a source class. This uses
+ * prototypical inheritance so you can override methods without ruining
+ * the parent class.
+ *
+ * This will alter the actual destination class though, it does not
+ * create a new class.
+ *
+ * @param {Function} destination The target class for the inheritance.
+ * @param {Function} source Class to inherit from.
+ * @param {Boolean} addSuper Should we add the _super property to the prototype? Defaults to true.
+ */
+Draft.inherit = function(destination, source, addSuper) {
+  var proto = destination.prototype = Object.create(source.prototype);
+  proto.constructor = destination;
+
+  if (addSuper || typeof addSuper === 'undefined') {
+      destination._super = source.prototype;
+  }
+};
+
+/**
+ * Mixes the specified object into your class. This can be used to add
+ * certain capabilities and helper methods to a class that is already
+ * inheriting from some other class. You can mix in as many object as
+ * you want, but only inherit from one.
+ *
+ * These values are mixed into the actual prototype object of your
+ * class, they are not added to the prototype chain like inherit.
+ *
+ * @param {Function} destination Class to mix the object into.
+ * @param {Object} source Object to mix into the class.
+ */
+Draft.mixin = function(destination, source) {
+  // Uses `Object.prototype.hasOwnPropety` rather than `object.hasOwnProperty`
+  // as it could be overwritten.
+  var hasOwnProperty = function(object, key) {
+    return Object.prototype.hasOwnProperty.call(object, key);
+  };
+
+  for (var key in source) {
+    if (hasOwnProperty(source, key)) {
+      destination.prototype[key] = source[key];
     }
   }
 };
@@ -429,7 +430,7 @@ Draft.Element = class Element {
     Draft.mixin(this, source);
   }
 
-  // TODO:40 merge this with mixin()?
+  // TODO:40 merge require() with mixin()?
   static require(source) {
     if (typeof source == 'string') {
       this.mixin(Draft.mixins[source]);
