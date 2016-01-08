@@ -1,74 +1,68 @@
-// TODO: come up with a better location for methods
-var methods = {};
+var Draft = this.Draft = {
+  mixins: {},
 
-// TODO: let Draft extend Container (get rid of custom push() and units())
-var Draft = this.Draft = class Draft {
-  constructor(element) {
-    this.elements = {};
-    this.children = [];
+  // TODO:20 add thank you to Olical for Heir
+  /**
+   * Causes your desired class to inherit from a source class. This uses
+   * prototypical inheritance so you can override methods without ruining
+   * the parent class.
+   *
+   * This will alter the actual destination class though, it does not
+   * create a new class.
+   *
+   * @param {Function} destination The target class for the inheritance.
+   * @param {Function} source Class to inherit from.
+   * @param {Boolean} addSuper Should we add the _super property to the prototype? Defaults to true.
+   */
+  inherit: function(destination, source, addSuper) {
+    var proto = destination.prototype = Object.create(source.prototype);
+    proto.constructor = destination;
 
-    // Create DOM node
-    this.dom = {};
-    this.dom.node = document.createElement('object');
-  }
+    if (addSuper || typeof addSuper === 'undefined') {
+        destination._super = source.prototype;
+    }
+  },
 
-  push(parent, child) {
-    // Add a reference to the child's parent and containing doc
-    child.parent = parent;
-    child.doc = parent == this ? this : parent.doc;
+  /**
+   * Mixes the specified object into your class. This can be used to add
+   * certain capabilities and helper methods to a class that is already
+   * inheriting from some other class. You can mix in as many object as
+   * you want, but only inherit from one.
+   *
+   * These values are mixed into the actual prototype object of your
+   * class, they are not added to the prototype chain like inherit.
+   *
+   * @param {Function} destination Class to mix the object into.
+   * @param {Object} source Object to mix into the class.
+   */
+  mixin: function(destination, source) {
+    // Uses `Object.prototype.hasOwnPropety` rather than `object.hasOwnProperty`
+    // as it could be overwritten.
+    var hasOwnProperty = function(object, key) {
+      return Object.prototype.hasOwnProperty.call(object, key);
+    };
 
-    parent.dom.node.appendChild(child.dom.node);
-
-    // Add the child to the end of the children array
-    parent.children.push(child);
-
-    // Add the child to its type array
-    var type = child.prop('type');
-    this.elements[type] = this.elements[type] || [];
-    this.elements[type].push(child);
-
-    // Set the child's basic properties
-    child.prop({
-      id: elementID(child)
-    });
-
-    return child;
-  }
-
-  units() {
-    return defaults.units;
-  }
-
-  // TODO: move these static methods to helper object, and extend Draft
-
-  // This function takes an element and copies the supplied methods to it
-  static extend(element, source) {
-    if (typeof source == 'string') {
-      Draft.extend(element, methods[source]);
-    } else if (typeof source == 'object') {
-      for (let key in source) {
-        if (typeof source[key] == 'function') {
-          element.prototype[key] = source[key];
-        } else {
-          Draft.extend(element, source[key]);
-        }
+    for (var key in source) {
+      if (hasOwnProperty(source, key)) {
+        destination.prototype[key] = source[key];
       }
     }
+  },
 
-    return source;
-  }
+  // DOING:0 rename methods to mixins
 
   // Construct a unique ID from the element's type and ID
-  static domID(element) {
+  domID: function(element) {
     return 'DraftJS_' +
       element.prop('type') + '_' +
       zeroPad(element.prop('id'), 4);
-  }
+  },
 
   // Using standard 96dpi resolution
-  // TODO: configurable dpi setting
-  // TODO: safety checks
-  static px(length) {
+  // BACKLOG:50 configurable dpi setting
+  // TODO:50 safety checks
+  // TODO:60 use regexes
+  px: function(length) {
     var num = parseFloat(length, 10);
     var units = typeof length == 'string' ? length.slice(-2) : 'px';
 

@@ -1,16 +1,15 @@
-Draft.Group = class Group extends Draft.Container {
-};
+Draft.Group = class Group extends Draft.Container {};
 
-Draft.Group.extend([
+Draft.Group.require([
   'system',
   'units'
 ]);
 
-Draft.Container.extend({
-  group: function(name) {
+Draft.Container.mixin({
+  group: function() {
     return this.add(new Draft.Group(name)).prop({
-      system: this.system(),
-      units: this.units()
+      system: this.prop('system'),
+      units: this.prop('units')
     });
   }
 });

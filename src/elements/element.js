@@ -1,7 +1,7 @@
 // Draft.Element =
 Draft.Element = class Element {
-  constructor(name) {
-    // Create DOM node
+  constructor() {
+    // DOING:10 create DOM node
     this.dom = {};
     this.dom.node = document.createElement('object');
     // Store a circular reference in the node
@@ -9,16 +9,29 @@ Draft.Element = class Element {
 
     // Make sure this.properties is initialized
     this.properties = {};
-    this.prop({
-      name: name || null,
-      type: elementType(this)
-    });
+    this.prop('type', elementType(this));
   }
 
-  static extend(source) {
-    return Draft.extend(this, source);
+  static inherit(source, addSuper) {
+    Draft.inherit(this, source, addSuper);
   }
 
+  static mixin(source) {
+    Draft.mixin(this, source);
+  }
+
+  // TODO:40 merge this with mixin()?
+  static require(source) {
+    if (typeof source == 'string') {
+      this.mixin(Draft.mixins[source]);
+    } else if (source instanceof Array) {
+      for (var mixin of source) {
+        this.require(mixin);
+      }
+    }
+  }
+
+  // TODO:70 rename properties to _properties?
   prop(prop, val) {
     // Act as a full properties getter if prop is null/undefined
     if (prop == null) {
@@ -79,13 +92,10 @@ Draft.Element = class Element {
     // prop() is chainable if 'this' is returned
     return this;
   }
-
-  parent() {
-    return this.parent;
-  }
 };
 
-Draft.Element.extend([
+// TODO:0 remove these dependencies from Draft.Element
+Draft.Element.require([
   'size',
   'move'
 ]);

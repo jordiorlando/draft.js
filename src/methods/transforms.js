@@ -1,4 +1,4 @@
-methods.transforms = {
+Draft.mixins.transforms = {
   require: [
     'transform'
   ],

@@ -4,11 +4,9 @@ Draft.Rect = class Rect extends Draft.Element {
   }
 };
 
-Draft.Rect.extend([
-  'radius'
-]);
+Draft.Rect.require('radius');
 
-Draft.Container.extend({
+Draft.Container.mixin({
   rect: function(width, height) {
     return this.add(new Draft.Rect()).size(width, height);
   }

@@ -24,8 +24,7 @@ var src = [
   'src/defaults.js',
   'src/helpers.js',
 
-  // Methods
-  'src/methods/json.js',
+  // Mixins
   'src/methods/system.js',
   'src/methods/units.js',
 
@@ -36,9 +35,12 @@ var src = [
   'src/methods/transform.js',
   'src/methods/transforms.js',
 
+  'src/methods/json.js',
+
   // Containers
   'src/elements/element.js',
   'src/elements/container.js',
+  'src/elements/doc.js',
   'src/elements/group.js',
   'src/elements/page.js',
   // Elements
@@ -116,7 +118,7 @@ gulp.task('unify', ['clean'], function() {
     .pipe(size({showFiles: true, title: 'Full'}));
 });
 
-// FIXME: minified distribution doesn't work, the UMD headers are mangled
+// FIXME:0 minified distribution doesn't work, the UMD headers are mangled
 gulp.task('minify', ['unify'], function() {
   return gulp.src(src)
     .pipe(sourcemaps.init())

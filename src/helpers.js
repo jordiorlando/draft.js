@@ -8,6 +8,7 @@ function zeroPad(number, length) {
   return str;
 }
 
+// HACK:0 need a better way of getting an element's type
 // Get the type of an element
 function elementType(element) {
   for (var e in Draft) {
