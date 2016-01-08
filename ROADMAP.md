@@ -1,5 +1,12 @@
 # v0.0.0
 
+- Decide on document model:
+  - Draft.Doc is top level, one document
+  - One doc can contain multiple views (same as pages?)
+  - One doc contains one model, which can be viewed in different ways? Or multiple models, each of which can be viewed in multiple ways?
+  - Get rid of Draft.Page, and use a new Model container instead? Or just use groups?
+  - Allow for custom elements with custom parameters. Basically a new element class that can be instantiated just like the core ones, but can contain pre-defined geometries or groups.
+
 - Configurable coordinate systems (units, size, origin)
 - 2D primitives (point, line, rect, square?, ellipse, circle?)
 - Relative transformations (translate, rotate, skew, scale)
