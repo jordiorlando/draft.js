@@ -12,7 +12,7 @@
     "js",
     "javascript"
   ],
-  "license": "GPL-3.0",
+  "license": "MIT",
   "homepage": "draft.D1SC0te.ch",
   "ignore": [
     "**/.*",

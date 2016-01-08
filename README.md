@@ -3,7 +3,7 @@ _inspired by [SVG.js](https://github.com/wout/svg.js)_
 
 **draft.js** is a lightweight library for 2D/3D parametric design.
 
-draft.js is licensed under the terms of the [GPL-3.0](https://www.gnu.org/licenses/gpl.html).
+draft.js is licensed under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Installation
 
