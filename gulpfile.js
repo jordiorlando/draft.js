@@ -25,17 +25,17 @@ var src = [
   'src/helpers.js',
 
   // Mixins
-  'src/methods/system.js',
-  'src/methods/units.js',
+  'src/mixins/system.js',
+  'src/mixins/units.js',
 
-  'src/methods/size.js',
-  'src/methods/move.js',
-  'src/methods/radius.js',
+  'src/mixins/size.js',
+  'src/mixins/move.js',
+  'src/mixins/radius.js',
 
-  'src/methods/transform.js',
-  'src/methods/transforms.js',
+  'src/mixins/transform.js',
+  'src/mixins/transforms.js',
 
-  'src/methods/json.js',
+  'src/mixins/json.js',
 
   // Containers
   'src/elements/element.js',

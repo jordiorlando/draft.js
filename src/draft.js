@@ -49,8 +49,6 @@ var Draft = this.Draft = {
     }
   },
 
-  // DOING:0 rename methods to mixins
-
   // Construct a unique ID from the element's type and ID
   domID: function(element) {
     return 'DraftJS_' +
