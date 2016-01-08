@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license MIT
 *
-* BUILT: Fri Jan 08 2016 03:04:16 GMT-0600 (CST)
+* BUILT: Fri Jan 08 2016 03:06:58 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -35,7 +35,6 @@ var Draft = this.Draft = {
       zeroPad(element.prop('id'), 4);
   },
 
-  // Using standard 96dpi resolution
   // BACKLOG:50 configurable dpi setting
   // TODO:50 safety checks
   // TODO:60 use regexes
@@ -55,7 +54,7 @@ var Draft = this.Draft = {
     }
     // Imperial units (in, ft, yd, mi)
     else if (units == 'in') {
-      return num * 96;
+      return num * defaults.dpi;
     } else if (units == 'ft') {
       return Draft.px(num * 12 + 'in');
     } else if (units == 'yd') {
@@ -131,6 +130,7 @@ Draft.mixin = function(destination, source) {
   }
 };
 
+// TODO: configurable defaults
 const defaults = {
   system: 'cartesian',
   units: 'px',
@@ -138,6 +138,9 @@ const defaults = {
   length: 0,
   r: 0, // radius
   a: 0, // angle*/
+
+  // Standard 96dpi resolution
+  dpi: 96,
 
   // Cartesian coordinates
   cartesian: {

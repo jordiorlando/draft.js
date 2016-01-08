@@ -8,7 +8,6 @@ var Draft = this.Draft = {
       zeroPad(element.prop('id'), 4);
   },
 
-  // Using standard 96dpi resolution
   // BACKLOG:50 configurable dpi setting
   // TODO:50 safety checks
   // TODO:60 use regexes
@@ -28,7 +27,7 @@ var Draft = this.Draft = {
     }
     // Imperial units (in, ft, yd, mi)
     else if (units == 'in') {
-      return num * 96;
+      return num * defaults.dpi;
     } else if (units == 'ft') {
       return Draft.px(num * 12 + 'in');
     } else if (units == 'yd') {

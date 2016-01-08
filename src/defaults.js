@@ -1,3 +1,4 @@
+// TODO: configurable defaults
 const defaults = {
   system: 'cartesian',
   units: 'px',
@@ -5,6 +6,9 @@ const defaults = {
   length: 0,
   r: 0, // radius
   a: 0, // angle*/
+
+  // Standard 96dpi resolution
+  dpi: 96,
 
   // Cartesian coordinates
   cartesian: {
