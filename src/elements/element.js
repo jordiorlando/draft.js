@@ -7,8 +7,8 @@ Draft.Element = class Element {
     // Store a circular reference in the node
     this.dom.node.element = this;
 
-    // Make sure this.properties is initialized
-    this.properties = {};
+    // Make sure this._properties is initialized
+    this._properties = {};
     this.prop('type', elementType(this));
   }
 
@@ -24,21 +24,20 @@ Draft.Element = class Element {
   static require(source) {
     if (typeof source == 'string') {
       this.mixin(Draft.mixins[source]);
-    } else if (source instanceof Array) {
+    } else if (Array.isArray(source)) {
       for (var mixin of source) {
         this.require(mixin);
       }
     }
   }
 
-  // TODO:70 rename properties to _properties?
   prop(prop, val) {
     // Act as a full properties getter if prop is null/undefined
     if (prop == null) {
       prop = {};
 
-      for (let p in this.properties) {
-        prop[p] = this.properties[p];
+      for (let p in this._properties) {
+        prop[p] = this._properties[p];
       }
 
       return prop;
@@ -49,7 +48,7 @@ Draft.Element = class Element {
       let setter = false;
 
       for (let p in prop) {
-        // Get this.properties[p] and save it to prop[p]
+        // Get this._properties[p] and save it to prop[p]
         prop[p] = this.prop(p, prop[p]);
         // If the returned value is an object, prop[p] is non-null, so act like
         // a setter.
@@ -60,15 +59,15 @@ Draft.Element = class Element {
     }
     // Delete the property if val is null
     else if (val === null) {
-      delete this.properties[prop];
+      delete this._properties[prop];
     }
     // Act as an individual property getter if val is undefined
     else if (val === undefined) {
-      /*val = this.properties[prop];
+      /*val = this._properties[prop];
       return val === undefined ? defaults[prop] || 0 : val;*/
 
       // If prop is undefined, set it to the default OR 0
-      return this.properties[prop] ||
+      return this._properties[prop] ||
         this.prop(prop, defaults[prop] || 0);
     }
     // Act as an individual property setter if both prop and val are defined
@@ -80,11 +79,11 @@ Draft.Element = class Element {
           val + this.parent.prop('units') || defaults.units : val;
       }
 
-      this.properties[prop] = val;
+      this._properties[prop] = val;
 
       var event = new CustomEvent('update', {
         detail: {
-          type: this.properties.type,
+          type: this._properties.type,
           prop: prop,
           val: val
         },
@@ -99,7 +98,7 @@ Draft.Element = class Element {
   }
 };
 
-// TODO:0 remove these dependencies from Draft.Element
+// TODO:0 remove 'size' and 'move' mixins from Draft.Element
 Draft.Element.require([
   'size',
   'move'
