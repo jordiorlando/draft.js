@@ -36,14 +36,8 @@ Draft.inherit = function(destination, source, addSuper) {
  * @param {Object} source Object to mix into the class.
  */
 Draft.mixin = function(destination, source) {
-  // Uses `Object.prototype.hasOwnPropety` rather than `object.hasOwnProperty`
-  // as it could be overwritten.
-  var hasOwnProperty = function(object, key) {
-    return Object.prototype.hasOwnProperty.call(object, key);
-  };
-
   for (var key in source) {
-    if (hasOwnProperty(source, key)) {
+    if (source.hasOwnProperty(key)) {
       destination.prototype[key] = source[key];
     }
   }
