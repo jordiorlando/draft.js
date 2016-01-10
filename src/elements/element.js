@@ -32,6 +32,7 @@ Draft.Element = class Element {
   }
 
   prop(prop, val) {
+    // TODO: delete all properties if prop is null?
     // Act as a full properties getter if prop is null/undefined
     if (prop == null) {
       prop = {};
@@ -66,6 +67,7 @@ Draft.Element = class Element {
       /*val = this._properties[prop];
       return val === undefined ? defaults[prop] || 0 : val;*/
 
+      // TODO: don't return 0
       // If prop is undefined, set it to the default OR 0
       return this._properties[prop] ||
         this.prop(prop, defaults[prop] || 0);
@@ -100,6 +102,6 @@ Draft.Element = class Element {
 
 // TODO:0 remove 'size' and 'move' mixins from Draft.Element
 Draft.Element.require([
-  'size',
-  'move'
+  'position',
+  'rotation'
 ]);

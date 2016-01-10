@@ -9,6 +9,8 @@ Draft.Page = class Page extends Draft.Group {
   }
 };
 
+Draft.Page.require('size');
+
 Draft.Doc.mixin({
   page: function(name) {
     return this.add(new Draft.Page(name)).prop({

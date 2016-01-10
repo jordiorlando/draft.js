@@ -8,7 +8,7 @@ const defaults = {
   a: 0, // angle*/
 
   // Standard 96dpi resolution
-  dpi: 96,
+  dpi: 96/*,
 
   // Cartesian coordinates
   cartesian: {
@@ -95,5 +95,5 @@ const defaults = {
       'phi',
       'theta'
     ]
-  }
+  }*/
 };

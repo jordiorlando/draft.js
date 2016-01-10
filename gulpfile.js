@@ -29,12 +29,11 @@ var src = [
   'src/mixins/system.js',
   'src/mixins/units.js',
 
-  'src/mixins/size.js',
-  'src/mixins/move.js',
-  'src/mixins/radius.js',
+  'src/mixins/position.js',
+  'src/mixins/rotation.js',
 
-  'src/mixins/transform.js',
-  'src/mixins/transforms.js',
+  'src/mixins/size.js',
+  'src/mixins/radius.js',
 
   'src/mixins/json.js',
 
