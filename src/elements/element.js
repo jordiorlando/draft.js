@@ -93,6 +93,13 @@ Draft.Element = class Element {
       });
 
       this.dom.node.dispatchEvent(event);
+
+      this.fire('change', [prop, val]); /*{
+        // target: this,
+        // type: this._properties.type,
+        prop: prop,
+        val: val
+      });*/
     }
 
     // prop() is chainable if 'this' is returned
@@ -100,8 +107,8 @@ Draft.Element = class Element {
   }
 };
 
-// TODO:0 remove 'size' and 'move' mixins from Draft.Element
 Draft.Element.require([
+  'event',
   'position',
   'rotation'
 ]);

@@ -26,6 +26,8 @@ var src = [
   'src/helpers.js',
 
   // Mixins
+  'src/mixins/event.js',
+
   'src/mixins/system.js',
   'src/mixins/units.js',
 

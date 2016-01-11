@@ -8,7 +8,7 @@ draft.js is licensed under the terms of the [MIT License](https://opensource.org
 ## Currently only works in browsers that support the following ES2015 features (Firefox 45+ recommended):
 - classes
 - let and const
-- for...of
+- arrow functions
 
 ## Installation
 
@@ -67,4 +67,4 @@ view.appendChild(page.svg());
 ## Acknowledgements
 
 - [Wout Fierens](https://github.com/wout), [Ulrich-Matthias Schäfer](https://github.com/Fuzzyma), and all the other contributors to the SVG.js library.
-- [Oliver Caldwell](https://github.com/Olical) for creating [Heir](https://github.com/Olical/Heir), a tiny script for object inheritance and mixins.
+- [Oliver Caldwell](https://github.com/Olical) for creating [EventEmitter](https://github.com/Olical/EventEmitter), a library for using DOM-like events without the DOM, and [Heir](https://github.com/Olical/Heir), a tiny script for object inheritance and mixins.

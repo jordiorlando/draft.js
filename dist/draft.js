@@ -6,7 +6,7 @@
 * copyright Jordi Orlando <jordi.orlando@gmail.com>
 * license MIT
 *
-* BUILT: Fri Jan 08 2016 03:06:58 GMT-0600 (CST)
+* BUILT: Mon Jan 11 2016 00:34:23 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -36,11 +36,10 @@ var Draft = this.Draft = {
   },
 
   // BACKLOG:50 configurable dpi setting
-  // TODO:50 safety checks
-  // TODO:60 use regexes
-  px: function(length) {
-    var num = parseFloat(length, 10);
-    var units = typeof length == 'string' ? length.slice(-2) : 'px';
+  // TODO:50 test safety checks for Draft.px()
+  px: function(val) {
+    var num = parseFloat(val, 10);
+    var units = testUnits(val);
 
     // Remain unchanged if units are already px
     if (units == 'px') {
@@ -74,7 +73,7 @@ var Draft = this.Draft = {
 
       return Draft.px(num / 25.4 + 'in');
     } else {
-      return false;
+      return undefined;
     }
   }
 };
@@ -117,14 +116,8 @@ Draft.inherit = function(destination, source, addSuper) {
  * @param {Object} source Object to mix into the class.
  */
 Draft.mixin = function(destination, source) {
-  // Uses `Object.prototype.hasOwnPropety` rather than `object.hasOwnProperty`
-  // as it could be overwritten.
-  var hasOwnProperty = function(object, key) {
-    return Object.prototype.hasOwnProperty.call(object, key);
-  };
-
   for (var key in source) {
-    if (hasOwnProperty(source, key)) {
+    if (source.hasOwnProperty(key)) {
       destination.prototype[key] = source[key];
     }
   }
@@ -140,7 +133,7 @@ const defaults = {
   a: 0, // angle*/
 
   // Standard 96dpi resolution
-  dpi: 96,
+  dpi: 96/*,
 
   // Cartesian coordinates
   cartesian: {
@@ -198,8 +191,8 @@ const defaults = {
   polar: {
     layer: 2,
     vars: [
-      'rho',
-      'phi',
+      'ρ',
+      'φ',
       'z'
     ],
     cartesian: [
@@ -223,11 +216,11 @@ const defaults = {
   spherical: {
     layer: 2,
     vars: [
-      'rho',
-      'phi',
-      'theta'
+      'ρ',
+      'φ',
+      'θ'
     ]
-  }
+  }*/
 };
 
 // Pad a number with zeroes until the number of digits is equal to length
@@ -243,9 +236,9 @@ function zeroPad(number, length) {
 // HACK:0 need a better way of getting an element's type
 // Get the type of an element
 function elementType(element) {
-  for (var e in Draft) {
-    if (element.constructor == Draft[e]) {
-      return e.toLowerCase();
+  for (var type in Draft) {
+    if (element.constructor == Draft[type]) {
+      return type.toLowerCase();
     }
   }
 }
@@ -260,6 +253,235 @@ function unit(val) {
   return val == null ? val : val + '_u';
 }
 
+function testUnits(val, units) {
+  let regex = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/g;
+  val = String(val);
+
+  if (typeof units == 'string') {
+    return new RegExp(regex.source + units + '$', 'ig').test(val);
+  } else {
+    // TODO: don't default to px?
+    return regex.exec(val) !== null ?
+      val.slice(regex.lastIndex) || 'px' : false;
+  }
+}
+
+// BACKLOG: use Proxy to create a clean element tree (e.g. ignore all parent keys)
+
+// These methods are adapted from Oliver Caldwell's EventEmitter library, which
+// he has released under the Unlicense (public domain).
+// GitHub Repository: https://github.com/Olical/EventEmitter
+
+// TODO: implement bubbling?
+
+Draft.mixins.event = {
+  /**
+   * Adds a listener function to the specified event.
+   * The listener will not be added if it is a duplicate.
+   * If the listener returns true then it will be removed after it is called.
+   * If you pass a regular expression as the event name then the listener will be added to all events that match it.
+   *
+   * @param {String|RegExp} evt Name of the event to attach the listener to.
+   * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+   * @return {Object} Current instance of EventEmitter for chaining.
+   */
+  on: function(evt, listener) {
+    var listenersMap = this.getListeners(evt, true);
+
+    for (let key in listenersMap) {
+      var listeners = listenersMap[key];
+
+      // BACKLOG: change to Array.prototype.includes() for checking:
+      // if (!listeners.map(l => l.listener).includes(listener))
+      if (listeners.map(l => l.listener).lastIndexOf(listener) === -1) {
+        listeners.push(typeof listener === 'object' ? listener : {
+          listener: listener,
+          once: false
+        });
+      }
+    }
+
+    return this;
+  },
+
+  /**
+   * Semi-alias of on. It will add a listener that will be
+   * automatically removed after its first execution.
+   *
+   * @param {String|RegExp} evt Name of the event to attach the listener to.
+   * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+   * @return {Object} Current instance of EventEmitter for chaining.
+   */
+  once: function(evt, listener) {
+    return this.on(evt, {
+      listener: listener,
+      once: true
+    });
+  },
+
+  /**
+   * Removes a listener function from the specified event.
+   * When passed a regular expression as the event name, it will remove the listener from all events that match it.
+   *
+   * @param {String|RegExp} evt Name of the event to remove the listener from.
+   * @param {Function} listener Method to remove from the event.
+   * @return {Object} Current instance of EventEmitter for chaining.
+   */
+  off: function(evt, listener) {
+    var listenersMap = this.getListeners(evt, true);
+
+    for (let key in listenersMap) {
+      var listeners = listenersMap[key];
+      var index = listeners.map(l => l.listener).lastIndexOf(listener);
+
+      if (index !== -1) {
+        listeners.splice(index, 1);
+      }
+    }
+
+    return this;
+  },
+
+  /**
+   * Emits an event of your choice.
+   * When emitted, every listener attached to that event will be executed.
+   * If you pass the optional argument array then those arguments will be passed to every listener upon execution.
+   * Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
+   * So they will not arrive within the array on the other side, they will be separate.
+   * You can also pass a regular expression to emit to all events that match it.
+   *
+   * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+   * @param {Array} [args] Optional array of arguments to be passed to each listener.
+   * @return {Object} Current instance of EventEmitter for chaining.
+   */
+  fire: function(evt, args) {
+    // Put args in an array if it isn't already one
+    if (!Array.isArray(args)) {
+      args = [args];
+    }
+
+    var listenersMap = this.getListeners(evt, true);
+
+    for (let key in listenersMap) {
+      var listeners = listenersMap[key];
+      var i = listeners.length;
+
+      while (i--) {
+        // The function is executed either with a basic call or an apply if there is an args array
+        var listener = listeners[i];
+        var response = listener.listener.apply({
+          target: this,
+          timeStamp: new Date(), // TODO: Date.now() to prevent memory leaks?
+          type: key
+        }, args);
+
+        // If the listener returns 'off' then it gets removed from the event
+        if (listener.once === true || response === 'off') {
+          this.off(evt, listener.listener);
+        }
+      }
+    }
+
+    return this;
+  },
+
+  /**
+   * Uses defineEvent to define multiple events.
+   *
+   * Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don't do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
+   * You need to tell it what event names should be matched by a regex.
+   *
+   * @param {String} evt Name of the event to create.
+   * @return {Object} Current instance of EventEmitter for chaining.
+   */
+  defineEvent: function() {
+    for (let i = 0; i < arguments.length; i++) {
+      this.getListeners(arguments[i]);
+    }
+
+    return this;
+  },
+
+  /**
+   * Removes all listeners from a specified event.
+   * If you do not specify an event then all listeners will be removed.
+   * That means every event will be emptied.
+   * You can also pass a regex to remove all events that match it.
+   *
+   * @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
+   * @return {Object} Current instance of EventEmitter for chaining.
+   */
+  removeEvent: function(evt) {
+    var events = this._getEvents();
+
+    // Remove different things depending on the state of evt
+    if (typeof evt === 'string') {
+      // Remove all listeners for the specified event
+      delete events[evt];
+    } else if (evt instanceof RegExp) {
+      // Remove all events matching the regex.
+      for (let key in events) {
+        if (evt.test(key)) {
+          delete events[key];
+        }
+      }
+    } else {
+      // Remove all listeners in all events
+      delete this._events;
+    }
+
+    return this;
+  },
+
+  /**
+   * Returns the listener array for the specified event.
+   * Will initialise the event object and listener arrays if required.
+   * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
+   * Each property in the object response is an array of listener functions.
+   *
+   * @param {String|RegExp} evt Name of the event to return the listeners from.
+   * @return {Function[]|Object} All listener functions for the event.
+   */
+  getListeners: function(evt, map) {
+    var events = this._getEvents();
+    var listeners = {};
+
+    // Return a concatenated array of all matching events if
+    // the selector is a regular expression.
+    if (evt instanceof RegExp) {
+      for (let key in events) {
+        if (evt.test(key)) {
+          listeners[key] = events[key];
+        }
+      }
+    } else {
+      var listener = events[evt] || (events[evt] = []);
+
+      if (map === undefined) {
+        listeners = listener;
+      } else {
+        listeners[evt] = listener;
+      }
+    }
+
+    /*if (map !== undefined) {
+      listeners = Object.keys(listeners).map(key => listeners[key]);
+    }*/
+
+    return listeners;
+  },
+
+  /**
+   * Fetches the events object and creates one if required.
+   *
+   * @return {Object} The events storage object.
+   * @api private
+   */
+  _getEvents: function() {
+      return this._events || (this._events = {});
+  }
+};
+
 Draft.mixins.system = {
   // Cartesian:
   // - page.system('cartesian')
@@ -269,8 +491,8 @@ Draft.mixins.system = {
   //
   // Polar:
   // - page.system('polar')
-  // - (r, phi)
-  // - phi is counter-clockwise, with 0 pointing to the right
+  // - (r, φ)
+  // - φ is counter-clockwise, with 0 pointing to the right
   // - global pole (0, 0) is at center
   //
   // BACKLOG:30 remove svg coordinates?
@@ -280,8 +502,8 @@ Draft.mixins.system = {
   // - x is right, y is down, z is out of the page (left-hand)
   // - global origin (0, 0) is at top-left
 
-  // BACKLOG:10 switch phi for theta?
-  // BACKLOG:0 Spherical (p, theta, phi), Cylindrical (p, phi, z)
+  // BACKLOG:10 switch φ for θ?
+  // BACKLOG:0 Spherical (ρ, θ, φ), Cylindrical (ρ, φ, z)
   system: function(system) {
     /*if (this.prop('system') != system) {
       // BACKLOG:20 recursively convert all elements to new system?
@@ -294,6 +516,34 @@ Draft.mixins.units = {
   // Get/set the element's measurement units
   units: function(units) {
     return this.prop('units', units);
+  }
+};
+
+Draft.mixins.position = {
+  position: function(x, y, z) {
+    return this.prop({
+      x: unit(x),
+      y: unit(y),
+      z: unit(z)
+    });
+  },
+
+  pos: function() {
+    return this.position(arguments);
+  }
+};
+
+Draft.mixins.rotation = {
+  rotation: function(α, β, γ) {
+    return this.prop({
+      α: α,
+      β: β,
+      γ: γ
+    });
+  },
+
+  rot: function() {
+    return this.rotation(arguments);
   }
 };
 
@@ -315,27 +565,6 @@ Draft.mixins.size = {
   }
 };
 
-Draft.mixins.move = {
-  /*// Get/set the element's x position
-  x: function(x) {
-    return this.prop('x', unit(x));
-  },
-
-  // Get/set the element's y position
-  y: function(y) {
-    return this.prop('y', unit(y));
-  },*/
-
-  // Get/set the element's position
-  move: function() {
-    var pos = {};
-    for (var i = 0; i < arguments.length; i++) {
-      pos[defaults[this.prop('system')].vars[i]] = unit(arguments[i]);
-    }
-    return this.prop(pos);
-  }
-};
-
 Draft.mixins.radius = {
   // Get/set the element's x radius
   rx: function(rx) {
@@ -354,57 +583,6 @@ Draft.mixins.radius = {
   }
 };
 
-Draft.mixins.transform = {
-  transform: function(obj) {
-    // TODO:30 make this work with actual transformation matrices
-    for (var k in obj) {
-      obj[k] = obj[k] == null ?
-        obj[k] : this.prop(k) + obj[k];
-    }
-
-    return this.prop(obj);
-  }
-};
-
-Draft.mixins.transforms = {
-  require: [
-    'transform'
-  ],
-  // Translate the element relative to its current position
-  translate: function(x, y) {
-    return this.transform({
-      x: x,
-      y: y
-    });
-  },
-  // Scale the element relative to its current size
-  scale: function(x, y, cx, cy) {
-    /*return this.transform({
-      x: x,
-      y: y,
-      cx: cx,
-      cy: cy
-    });*/
-  },
-  // Rotate the element relative to its current angle
-  rotate: function(a, cx, cy) {
-    /*return this.transform({
-      a: a,
-      cx: cx,
-      cy: cy
-    });*/
-  },
-  // Skew the element relative to its current skew
-  skew: function(ax, ay, cx, cy) {
-    /*return this.transform({
-      ax: ax,
-      ay: ay,
-      cx: cx,
-      cy: cy
-    });*/
-  }
-};
-
 Draft.mixins.json = {
   stringify: function(replacer) {
     return JSON.stringify(this, replacer, 2);
@@ -420,8 +598,8 @@ Draft.Element = class Element {
     // Store a circular reference in the node
     this.dom.node.element = this;
 
-    // Make sure this.properties is initialized
-    this.properties = {};
+    // Make sure this._properties is initialized
+    this._properties = {};
     this.prop('type', elementType(this));
   }
 
@@ -437,21 +615,25 @@ Draft.Element = class Element {
   static require(source) {
     if (typeof source == 'string') {
       this.mixin(Draft.mixins[source]);
-    } else if (source instanceof Array) {
+    } else if (Array.isArray(source)) {
       for (var mixin of source) {
         this.require(mixin);
       }
     }
   }
 
-  // TODO:70 rename properties to _properties?
   prop(prop, val) {
-    // Act as a full properties getter if prop is null/undefined
-    if (prop == null) {
+    // BACKLOG: test deleting all properties, perhaps remove it
+    // Delete all properties if prop is null
+    if (prop === null) {
+      this._properties = {};
+    }
+    // Act as a full properties getter if prop is undefined
+    else if (prop === undefined) {
       prop = {};
 
-      for (let p in this.properties) {
-        prop[p] = this.properties[p];
+      for (let p in this._properties) {
+        prop[p] = this._properties[p];
       }
 
       return prop;
@@ -462,7 +644,7 @@ Draft.Element = class Element {
       let setter = false;
 
       for (let p in prop) {
-        // Get this.properties[p] and save it to prop[p]
+        // Get this._properties[p] and save it to prop[p]
         prop[p] = this.prop(p, prop[p]);
         // If the returned value is an object, prop[p] is non-null, so act like
         // a setter.
@@ -473,15 +655,16 @@ Draft.Element = class Element {
     }
     // Delete the property if val is null
     else if (val === null) {
-      delete this.properties[prop];
+      delete this._properties[prop];
     }
     // Act as an individual property getter if val is undefined
     else if (val === undefined) {
-      /*val = this.properties[prop];
+      /*val = this._properties[prop];
       return val === undefined ? defaults[prop] || 0 : val;*/
 
+      // FIXME: don't return 0
       // If prop is undefined, set it to the default OR 0
-      return this.properties[prop] ||
+      return this._properties[prop] ||
         this.prop(prop, defaults[prop] || 0);
     }
     // Act as an individual property setter if both prop and val are defined
@@ -493,11 +676,11 @@ Draft.Element = class Element {
           val + this.parent.prop('units') || defaults.units : val;
       }
 
-      this.properties[prop] = val;
+      this._properties[prop] = val;
 
       var event = new CustomEvent('update', {
         detail: {
-          type: this.properties.type,
+          type: this._properties.type,
           prop: prop,
           val: val
         },
@@ -505,6 +688,13 @@ Draft.Element = class Element {
       });
 
       this.dom.node.dispatchEvent(event);
+
+      this.fire('change', [prop, val]); /*{
+        // target: this,
+        // type: this._properties.type,
+        prop: prop,
+        val: val
+      });*/
     }
 
     // prop() is chainable if 'this' is returned
@@ -512,10 +702,10 @@ Draft.Element = class Element {
   }
 };
 
-// TODO:0 remove these dependencies from Draft.Element
 Draft.Element.require([
-  'size',
-  'move'
+  'event',
+  'position',
+  'rotation'
 ]);
 
 Draft.Container = class Container extends Draft.Element {
@@ -599,16 +789,9 @@ Draft.Container.mixin({
   }
 });
 
-Draft.Page = class Page extends Draft.Group {
-  // BACKLOG:40 remove page.origin?
-  // Set the page's origin relative to its (0, 0) position
-  origin(x, y) {
-    return this.prop({
-      'origin.x': Draft.px(x),
-      'origin.y': Draft.px(y)
-    });
-  }
-};
+Draft.Page = class Page extends Draft.Group {};
+
+Draft.Page.require('size');
 
 Draft.Doc.mixin({
   page: function(name) {
@@ -633,7 +816,10 @@ Draft.Rect = class Rect extends Draft.Element {
   }
 };
 
-Draft.Rect.require('radius');
+Draft.Rect.require([
+  'size',
+  'radius'
+]);
 
 Draft.Container.mixin({
   rect: function(width, height) {
