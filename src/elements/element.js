@@ -32,9 +32,13 @@ Draft.Element = class Element {
   }
 
   prop(prop, val) {
-    // TODO: delete all properties if prop is null?
-    // Act as a full properties getter if prop is null/undefined
-    if (prop == null) {
+    // BACKLOG: test deleting all properties, perhaps remove it
+    // Delete all properties if prop is null
+    if (prop === null) {
+      this._properties = {};
+    }
+    // Act as a full properties getter if prop is undefined
+    else if (prop === undefined) {
       prop = {};
 
       for (let p in this._properties) {
