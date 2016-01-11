@@ -67,7 +67,7 @@ Draft.Element = class Element {
       /*val = this._properties[prop];
       return val === undefined ? defaults[prop] || 0 : val;*/
 
-      // TODO: don't return 0
+      // FIXME: don't return 0
       // If prop is undefined, set it to the default OR 0
       return this._properties[prop] ||
         this.prop(prop, defaults[prop] || 0);

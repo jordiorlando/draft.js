@@ -11,9 +11,9 @@ function zeroPad(number, length) {
 // HACK:0 need a better way of getting an element's type
 // Get the type of an element
 function elementType(element) {
-  for (var e in Draft) {
-    if (element.constructor == Draft[e]) {
-      return e.toLowerCase();
+  for (var type in Draft) {
+    if (element.constructor == Draft[type]) {
+      return type.toLowerCase();
     }
   }
 }

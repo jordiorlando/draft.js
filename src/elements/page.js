@@ -1,13 +1,4 @@
-Draft.Page = class Page extends Draft.Group {
-  // BACKLOG:40 remove page.origin?
-  // Set the page's origin relative to its (0, 0) position
-  origin(x, y) {
-    return this.prop({
-      'origin.x': Draft.px(x),
-      'origin.y': Draft.px(y)
-    });
-  }
-};
+Draft.Page = class Page extends Draft.Group {};
 
 Draft.Page.require('size');
 
