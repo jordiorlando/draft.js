@@ -66,8 +66,8 @@ const defaults = {
   polar: {
     layer: 2,
     vars: [
-      'rho',
-      'phi',
+      'ρ',
+      'φ',
       'z'
     ],
     cartesian: [
@@ -91,9 +91,9 @@ const defaults = {
   spherical: {
     layer: 2,
     vars: [
-      'rho',
-      'phi',
-      'theta'
+      'ρ',
+      'φ',
+      'θ'
     ]
   }*/
 };

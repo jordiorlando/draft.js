@@ -7,7 +7,7 @@ Draft.mixins.position = {
     });
   },
 
-  pos: function(x, y, z) {
-    return this.position(x, y, z);
+  pos: function() {
+    return this.position(arguments);
   }
 };

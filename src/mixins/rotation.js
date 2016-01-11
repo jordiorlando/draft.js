@@ -1,13 +1,13 @@
 Draft.mixins.rotation = {
-  rotation: function(alpha, beta, gamma) {
+  rotation: function(α, β, γ) {
     return this.prop({
-      alpha: alpha,
-      beta: beta,
-      gamma: gamma
+      α: α,
+      β: β,
+      γ: γ
     });
   },
 
-  rot: function(alpha, beta, gamma) {
-    return this.rotation(alpha, beta, gamma);
+  rot: function() {
+    return this.rotation(arguments);
   }
 };

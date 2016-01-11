@@ -7,8 +7,8 @@ Draft.mixins.system = {
   //
   // Polar:
   // - page.system('polar')
-  // - (r, phi)
-  // - phi is counter-clockwise, with 0 pointing to the right
+  // - (r, φ)
+  // - φ is counter-clockwise, with 0 pointing to the right
   // - global pole (0, 0) is at center
   //
   // BACKLOG:30 remove svg coordinates?
@@ -18,8 +18,8 @@ Draft.mixins.system = {
   // - x is right, y is down, z is out of the page (left-hand)
   // - global origin (0, 0) is at top-left
 
-  // BACKLOG:10 switch phi for theta?
-  // BACKLOG:0 Spherical (p, theta, phi), Cylindrical (p, phi, z)
+  // BACKLOG:10 switch φ for θ?
+  // BACKLOG:0 Spherical (ρ, θ, φ), Cylindrical (ρ, φ, z)
   system: function(system) {
     /*if (this.prop('system') != system) {
       // BACKLOG:20 recursively convert all elements to new system?
