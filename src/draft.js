@@ -9,11 +9,10 @@ var Draft = this.Draft = {
   },
 
   // BACKLOG:50 configurable dpi setting
-  // TODO:50 safety checks
-  // TODO:60 use regexes
-  px: function(length) {
-    var num = parseFloat(length, 10);
-    var units = typeof length == 'string' ? length.slice(-2) : 'px';
+  // TODO:50 test safety checks for Draft.px()
+  px: function(val) {
+    var num = parseFloat(val, 10);
+    var units = testUnits(val);
 
     // Remain unchanged if units are already px
     if (units == 'px') {
@@ -47,7 +46,7 @@ var Draft = this.Draft = {
 
       return Draft.px(num / 25.4 + 'in');
     } else {
-      return false;
+      return undefined;
     }
   }
 };
