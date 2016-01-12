@@ -97,6 +97,12 @@ Draft.mixins.event = {
       var i = listeners.length;
 
       while (i--) {
+        console.info('event fired:', {
+          target: this,
+          timeStamp: new Date(), // TODO: Date.now() to prevent memory leaks?
+          type: key
+        }, args);
+
         // The function is executed either with a basic call or an apply if there is an args array
         var listener = listeners[i];
         var response = listener.listener.apply({

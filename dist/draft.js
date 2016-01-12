@@ -1,12 +1,12 @@
 /*
 * draft.js - A lightweight library for parametric design
 * version v0.0.0
-* draft.D1SC0te.ch
+* https://github.com/D1SC0tech/draft.js
 *
-* copyright Jordi Orlando <jordi.orlando@gmail.com>
+* copyright Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>
 * license MIT
 *
-* BUILT: Mon Jan 11 2016 00:34:23 GMT-0600 (CST)
+* BUILT: Mon Jan 11 2016 21:45:50 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -25,7 +25,7 @@
     root.Draft = factory(root, root.document);
   }
 }(typeof window !== "undefined" ? window : this, function(window, document) {
-var Draft = this.Draft = {
+var Draft = {
   mixins: {},
 
   // Construct a unique ID from the element's type and ID
@@ -367,6 +367,12 @@ Draft.mixins.event = {
       var i = listeners.length;
 
       while (i--) {
+        console.info('event fired:', {
+          target: this,
+          timeStamp: new Date(), // TODO: Date.now() to prevent memory leaks?
+          type: key
+        }, args);
+
         // The function is executed either with a basic call or an apply if there is an args array
         var listener = listeners[i];
         var response = listener.listener.apply({
@@ -529,7 +535,15 @@ Draft.mixins.position = {
   },
 
   pos: function() {
-    return this.position(arguments);
+    return this.position.apply(this, arguments);
+  },
+
+  translate: function(x, y, z) {
+    x = this.prop('x') + x || 0;
+    y = this.prop('y') + y || 0;
+    z = this.prop('z') + z || 0;
+
+    return this.position(x, y, z);
   }
 };
 
@@ -543,7 +557,15 @@ Draft.mixins.rotation = {
   },
 
   rot: function() {
-    return this.rotation(arguments);
+    return this.rotation.apply(this, arguments);
+  },
+
+  rotate: function(α, β, γ) {
+    α = this.prop('α') + α || 0;
+    β = this.prop('β') + β || 0;
+    γ = this.prop('γ') + γ || 0;
+
+    return this.position(α, β, γ);
   }
 };
 
@@ -664,8 +686,7 @@ Draft.Element = class Element {
 
       // FIXME: don't return 0
       // If prop is undefined, set it to the default OR 0
-      return this._properties[prop] ||
-        this.prop(prop, defaults[prop] || 0);
+      return this._properties[prop] || defaults[prop] || 0;
     }
     // Act as an individual property setter if both prop and val are defined
     else {
@@ -780,12 +801,27 @@ Draft.Group.require([
   'units'
 ]);
 
+// TODO: mixin to Draft.group
 Draft.Container.mixin({
   group: function() {
     return this.add(new Draft.Group(name)).prop({
       system: this.prop('system'),
       units: this.prop('units')
     });
+  }
+});
+
+Draft.View = class View extends Draft.Element {
+  /*render(renderer) {
+    this['render' + renderer.toUpperCase()]();
+  }*/
+};
+
+Draft.View.require('size');
+
+Draft.Group.mixin({
+  view: function(width, height) {
+    return this.add(new Draft.View()).size(width, height).pos(0, 0);
   }
 });
 
@@ -802,11 +838,15 @@ Draft.Doc.mixin({
   }
 });
 
-Draft.Line = class Line extends Draft.Element {};
+Draft.Line = class Line extends Draft.Element {
+  length(length) {
+    return this.prop('length', unit(length));
+  }
+};
 
-Draft.Container.mixin({
-  line: function(x1, y1, x2, y2) {
-    return this.add(new Draft.Line());
+Draft.Group.mixin({
+  line: function(length) {
+    return this.add(new Draft.Line()).length(length);
   }
 });
 
@@ -821,7 +861,7 @@ Draft.Rect.require([
   'radius'
 ]);
 
-Draft.Container.mixin({
+Draft.Group.mixin({
   rect: function(width, height) {
     return this.add(new Draft.Rect()).size(width, height);
   }
@@ -833,7 +873,7 @@ Draft.Circle = class Circle extends Draft.Element {
   }
 };
 
-Draft.Container.mixin({
+Draft.Group.mixin({
   circle: function(r) {
     return this.add(new Draft.Circle()).radius(r);
   }
