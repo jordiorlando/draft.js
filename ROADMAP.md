@@ -1,11 +1,10 @@
 # v1.0.0
 
-- Cartesian coordinate system
-- 2D primitives (point, line, rect, square?, ellipse, circle?)
-- Relative transformations (translate, rotate, scale, skew)
-- Matrix transformations
-
-- Decide on document model:
+- [x] Cartesian coordinate system
+- [ ] 2D primitives (point, line, rect, square?, ellipse, circle?)
+- [ ] Relative transformations (translate, rotate, scale, skew)
+- [ ] Matrix transformations
+- [ ] Decide on document model:
   - Draft.Doc is top level, one document
   - One Doc contains multiple Models, each of which can have multiple Views
   - Make Draft.Page extend Draft.View and move it into a plugin
@@ -14,24 +13,24 @@
 
 ## Plugins
 
-- draft-svg
+- [ ] draft-svg
   - 2D rendering
-- draft-page
+- [ ] draft-page
   - 2D page view (with layers?)
   - Basic styling (fill, stroke, etc)
-- draft-treeview
+- [x] draft-treeview
   - For development/developers
 
 # v2.0.0
 
-- 2D boolean operations (masks, clips)
-- Complex SVG features (text, images, paths)
-- Configurable coordinate systems (polar, cylindrical, spherical)
-- Animations
+- [ ] 2D boolean operations (masks, clips)
+- [ ] Complex SVG features (text, images, paths)
+- [ ] Configurable coordinate systems (polar, cylindrical, spherical)
+- [ ] Animations
 
 # v3.0.0
 
-- 3D rendering via OpenGL/canvas
-- 3D primitives (box/cuboid, cube?, cylinder, sphere)
-- 3D functions (hull, minkowski, CSG)
-- 3D output to (OpenSCAD?)
+- [ ] 3D rendering via OpenGL/canvas
+- [ ] 3D primitives (box/cuboid, cube?, cylinder, sphere)
+- [ ] 3D functions (hull, minkowski, CSG)
+- [ ] 3D output to (OpenSCAD?)
