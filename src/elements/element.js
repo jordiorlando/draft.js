@@ -73,8 +73,7 @@ Draft.Element = class Element {
 
       // FIXME: don't return 0
       // If prop is undefined, set it to the default OR 0
-      return this._properties[prop] ||
-        this.prop(prop, defaults[prop] || 0);
+      return this._properties[prop] || defaults[prop] || 0;
     }
     // Act as an individual property setter if both prop and val are defined
     else {
