@@ -53,6 +53,11 @@ var view = document.getElementById('view');
 view.appendChild(page.svg());
 ```
 
+## Plugins
+
+- [draft-svg](https://github.com/D1SC0tech/draft-svg)
+- [draft-treeview](https://github.com/D1SC0tech/draft-treeview)
+
 ## Contributing
 
 - Follow the [Google JavaScript Style Guide](https://google.github.io/styleguide/javascriptguide.xml)
