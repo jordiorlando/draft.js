@@ -44,6 +44,7 @@ var src = [
   'src/elements/container.js',
   'src/elements/doc.js',
   'src/elements/group.js',
+  'src/elements/view.js',
   'src/elements/page.js',
   // Elements
   'src/elements/line.js',
@@ -89,7 +90,7 @@ var headerLong = [
   '*/\n'
 ].join('\n');
 
-var headerShort = '/*<%= pkg.name %> v<%= pkg.version %> <%= pkg.license %>*/';
+var headerShort = '/*<%= pkg.name %> v<%= pkg.version %> | <%= pkg.homepage %> | <%= pkg.license %> license*/\n';
 
 
 
@@ -101,39 +102,25 @@ gulp.task('unify', ['clean'], function() {
   pkg.buildDate = Date();
 
   return gulp.src(src)
-    // .pipe(sourcemaps.init())
     .pipe(concat('draft.js', { newLine: '\n' }))
-    .pipe(wrap(umd, {name: name}, {variable: 'data'}))
+    .pipe(wrap(umd, { name: name }, { variable: 'data' }))
     .pipe(header(headerLong, { pkg: pkg }))
-    /*.pipe(babel({
-      presets: ['es2015'],
-      plugins: ['transform-es2015-modules-umd']
-    }))
-    .pipe(sourcemaps.write('.', {
-      sourceRoot: function(file) {
-        console.log(file.base);
-        return '/src';
-      }
-    }))*/
-    // .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('dist'))
     .pipe(size({showFiles: true, title: 'Full'}));
 });
 
-// FIXME:0 minified distribution doesn't work, the UMD headers are mangled
+// BACKLOG: figure out why sourcemaps don't exactly work
 gulp.task('minify', ['unify'], function() {
-  return gulp.src(src)
-    .pipe(sourcemaps.init())
-    .pipe(concat('draft.min.js', { newLine: '\n' }))
-    .pipe(babel({
-      presets: ['es2015'],
-      plugins: ['transform-es2015-modules-umd']
-    }))
-    .pipe(uglify())
-    .pipe(size({ showFiles: true, title: 'Minified' }))
+  return gulp.src('dist/draft.js')
+    .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(babel({ presets: ['es2015'] }))
+      .pipe(uglify())
+      .pipe(rename({ suffix:'.min' }))
+      // .pipe(header(headerShort, { pkg: pkg }))
+      .pipe(size({ showFiles: true, title: 'Minified' }))
+      .pipe(size({ showFiles: true, gzip: true, title: 'Gzipped' }))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('dist'))
-    .pipe(size({ showFiles: true, gzip: true, title: 'Gzipped' }));
+    .pipe(gulp.dest('dist'));
 });
 
 gulp.task('default', ['clean', 'unify', 'minify'], function() {});

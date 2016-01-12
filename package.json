@@ -9,16 +9,15 @@
     "js",
     "javascript"
   ],
-  "homepage": "draft.D1SC0te.ch",
+  "homepage": "https://github.com/D1SC0tech/draft.js",
   "license": "MIT",
-  "author": "Jordi Orlando <jordi.orlando@gmail.com>",
+  "author": "Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>",
   "main": "dist/draft.min.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/D1SC0tech/draft.js.git"
   },
   "devDependencies": {
-    "babel-plugin-transform-es2015-modules-umd": "^6.3.13",
     "babel-preset-es2015": "^6.3.13",
     "del": "^2.2.0",
     "gulp": "^3.9.0",

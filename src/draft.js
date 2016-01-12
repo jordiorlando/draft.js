@@ -1,4 +1,4 @@
-var Draft = this.Draft = {
+var Draft = {
   mixins: {},
 
   // Construct a unique ID from the element's type and ID
