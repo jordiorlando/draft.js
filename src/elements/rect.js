@@ -9,7 +9,7 @@ Draft.Rect.require([
   'radius'
 ]);
 
-Draft.Container.mixin({
+Draft.Group.mixin({
   rect: function(width, height) {
     return this.add(new Draft.Rect()).size(width, height);
   }
