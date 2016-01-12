@@ -37,8 +37,7 @@ Include the library at the top of your html file:
 </body>
 ```
 
-Create a new document and add a page to it:
-Create a new page inside of an existing html element:
+Write a new script and include it after your html content:
 
 ```javascript
 // Create a new Draft document and add a page to it
@@ -63,4 +62,4 @@ view.appendChild(page.svg());
 ## Acknowledgements
 
 - [Wout Fierens](https://github.com/wout), [Ulrich-Matthias Schäfer](https://github.com/Fuzzyma), and all the other contributors to the SVG.js library.
-- [Oliver Caldwell](https://github.com/Olical) for creating [Heir](https://github.com/Olical/Heir), a tiny script for object inheritance and mixins.
+- [Oliver Caldwell](https://github.com/Olical) for creating [EventEmitter](https://github.com/Olical/EventEmitter), a library for using DOM-like events without the DOM, and [Heir](https://github.com/Olical/Heir), a tiny script for object inheritance and mixins.

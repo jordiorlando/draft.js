@@ -1,16 +1,16 @@
-Draft.transforms = {
+Draft.mixins.transforms = {
   require: [
-    Draft.transform
+    'transform'
   ],
   // Translate the element relative to its current position
-  translate: function (x, y) {
+  translate: function(x, y) {
     return this.transform({
       x: x,
       y: y
     });
   },
   // Scale the element relative to its current size
-  scale: function (x, y, cx, cy) {
+  scale: function(x, y, cx, cy) {
     /*return this.transform({
       x: x,
       y: y,
@@ -19,7 +19,7 @@ Draft.transforms = {
     });*/
   },
   // Rotate the element relative to its current angle
-  rotate: function (a, cx, cy) {
+  rotate: function(a, cx, cy) {
     /*return this.transform({
       a: a,
       cx: cx,
@@ -27,7 +27,7 @@ Draft.transforms = {
     });*/
   },
   // Skew the element relative to its current skew
-  skew: function (ax, ay, cx, cy) {
+  skew: function(ax, ay, cx, cy) {
     /*return this.transform({
       ax: ax,
       ay: ay,

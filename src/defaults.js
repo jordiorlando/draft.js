@@ -1,10 +1,14 @@
-Draft.defaults = {
+// TODO: configurable defaults
+const defaults = {
   system: 'cartesian',
   units: 'px',
   /*width: 0,
   length: 0,
   r: 0, // radius
   a: 0, // angle*/
+
+  // Standard 96dpi resolution
+  dpi: 96/*,
 
   // Cartesian coordinates
   cartesian: {
@@ -15,17 +19,17 @@ Draft.defaults = {
       'z'
     ],
     web: [
-      function (pos) {
+      function(pos) {
         return pos[0];
       },
-      function (pos) {
+      function(pos) {
         return height - pos[1];
       },
-      function (pos) {
+      function(pos) {
         return pos[2];
       },
       // Full position
-      function (pos) {
+      function(pos) {
         return [
           pos[0],
           height - pos[1],
@@ -34,17 +38,17 @@ Draft.defaults = {
       }
     ],
     polar: [
-      function (pos) {
+      function(pos) {
         return Math.sqrt(Math.pow(pos[0], 2) + Math.pow(pos[1], 2));
       },
-      function (pos) {
+      function(pos) {
         return Math.atan2(pos[1], pos[0]);
       },
-      function (pos) {
+      function(pos) {
         return pos[2];
       },
       // Full position
-      function (pos) {
+      function(pos) {
         return [
           Math.sqrt(Math.pow(pos[0], 2) + Math.pow(pos[1], 2)),
           Math.atan2(pos[1], pos[0]),
@@ -62,18 +66,18 @@ Draft.defaults = {
   polar: {
     layer: 2,
     vars: [
-      'rho',
-      'phi',
+      'ρ',
+      'φ',
       'z'
     ],
     cartesian: [
-      function (pos) {
+      function(pos) {
         return pos[0] * Math.cos(pos[1] * (Math.PI / 180));
       },
-      function (pos) {
+      function(pos) {
         return pos[0] * Math.sin(pos[1] * (Math.PI / 180));
       },
-      function (pos) {
+      function(pos) {
         return pos[2];
       }
     ],
@@ -87,9 +91,9 @@ Draft.defaults = {
   spherical: {
     layer: 2,
     vars: [
-      'rho',
-      'phi',
-      'theta'
+      'ρ',
+      'φ',
+      'θ'
     ]
-  }
+  }*/
 };

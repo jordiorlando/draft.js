@@ -1,20 +1,16 @@
-Draft.Rect = Draft.create({
-  inherit: Draft.Element,
+Draft.Rect = class Rect extends Draft.Element {
+  get rekt() {
+    return Math.floor(Math.random() * 101) + '% rekt';
+  }
+};
 
-  require: [
-    Draft.radius
-  ],
+Draft.Rect.require([
+  'size',
+  'radius'
+]);
 
-  methods: {
-    // in the butt
-    getRekt: function () {
-      return this.prop();
-    }
-  },
-
-  init: {
-    rect: function (width, height) {
-      return this.add(new Draft.Rect()).size(width, height);
-    }
+Draft.Group.mixin({
+  rect: function(width, height) {
+    return this.add(new Draft.Rect()).size(width, height);
   }
 });

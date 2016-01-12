@@ -5,12 +5,10 @@ const header = require('gulp-header');
 const jasmine = require('gulp-jasmine');
 const rename = require('gulp-rename');
 const size = require('gulp-size');
-const sourcemaps = require("gulp-sourcemaps");
+const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
 const wrap = require("gulp-wrap");
 var wrapContent = '<%= data.contents %>';
-// const wrapJS = require("gulp-wrap-js");
-// var wrapContent = '{%= body %}';
 const del = require('del');
 
 
@@ -20,28 +18,33 @@ var name = 'Draft';
 
 
 var pkg = require('./package.json');
-
 var src = [
   // Main
   'src/draft.js',
+  'src/inherit.js',
   'src/defaults.js',
   'src/helpers.js',
-  // Methods
-  'src/methods/json.js',
-  'src/methods/system.js',
-  'src/methods/units.js',
 
-  'src/methods/size.js',
-  'src/methods/move.js',
-  'src/methods/radius.js',
+  // Mixins
+  'src/mixins/event.js',
 
-  'src/methods/transform.js',
-  'src/methods/transforms.js',
+  'src/mixins/system.js',
+  'src/mixins/units.js',
+
+  'src/mixins/position.js',
+  'src/mixins/rotation.js',
+
+  'src/mixins/size.js',
+  'src/mixins/radius.js',
+
+  'src/mixins/json.js',
+
   // Containers
   'src/elements/element.js',
   'src/elements/container.js',
   'src/elements/doc.js',
   'src/elements/group.js',
+  'src/elements/view.js',
   'src/elements/page.js',
   // Elements
   'src/elements/line.js',
@@ -50,23 +53,23 @@ var src = [
 ];
 
 var umdTop = [
-  '(function (root, factory) {',
+  '(function(root, factory) {',
   '  if (typeof define === \'function\' && define.amd) {',
   '    // AMD. Register as an anonymous module.',
-  '    define(function () {',
+  '    define(function() {',
   '      return factory(root, root.document);',
   '    });',
   '  } else if (typeof module === \'object\' && module.exports) {',
   '    // Node. Does not work with strict CommonJS.',
   '    module.exports = root.document ? factory(root, root.document) :',
-  '      function (w) {',
+  '      function(w) {',
   '        return factory(w, w.document);',
   '      };',
   '  } else {',
   '    // Browser globals (root is window)',
   '    root.<%= data.name %> = factory(root, root.document);',
   '  }',
-  '}(typeof window !== "undefined" ? window : this, function (window, document) {'
+  '}(typeof window !== "undefined" ? window : this, function(window, document) {'
 ].join('\n');
 var umdBottom = [
   '  return <%= data.name %>;',
@@ -87,41 +90,37 @@ var headerLong = [
   '*/\n'
 ].join('\n');
 
-var headerShort = '/*<%= pkg.name %> v<%= pkg.version %> <%= pkg.license %>*/';
+var headerShort = '/*<%= pkg.name %> v<%= pkg.version %> | <%= pkg.homepage %> | <%= pkg.license %> license*/\n';
 
-gulp.task('clean', function () {
+
+
+gulp.task('clean', function() {
 	del.sync(['dist/*']);
 });
 
-
-gulp.task('unify', ['clean'], function () {
+gulp.task('unify', ['clean'], function() {
   pkg.buildDate = Date();
 
   return gulp.src(src)
     .pipe(concat('draft.js', { newLine: '\n' }))
-    .pipe(wrap(umd, {name: name}, {variable: 'data'}))
-    // .pipe(wrapJS(umd, {indent: {style: '  '}}))
+    .pipe(wrap(umd, { name: name }, { variable: 'data' }))
     .pipe(header(headerLong, { pkg: pkg }))
     .pipe(gulp.dest('dist'))
     .pipe(size({showFiles: true, title: 'Full'}));
 });
 
-// FIXME: minified distribution doesn't work, the UMD headers are mangled
-gulp.task('minify', ['unify'], function () {
+// BACKLOG: figure out why sourcemaps don't exactly work
+gulp.task('minify', ['unify'], function() {
   return gulp.src('dist/draft.js')
-    .pipe(sourcemaps.init())
-    .pipe(babel({
-      presets: ['es2015'],
-      // plugins: ["transform-es2015-modules-umd"]
-    }))
-    // .pipe(concat('draft.js', { newLine: '\n' }))
-    // .pipe(wrapJS(umd, {indent: {style: '  '}}))
-    .pipe(uglify())
-    .pipe(rename({ suffix:'.min' }))
-    .pipe(size({ showFiles: true, title: 'Minified' }))
+    .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(babel({ presets: ['es2015'] }))
+      .pipe(uglify())
+      .pipe(rename({ suffix:'.min' }))
+      // .pipe(header(headerShort, { pkg: pkg }))
+      .pipe(size({ showFiles: true, title: 'Minified' }))
+      .pipe(size({ showFiles: true, gzip: true, title: 'Gzipped' }))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('dist'))
-    .pipe(size({ showFiles: true, gzip: true, title: 'Gzipped' }));
+    .pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['clean', 'unify', 'minify'], function () {});
+gulp.task('default', ['clean', 'unify', 'minify'], function() {});

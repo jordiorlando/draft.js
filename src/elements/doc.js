@@ -1,39 +1,23 @@
-Draft.Doc = Draft.create({
-  construct: function (element) {
-    if (element) {
-      // Ensure the presence of a DOM element
-      this.dom = typeof element == 'string' ?
-        document.getElementById(element) :
-        element;
-    }
-  },
+Draft.Doc = class Doc extends Draft.Container {
+  constructor(name) {
+    super(name);
 
-  inherit: Draft.Container
+    // Initialize elements container
+    this.elements = {};
 
-  /*methods: {
-    docs: function () {
-      return this.node.docs;
-    }
-  }*/
+    this.prop({
+      system: defaults.system,
+      units: defaults.units
+    });
+  }
+};
 
-  /*init: {
-    doc: function (element, name) {
-      if (element) {
-        // Ensure the presence of a DOM element
-        element = typeof element == 'string' ?
-          document.getElementById(element) :
-          element;
+Draft.doc = function(name) {
+  return new Draft.Doc(name);
+};
 
-        var doc = new Draft.Doc(name);
-
-        // this.node = {};
-        doc.children = [];
-        doc.dom = element;
-
-        return doc;
-      }
-
-      // this.constructor.call(this, element);
-    }
-  }*/
-});
+/*Draft.mixin(Draft, {
+  doc: function(name) {
+    return new Draft.Doc(name);
+  }
+});*/

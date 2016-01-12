@@ -1,7 +1,7 @@
 {
   "name": "draft.js",
   "authors": [
-    "Jordi Orlando <jordi.orlando@gmail.com>"
+    "Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>"
   ],
   "description": "A lightweight library for parametric design",
   "main": "dist/draft.min.js",

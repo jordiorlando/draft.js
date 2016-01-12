@@ -1,28 +1,12 @@
-Draft.Page = Draft.create({
-  inherit: Draft.Group,
+Draft.Page = class Page extends Draft.Group {};
 
-  methods: {
-    // Set the page's origin relative to its (0, 0) position
-    // TODO: remove this?
-    origin: function (x, y) {
-      return this.prop({
-        'origin.x': x,
-        'origin.y': y
-      });
-    }
-  },
+Draft.Page.require('size');
 
-  init: {
-    page: function (name) {
-      // TODO: move this .prop call somewhere else?
-      return this.add(new Draft.Page(name)).prop({
-        system: Draft.defaults.system,
-        units: Draft.defaults.units
-      });
-
-      // Draft.pages.push(page);
-    }
-  },
-
-  parent: Draft.Doc
+Draft.Doc.mixin({
+  page: function(name) {
+    return this.add(new Draft.Page(name)).prop({
+      system: this.prop('system'),
+      units: this.prop('units')
+    });
+  }
 });

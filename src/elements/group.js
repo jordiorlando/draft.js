@@ -1,18 +1,16 @@
-Draft.Group = Draft.create({
-  inherit: Draft.Container,
+Draft.Group = class Group extends Draft.Container {};
 
-  require: [
-    Draft.system,
-    Draft.units
-  ],
+Draft.Group.require([
+  'system',
+  'units'
+]);
 
-  init: {
-    group: function (name) {
-      // TODO: move this .prop call somewhere else?
-      return this.add(new Draft.Group(name)).prop({
-        system: this.system(),
-        units: this.units()
-      }).move(0, 0);
-    }
+// TODO: mixin to Draft.group
+Draft.Container.mixin({
+  group: function() {
+    return this.add(new Draft.Group(name)).prop({
+      system: this.prop('system'),
+      units: this.prop('units')
+    });
   }
 });

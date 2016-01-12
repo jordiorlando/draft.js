@@ -1,39 +1,40 @@
-Draft.Container = Draft.create({
-  inherit: Draft.Element,
+Draft.Container = class Container extends Draft.Element {
+  constructor(name) {
+    super();
 
-  methods: {
-    parent: function () {
-      return this.parent;
-    },
-    child: function (child) {
-      return this.children[child];
-    },
-    push: function (element) {
-      // Add a reference to the element's parent
-      element.parent = this;
+    // Set a name if given
+    this.prop('name', name || null);
 
-      // Initialize children array and add the element to the end
-      this.children = this.children || [];
-      this.children.push(element);
-
-      // Add the element to its type array
-      var doc = elementDoc(element);
-      var type = elementType(element);
-      doc.elements = doc.elements || {};
-      doc.elements[type] = doc.elements[type] || [];
-      doc.elements[type].push(element);
-
-      // Set the element's basic properties
-      element.prop({
-        type: type,
-        id: elementID(element)
-      });
-
-      return element;
-    },
-    // FIXME: figure out why this only updates the tree view when saved to a var
-    add: function (element) {
-      return this.push(element);
-    }
+    // Initialize children array
+    this.children = [];
   }
-});
+
+  /*child(child) {
+    return this.children[child];
+  }*/
+
+  push(child) {
+    // Add a reference to the child's parent and containing doc
+    child.parent = this;
+    child.doc = this.doc || this;
+
+    this.dom.node.appendChild(child.dom.node);
+
+    // Add the child to its type array
+    let type = child.prop('type');
+    child.doc.elements[type] = child.doc.elements[type] || [];
+    child.doc.elements[type].push(child);
+    // Set the child's basic properties
+    child.prop('id', elementID(child));
+
+    // Add the child to the end of the children array
+    this.children.push(child);
+
+    return this;
+  }
+
+  add(child) {
+    this.push(child);
+    return child;
+  }
+};

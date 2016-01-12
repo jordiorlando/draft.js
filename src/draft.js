@@ -1,73 +1,52 @@
-var Draft = this.Draft = function (element) {
-  return new Draft.Doc(element);
-};
-
-// TODO: separate ID counters for each type of element
-Draft.id = 0;
-// TODO: separate array containers for each type of element
-// Draft.pages = [];
-
-// This function takes an existing element and copies the supplied methods to it
-Draft.extend = function (element, methods) {
-  for (var method in methods) {
-    // If method is a function, copy it
-    if (typeof methods[method] === 'function') {
-      element.prototype[method] = methods[method];
-    }
-    // If method is an array, call Draft.extend for each element of the array
-    else if (method == 'require') {
-      methods[method].forEach(function (e) {
-        Draft.extend(element, e);
-      });
-    }
-  }
-
-  return methods;
-};
-
-// This function creates a new element class from a configuration object
-Draft.create = function (config) {
-  var element = typeof config.construct == 'function' ?
-    config.construct :
-    function (name) {
-      // TODO: change this?
-      this.prop({
-        name: name || null
-      });
-      // this.constructor.call(this);
-    };
-
-  // Inherit the prototype
-  if (config.inherit) {
-    element.prototype = Object.create(config.inherit.prototype);
-    element.prototype.constructor = element;
-  }
-
-  // var methods = {};
-
-  // Attach all required methods
-  if (config.require) {
-    config.require.forEach(function (e) {
-      Draft.extend(element, e);
-    });
-  }
-
-  // Attach all new methods
-  if (config.methods) {
-    Draft.extend(element, config.methods);
-  }
-
-  // Attach the initialization method to the parent
-  if (config.init) {
-    Draft.extend(config.parent || Draft.Container, config.init);
-  }
+var Draft = {
+  mixins: {},
 
   // Construct a unique ID from the element's type and ID
-  Draft.domID = function (element) {
+  domID: function(element) {
     return 'DraftJS_' +
-      element.properties.type + '_' +
-      zeroPad(element.properties.id, 4);
-  };
+      element.prop('type') + '_' +
+      zeroPad(element.prop('id'), 4);
+  },
 
-  return element;
+  // BACKLOG:50 configurable dpi setting
+  // TODO:50 test safety checks for Draft.px()
+  px: function(val) {
+    var num = parseFloat(val, 10);
+    var units = testUnits(val);
+
+    // Remain unchanged if units are already px
+    if (units == 'px') {
+      return num;
+    }
+    // Points and picas (pt, pc)
+    else if (units == 'pt') {
+      return Draft.px(num / 72 + 'in');
+    } else if (units == 'pc') {
+      return Draft.px(num * 12 + 'pt');
+    }
+    // Imperial units (in, ft, yd, mi)
+    else if (units == 'in') {
+      return num * defaults.dpi;
+    } else if (units == 'ft') {
+      return Draft.px(num * 12 + 'in');
+    } else if (units == 'yd') {
+      return Draft.px(num * 3 + 'ft');
+    } else if (units == 'mi') {
+      return Draft.px(num * 1760 + 'yd');
+    }
+    // Metric units (mm, cm, m, km)
+    else if (units.endsWith('m')) {
+      if (units == 'mm') {
+        num *= 1;
+      } else if (units == 'cm') {
+        num *= 10;
+      } else if (units == 'km') {
+        num *= 1000000;
+      }
+
+      return Draft.px(num / 25.4 + 'in');
+    } else {
+      return undefined;
+    }
+  }
 };

@@ -1,4 +1,4 @@
-Draft.system = {
+Draft.mixins.system = {
   // Cartesian:
   // - page.system('cartesian')
   // - (x, y)
@@ -7,22 +7,22 @@ Draft.system = {
   //
   // Polar:
   // - page.system('polar')
-  // - (r, phi)
-  // - phi is counter-clockwise, with 0 pointing to the right
+  // - (r, φ)
+  // - φ is counter-clockwise, with 0 pointing to the right
   // - global pole (0, 0) is at center
   //
-  // TODO: remove this?
+  // BACKLOG:30 remove svg coordinates?
   // Web/SVG:
   // - page.system('web')
   // - (x, y)
   // - x is right, y is down, z is out of the page (left-hand)
   // - global origin (0, 0) is at top-left
 
-  // TODO: switch phi for theta?
-  // TODO: Spherical (p, theta, phi), Cylindrical (p, phi, z)
-  system: function (system) {
+  // BACKLOG:10 switch φ for θ?
+  // BACKLOG:0 Spherical (ρ, θ, φ), Cylindrical (ρ, φ, z)
+  system: function(system) {
     /*if (this.prop('system') != system) {
-      // TODO: recursively convert all elements to new system?
+      // BACKLOG:20 recursively convert all elements to new system?
     }*/
     return this.prop('system', system);
   }
