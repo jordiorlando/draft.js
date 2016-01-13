@@ -1,13 +1,6 @@
 var Draft = {
   mixins: {},
 
-  // Construct a unique ID from the element's type and ID
-  domID: function(element) {
-    return 'DraftJS_' +
-      element.prop('type') + '_' +
-      zeroPad(element.prop('id'), 4);
-  },
-
   // BACKLOG:50 configurable dpi setting
   // TODO:50 test safety checks for Draft.px()
   px: function(val) {

@@ -31,6 +31,15 @@ Draft.Element = class Element {
     }
   }
 
+  // Construct a unique ID from the element's type and ID
+  getID() {
+    return [
+      'DraftJS',
+      this.prop('type'),
+      zeroPad(this.prop('id'), 4)
+    ].join('_');
+  }
+
   prop(prop, val) {
     // BACKLOG: test deleting all properties, perhaps remove it
     // Delete all properties if prop is null
@@ -71,8 +80,8 @@ Draft.Element = class Element {
       /*val = this._properties[prop];
       return val === undefined ? defaults[prop] || 0 : val;*/
 
-      // FIXME: don't return 0
-      // If prop is undefined, set it to the default OR 0
+      // TODO: don't return 0?
+      // If prop is undefined, return the default OR 0
       return this._properties[prop] || defaults[prop] || 0;
     }
     // Act as an individual property setter if both prop and val are defined

@@ -6,7 +6,7 @@
 * copyright Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>
 * license MIT
 *
-* BUILT: Mon Jan 11 2016 21:45:50 GMT-0600 (CST)
+* BUILT: Tue Jan 12 2016 18:52:39 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -27,13 +27,6 @@
 }(typeof window !== "undefined" ? window : this, function(window, document) {
 var Draft = {
   mixins: {},
-
-  // Construct a unique ID from the element's type and ID
-  domID: function(element) {
-    return 'DraftJS_' +
-      element.prop('type') + '_' +
-      zeroPad(element.prop('id'), 4);
-  },
 
   // BACKLOG:50 configurable dpi setting
   // TODO:50 test safety checks for Draft.px()
@@ -291,9 +284,7 @@ Draft.mixins.event = {
     for (let key in listenersMap) {
       var listeners = listenersMap[key];
 
-      // BACKLOG: change to Array.prototype.includes() for checking:
-      // if (!listeners.map(l => l.listener).includes(listener))
-      if (listeners.map(l => l.listener).lastIndexOf(listener) === -1) {
+      if (!listeners.map(l => l.listener).includes(listener)) {
         listeners.push(typeof listener === 'object' ? listener : {
           listener: listener,
           once: false
@@ -369,7 +360,7 @@ Draft.mixins.event = {
       while (i--) {
         console.info('event fired:', {
           target: this,
-          timeStamp: new Date(), // TODO: Date.now() to prevent memory leaks?
+          timeStamp: new Date(),
           type: key
         }, args);
 
@@ -644,6 +635,15 @@ Draft.Element = class Element {
     }
   }
 
+  // Construct a unique ID from the element's type and ID
+  getID() {
+    return [
+      'DraftJS',
+      this.prop('type'),
+      zeroPad(this.prop('id'), 4)
+    ].join('_');
+  }
+
   prop(prop, val) {
     // BACKLOG: test deleting all properties, perhaps remove it
     // Delete all properties if prop is null
@@ -684,8 +684,8 @@ Draft.Element = class Element {
       /*val = this._properties[prop];
       return val === undefined ? defaults[prop] || 0 : val;*/
 
-      // FIXME: don't return 0
-      // If prop is undefined, set it to the default OR 0
+      // TODO: don't return 0?
+      // If prop is undefined, return the default OR 0
       return this._properties[prop] || defaults[prop] || 0;
     }
     // Act as an individual property setter if both prop and val are defined

@@ -21,9 +21,7 @@ Draft.mixins.event = {
     for (let key in listenersMap) {
       var listeners = listenersMap[key];
 
-      // BACKLOG: change to Array.prototype.includes() for checking:
-      // if (!listeners.map(l => l.listener).includes(listener))
-      if (listeners.map(l => l.listener).lastIndexOf(listener) === -1) {
+      if (!listeners.map(l => l.listener).includes(listener)) {
         listeners.push(typeof listener === 'object' ? listener : {
           listener: listener,
           once: false
@@ -99,7 +97,7 @@ Draft.mixins.event = {
       while (i--) {
         console.info('event fired:', {
           target: this,
-          timeStamp: new Date(), // TODO: Date.now() to prevent memory leaks?
+          timeStamp: new Date(),
           type: key
         }, args);
 
