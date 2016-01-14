@@ -1,10 +1,10 @@
-Draft.Page = class Page extends Draft.Group {};
+draft.Page = class Page extends draft.Group {};
 
-Draft.Page.require('size');
+draft.Page.require('size');
 
-Draft.Doc.mixin({
+draft.Doc.mixin({
   page(name) {
-    return this.add(new Draft.Page(name)).prop({
+    return this.add(new draft.Page(name)).prop({
       system: this.prop('system'),
       units: this.prop('units')
     });

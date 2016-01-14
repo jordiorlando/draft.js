@@ -1,5 +1,5 @@
 // TODO: configurable defaults
-Draft.defaults = {
+draft.defaults = {
   system: 'cartesian',
   units: 'px',
   /* width: 0,

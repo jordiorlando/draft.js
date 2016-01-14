@@ -1,4 +1,4 @@
-Draft.mixins.system = {
+draft.mixins.system = {
   // Cartesian:
   // - page.system('cartesian')
   // - (x, y)

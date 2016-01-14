@@ -1,5 +1,5 @@
-// Draft.Element =
-Draft.Element = class Element {
+// draft.Element =
+draft.Element = class Element {
   constructor() {
     // DOING:10 create DOM node
     this.dom = {};
@@ -11,8 +11,8 @@ Draft.Element = class Element {
     this._properties = {};
 
     // HACK:0 need a better way of getting an element's type
-    for (var type in Draft) {
-      if (this.constructor === Draft[type]) {
+    for (var type in draft) {
+      if (this.constructor === draft[type]) {
         this.prop('type', type.toLowerCase());
         break;
       }
@@ -20,17 +20,17 @@ Draft.Element = class Element {
   }
 
   static inherit(source, addSuper) {
-    Draft.inherit(this, source, addSuper);
+    draft.inherit(this, source, addSuper);
   }
 
   static mixin(source) {
-    Draft.mixin(this, source);
+    draft.mixin(this, source);
   }
 
   // TODO:40 merge require() with mixin()?
   static require(source) {
     if (typeof source == 'string') {
-      this.mixin(Draft.mixins[source]);
+      this.mixin(draft.mixins[source]);
     } else if (Array.isArray(source)) {
       for (var mixin of source) {
         this.require(mixin);
@@ -54,7 +54,7 @@ Draft.Element = class Element {
     }
 
     return [
-      'DraftJS',
+      'draft',
       this.type,
       id
     ].join('_');
@@ -91,7 +91,7 @@ Draft.Element = class Element {
       // TODO: don't return 0?
       // If prop is undefined, set it to the default OR 0
       return this._properties[prop] ||
-        (this._properties[prop] = Draft.defaults[prop] || 0);
+        (this._properties[prop] = draft.defaults[prop] || 0);
     } else {
       // Act as an individual property setter if both prop and val are defined
 
@@ -99,7 +99,7 @@ Draft.Element = class Element {
       if (String(val).endsWith('_u')) {
         val = val.slice(0, -2);
         val = isFinite(val) ?
-          val + this.parent.prop('units') || Draft.defaults.units : val;
+          val + this.parent.prop('units') || draft.defaults.units : val;
       }
 
       this._properties[prop] = val;
@@ -129,7 +129,7 @@ Draft.Element = class Element {
   }
 };
 
-Draft.Element.require([
+draft.Element.require([
   'event',
   'position',
   'rotation'

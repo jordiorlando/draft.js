@@ -6,7 +6,7 @@
 * copyright Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>
 * license MIT
 *
-* BUILT: Thu Jan 14 2016 03:50:12 GMT-0600 (CST)
+* BUILT: Thu Jan 14 2016 17:53:35 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -22,13 +22,13 @@
       };
   } else {
     // Browser globals (root is window)
-    root.Draft = factory(root, root.document);
+    root.draft = factory(root, root.document);
   }
-}(typeof window !== "undefined" ? window : this, function(window, document) {
-var Draft = {
+}(typeof window !== 'undefined' ? window : this, function(window, document) {
+var draft = {
   mixins: {},
 
-  // TODO:50 test safety checks for Draft.px()
+  // TODO:50 test safety checks for draft.px()
   px(val) {
     var num = parseFloat(val, 10);
     var units = testUnits(val);
@@ -79,7 +79,7 @@ var Draft = {
         return undefined;
     }
 
-    return num * Draft.defaults.dpi;
+    return num * draft.defaults.dpi;
   }
 };
 
@@ -87,7 +87,7 @@ var Draft = {
 // released under the Unlicense (public domain).
 // GitHub Repository: https://github.com/Olical/Heir
 
-Draft.inherit = function(destination, source, addSuper) {
+draft.inherit = function(destination, source, addSuper) {
   var proto = destination.prototype = Object.create(source.prototype);
   proto.constructor = destination;
 
@@ -96,7 +96,7 @@ Draft.inherit = function(destination, source, addSuper) {
   }
 };
 
-Draft.mixin = function(destination, source) {
+draft.mixin = function(destination, source) {
   for (var key in source) {
     if (source.hasOwnProperty(key)) {
       destination.prototype[key] = source[key];
@@ -105,7 +105,7 @@ Draft.mixin = function(destination, source) {
 };
 
 // TODO: configurable defaults
-Draft.defaults = {
+draft.defaults = {
   system: 'cartesian',
   units: 'px',
   /* width: 0,
@@ -242,7 +242,7 @@ function testUnits(val, units) {
 
 // TODO: implement bubbling?
 
-Draft.mixins.event = {
+draft.mixins.event = {
   on(evt, listener) {
     var listenersMap = this.getListeners(evt, true);
 
@@ -295,11 +295,11 @@ Draft.mixins.event = {
       var i = listeners.length;
 
       while (i--) {
-        /* console.info('event fired:', {
+        console.info('event fired:', {
           target: this,
           timeStamp: new Date(),
           type: key
-        }, args); */
+        }, args);
 
         var listener = listeners[i];
         var response = listener.listener.apply({
@@ -319,9 +319,9 @@ Draft.mixins.event = {
     return this;
   },
 
-  defineEvent() {
-    for (let i = 0; i < arguments.length; i++) {
-      this.getListeners(arguments[i]);
+  defineEvent(...evts) {
+    for (var evt of evts) {
+      this.getListeners(evt);
     }
 
     return this;
@@ -389,7 +389,7 @@ Draft.mixins.event = {
   }
 };
 
-Draft.mixins.system = {
+draft.mixins.system = {
   // Cartesian:
   // - page.system('cartesian')
   // - (x, y)
@@ -419,14 +419,14 @@ Draft.mixins.system = {
   }
 };
 
-Draft.mixins.units = {
+draft.mixins.units = {
   // Get/set the element's measurement units
   units(units) {
     return this.prop('units', units);
   }
 };
 
-Draft.mixins.position = {
+draft.mixins.position = {
   position(x, y, z) {
     return this.prop({
       x: unit(x),
@@ -448,7 +448,7 @@ Draft.mixins.position = {
   }
 };
 
-Draft.mixins.rotation = {
+draft.mixins.rotation = {
   rotation(α, β, γ) {
     return this.prop({
       α: α,
@@ -470,7 +470,7 @@ Draft.mixins.rotation = {
   }
 };
 
-Draft.mixins.size = {
+draft.mixins.size = {
   // Get/set the element's width
   width(width) {
     return this.prop('width', unit(width));
@@ -488,7 +488,7 @@ Draft.mixins.size = {
   }
 };
 
-Draft.mixins.radius = {
+draft.mixins.radius = {
   // Get/set the element's x radius
   rx(rx) {
     return this.prop('rx', unit(rx));
@@ -506,14 +506,14 @@ Draft.mixins.radius = {
   }
 };
 
-Draft.mixins.json = {
+draft.mixins.json = {
   stringify(replacer) {
     return JSON.stringify(this, replacer, 2);
   }
 };
 
-// Draft.Element =
-Draft.Element = class Element {
+// draft.Element =
+draft.Element = class Element {
   constructor() {
     // DOING:10 create DOM node
     this.dom = {};
@@ -525,8 +525,8 @@ Draft.Element = class Element {
     this._properties = {};
 
     // HACK:0 need a better way of getting an element's type
-    for (var type in Draft) {
-      if (this.constructor === Draft[type]) {
+    for (var type in draft) {
+      if (this.constructor === draft[type]) {
         this.prop('type', type.toLowerCase());
         break;
       }
@@ -534,17 +534,17 @@ Draft.Element = class Element {
   }
 
   static inherit(source, addSuper) {
-    Draft.inherit(this, source, addSuper);
+    draft.inherit(this, source, addSuper);
   }
 
   static mixin(source) {
-    Draft.mixin(this, source);
+    draft.mixin(this, source);
   }
 
   // TODO:40 merge require() with mixin()?
   static require(source) {
     if (typeof source == 'string') {
-      this.mixin(Draft.mixins[source]);
+      this.mixin(draft.mixins[source]);
     } else if (Array.isArray(source)) {
       for (var mixin of source) {
         this.require(mixin);
@@ -568,7 +568,7 @@ Draft.Element = class Element {
     }
 
     return [
-      'DraftJS',
+      'draft',
       this.type,
       id
     ].join('_');
@@ -605,7 +605,7 @@ Draft.Element = class Element {
       // TODO: don't return 0?
       // If prop is undefined, set it to the default OR 0
       return this._properties[prop] ||
-        (this._properties[prop] = Draft.defaults[prop] || 0);
+        (this._properties[prop] = draft.defaults[prop] || 0);
     } else {
       // Act as an individual property setter if both prop and val are defined
 
@@ -613,7 +613,7 @@ Draft.Element = class Element {
       if (String(val).endsWith('_u')) {
         val = val.slice(0, -2);
         val = isFinite(val) ?
-          val + this.parent.prop('units') || Draft.defaults.units : val;
+          val + this.parent.prop('units') || draft.defaults.units : val;
       }
 
       this._properties[prop] = val;
@@ -643,13 +643,13 @@ Draft.Element = class Element {
   }
 };
 
-Draft.Element.require([
+draft.Element.require([
   'event',
   'position',
   'rotation'
 ]);
 
-Draft.Container = class Container extends Draft.Element {
+draft.Container = class Container extends draft.Element {
   constructor(name) {
     super();
 
@@ -694,7 +694,7 @@ Draft.Container = class Container extends Draft.Element {
   }
 };
 
-Draft.Doc = class Doc extends Draft.Container {
+draft.Doc = class Doc extends draft.Container {
   constructor(name) {
     super(name);
 
@@ -702,106 +702,106 @@ Draft.Doc = class Doc extends Draft.Container {
     this.elements = {};
 
     this.prop({
-      system: Draft.defaults.system,
-      units: Draft.defaults.units
+      system: draft.defaults.system,
+      units: draft.defaults.units
     });
   }
 };
 
-Draft.doc = function(name) {
-  return new Draft.Doc(name);
+draft.doc = function(name) {
+  return new draft.Doc(name);
 };
 
-/* Draft.mixin(Draft, {
+/* draft.mixin(draft, {
   doc(name) {
-    return new Draft.Doc(name);
+    return new draft.Doc(name);
   }
 }); */
 
-Draft.Group = class Group extends Draft.Container {};
+draft.Group = class Group extends draft.Container {};
 
-Draft.Group.require([
+draft.Group.require([
   'system',
   'units'
 ]);
 
-// TODO: mixin to Draft.group
-Draft.Container.mixin({
+// TODO: mixin to draft.group
+draft.Container.mixin({
   group() {
-    return this.add(new Draft.Group(name)).prop({
+    return this.add(new draft.Group(name)).prop({
       system: this.prop('system'),
       units: this.prop('units')
     });
   }
 });
 
-Draft.View = class View extends Draft.Element {
+draft.View = class View extends draft.Element {
   /* render(renderer) {
     this['render' + renderer.toUpperCase()]();
   } */
 };
 
-Draft.View.require('size');
+draft.View.require('size');
 
-Draft.Group.mixin({
+draft.Group.mixin({
   view(width, height) {
-    return this.add(new Draft.View()).size(width, height);
+    return this.add(new draft.View()).size(width, height);
   }
 });
 
-Draft.Page = class Page extends Draft.Group {};
+draft.Page = class Page extends draft.Group {};
 
-Draft.Page.require('size');
+draft.Page.require('size');
 
-Draft.Doc.mixin({
+draft.Doc.mixin({
   page(name) {
-    return this.add(new Draft.Page(name)).prop({
+    return this.add(new draft.Page(name)).prop({
       system: this.prop('system'),
       units: this.prop('units')
     });
   }
 });
 
-Draft.Line = class Line extends Draft.Element {
+draft.Line = class Line extends draft.Element {
   length(length) {
     return this.prop('length', unit(length));
   }
 };
 
-Draft.Group.mixin({
+draft.Group.mixin({
   line(length) {
-    return this.add(new Draft.Line()).length(length);
+    return this.add(new draft.Line()).length(length);
   }
 });
 
-Draft.Rect = class Rect extends Draft.Element {
+draft.Rect = class Rect extends draft.Element {
   get rekt() {
     return `${Math.floor(Math.random() * 101)}% rekt`;
   }
 };
 
-Draft.Rect.require([
+draft.Rect.require([
   'size',
   'radius'
 ]);
 
-Draft.Group.mixin({
+draft.Group.mixin({
   rect(width, height) {
-    return this.add(new Draft.Rect()).size(width, height);
+    return this.add(new draft.Rect()).size(width, height);
   }
 });
 
-Draft.Circle = class Circle extends Draft.Element {
+draft.Circle = class Circle extends draft.Element {
   radius(r) {
     return this.prop('r', unit(r));
   }
 };
 
-Draft.Group.mixin({
+draft.Group.mixin({
   circle(r) {
-    return this.add(new Draft.Circle()).radius(r);
+    return this.add(new draft.Circle()).radius(r);
   }
 });
 
-  return Draft;
+  return draft;
 }));

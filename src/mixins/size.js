@@ -1,4 +1,4 @@
-Draft.mixins.size = {
+draft.mixins.size = {
   // Get/set the element's width
   width(width) {
     return this.prop('width', unit(width));

@@ -1,4 +1,4 @@
-doc = Draft.doc('my_document')
+doc = draft.doc('my_document')
 page = doc.page('test_page_1').size(600, 400)
 
 page.origin(250, 0)

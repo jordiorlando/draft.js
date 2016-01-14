@@ -98,14 +98,7 @@
         "ignoreUrls": true
       }
     ],
-    "new-cap": [
-      2,
-      {
-        "capIsNewExceptions": [
-          "Draft"
-        ]
-      }
-    ],
+    "new-cap": 2,
     "new-parens": 2,
     "no-array-constructor": 2,
     "no-bitwise": 1,
@@ -179,7 +172,9 @@
     "browser": true
   },
   "globals": {
-    "Draft": true
+    "draft": true,
+    "unit": false,
+    "testUnits": false
   },
   "extends": "eslint:recommended"
 }

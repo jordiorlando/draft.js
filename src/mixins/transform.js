@@ -1,4 +1,4 @@
-Draft.mixins.transform = {
+draft.mixins.transform = {
   transform(obj) {
     // TODO:30 make this work with actual transformation matrices
     for (var k in obj) {

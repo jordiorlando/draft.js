@@ -40,8 +40,8 @@ Include the library at the top of your html file:
 Write a new script and include it after your html content:
 
 ```javascript
-// Create a new Draft document and add a page to it
-var doc = Draft.doc('my_document');
+// Create a new draft document and add a page to it
+var doc = draft.doc('my_document');
 var page = doc.page('page_1').size(600, 400);
 
 // Add some shapes to the page

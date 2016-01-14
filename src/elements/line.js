@@ -1,11 +1,11 @@
-Draft.Line = class Line extends Draft.Element {
+draft.Line = class Line extends draft.Element {
   length(length) {
     return this.prop('length', unit(length));
   }
 };
 
-Draft.Group.mixin({
+draft.Group.mixin({
   line(length) {
-    return this.add(new Draft.Line()).length(length);
+    return this.add(new draft.Line()).length(length);
   }
 });

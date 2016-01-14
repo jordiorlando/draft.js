@@ -1,4 +1,4 @@
-Draft.mixins.position = {
+draft.mixins.position = {
   position(x, y, z) {
     return this.prop({
       x: unit(x),

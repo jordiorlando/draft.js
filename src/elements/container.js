@@ -1,4 +1,4 @@
-Draft.Container = class Container extends Draft.Element {
+draft.Container = class Container extends draft.Element {
   constructor(name) {
     super();
 

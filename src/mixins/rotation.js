@@ -1,4 +1,4 @@
-Draft.mixins.rotation = {
+draft.mixins.rotation = {
   rotation(α, β, γ) {
     return this.prop({
       α: α,

@@ -1,4 +1,4 @@
-Draft.mixins.radius = {
+draft.mixins.radius = {
   // Get/set the element's x radius
   rx(rx) {
     return this.prop('rx', unit(rx));

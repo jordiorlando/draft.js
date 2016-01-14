@@ -5,10 +5,10 @@
 - [ ] Relative transformations (translate, rotate, scale, skew)
 - [ ] Matrix transformations
 - [ ] Decide on document model:
-  - Draft.Doc is top level, one document
+  - draft.Doc is top level, one document
   - One Doc contains multiple Models, each of which can have multiple Views
-  - Make Draft.Page extend Draft.View and move it into a plugin
-  - Use a new Model container (or just Groups) instead of Draft.Page
+  - Make draft.Page extend draft.View and move it into a plugin
+  - Use a new Model container (or just Groups) instead of draft.Page
   - Allow for custom elements with custom parameters. Basically a new element class that can be instantiated just like the core ones, but can contain pre-defined geometries or groups.
 
 ## Plugins

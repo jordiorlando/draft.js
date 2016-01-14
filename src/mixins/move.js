@@ -1,4 +1,4 @@
-Draft.mixins.move = {
+draft.mixins.move = {
   /* // Get/set the element's x position
   x(x) {
     return this.prop('x', unit(x));

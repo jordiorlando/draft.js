@@ -1,16 +1,16 @@
-Draft.Rect = class Rect extends Draft.Element {
+draft.Rect = class Rect extends draft.Element {
   get rekt() {
     return `${Math.floor(Math.random() * 101)}% rekt`;
   }
 };
 
-Draft.Rect.require([
+draft.Rect.require([
   'size',
   'radius'
 ]);
 
-Draft.Group.mixin({
+draft.Group.mixin({
   rect(width, height) {
-    return this.add(new Draft.Rect()).size(width, height);
+    return this.add(new draft.Rect()).size(width, height);
   }
 });

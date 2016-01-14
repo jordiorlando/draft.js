@@ -1,14 +1,14 @@
-Draft.Group = class Group extends Draft.Container {};
+draft.Group = class Group extends draft.Container {};
 
-Draft.Group.require([
+draft.Group.require([
   'system',
   'units'
 ]);
 
-// TODO: mixin to Draft.group
-Draft.Container.mixin({
+// TODO: mixin to draft.group
+draft.Container.mixin({
   group() {
-    return this.add(new Draft.Group(name)).prop({
+    return this.add(new draft.Group(name)).prop({
       system: this.prop('system'),
       units: this.prop('units')
     });

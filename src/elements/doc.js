@@ -1,4 +1,4 @@
-Draft.Doc = class Doc extends Draft.Container {
+draft.Doc = class Doc extends draft.Container {
   constructor(name) {
     super(name);
 
@@ -6,18 +6,18 @@ Draft.Doc = class Doc extends Draft.Container {
     this.elements = {};
 
     this.prop({
-      system: Draft.defaults.system,
-      units: Draft.defaults.units
+      system: draft.defaults.system,
+      units: draft.defaults.units
     });
   }
 };
 
-Draft.doc = function(name) {
-  return new Draft.Doc(name);
+draft.doc = function(name) {
+  return new draft.Doc(name);
 };
 
-/* Draft.mixin(Draft, {
+/* draft.mixin(draft, {
   doc(name) {
-    return new Draft.Doc(name);
+    return new draft.Doc(name);
   }
 }); */

@@ -1,20 +1,17 @@
+/* eslint dot-location: [2, "property"] */
+
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const concat = require('gulp-concat');
 const header = require('gulp-header');
-const jasmine = require('gulp-jasmine');
+// const jasmine = require('gulp-jasmine');
 const rename = require('gulp-rename');
 const size = require('gulp-size');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
-const wrap = require("gulp-wrap");
+const wrap = require('gulp-wrap');
 var wrapContent = '<%= data.contents %>';
 const del = require('del');
-
-
-
-// TODO: rename to draft and remove exception for "Draft" from eslint config
-var name = 'Draft';
 
 
 
@@ -70,7 +67,7 @@ var umdTop = [
   '    // Browser globals (root is window)',
   '    root.<%= data.name %> = factory(root, root.document);',
   '  }',
-  '}(typeof window !== "undefined" ? window : this, function(window, document) {'
+  '}(typeof window !== \'undefined\' ? window : this, function(window, document) {'
 ].join('\n');
 var umdBottom = [
   '  return <%= data.name %>;',
@@ -91,21 +88,25 @@ var headerLong = [
   '*/\n'
 ].join('\n');
 
-var headerShort = '/*<%= pkg.name %> v<%= pkg.version %> | <%= pkg.homepage %> | <%= pkg.license %> license*/\n';
+var headerShort = [
+  '/*<%= pkg.name %> v<%= pkg.version %>',
+  '<%= pkg.homepage %>',
+  '<%= pkg.license %> license*/\n'
+].join(' | ');
 
 
 
 gulp.task('clean', function() {
-	del.sync(['dist/*']);
+  del.sync(['dist/*']);
 });
 
 gulp.task('unify', ['clean'], function() {
   pkg.buildDate = Date();
 
   return gulp.src(src)
-    .pipe(concat('draft.js', { newLine: '\n' }))
-    .pipe(wrap(umd, { name: name }, { variable: 'data' }))
-    .pipe(header(headerLong, { pkg: pkg }))
+    .pipe(concat('draft.js', {newLine: '\n'}))
+    .pipe(wrap(umd, {name: pkg.name.replace('.js', '')}, {variable: 'data'}))
+    .pipe(header(headerLong, {pkg: pkg}))
     .pipe(gulp.dest('dist'))
     .pipe(size({showFiles: true, title: 'Full'}));
 });
@@ -113,13 +114,13 @@ gulp.task('unify', ['clean'], function() {
 // BACKLOG: figure out why sourcemaps don't exactly work
 gulp.task('minify', ['unify'], function() {
   return gulp.src('dist/draft.js')
-    .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(babel({ presets: ['es2015'] }))
+    .pipe(sourcemaps.init({loadMaps: true}))
+      .pipe(babel({presets: ['es2015']}))
       .pipe(uglify())
-      .pipe(rename({ suffix:'.min' }))
-      // .pipe(header(headerShort, { pkg: pkg }))
-      .pipe(size({ showFiles: true, title: 'Minified' }))
-      .pipe(size({ showFiles: true, gzip: true, title: 'Gzipped' }))
+      .pipe(rename({suffix: '.min'}))
+      .pipe(header(headerShort, {pkg: pkg}))
+      .pipe(size({showFiles: true, title: 'Minified'}))
+      .pipe(size({showFiles: true, gzip: true, title: 'Gzipped'}))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('dist'));
 });

@@ -1,7 +1,7 @@
-var Draft = {
+var draft = {
   mixins: {},
 
-  // TODO:50 test safety checks for Draft.px()
+  // TODO:50 test safety checks for draft.px()
   px(val) {
     var num = parseFloat(val, 10);
     var units = testUnits(val);
@@ -52,6 +52,6 @@ var Draft = {
         return undefined;
     }
 
-    return num * Draft.defaults.dpi;
+    return num * draft.defaults.dpi;
   }
 };

@@ -4,7 +4,7 @@
 
 // TODO: implement bubbling?
 
-Draft.mixins.event = {
+draft.mixins.event = {
   on(evt, listener) {
     var listenersMap = this.getListeners(evt, true);
 
