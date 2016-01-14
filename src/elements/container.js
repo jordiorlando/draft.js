@@ -10,6 +10,10 @@ Draft.Container = class Container extends Draft.Element {
   }
 
   /*child(child) {
+  get name() {
+    return this.prop('name');
+  }
+
     return this.children[child];
   }*/
 
@@ -21,11 +25,11 @@ Draft.Container = class Container extends Draft.Element {
     this.dom.node.appendChild(child.dom.node);
 
     // Add the child to its type array
-    let type = child.prop('type');
+    var type = child.type;
     child.doc.elements[type] = child.doc.elements[type] || [];
     child.doc.elements[type].push(child);
     // Set the child's basic properties
-    child.prop('id', elementID(child));
+    child.prop('id', child.doc.elements[child.type].length);
 
     // Add the child to the end of the children array
     this.children.push(child);

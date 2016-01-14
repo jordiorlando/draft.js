@@ -9,7 +9,14 @@ Draft.Element = class Element {
 
     // Make sure this._properties is initialized
     this._properties = {};
-    this.prop('type', elementType(this));
+
+    // HACK:0 need a better way of getting an element's type
+    for (var type in Draft) {
+      if (this.constructor === Draft[type]) {
+        this.prop('type', type.toLowerCase());
+        break;
+      }
+    }
   }
 
   static inherit(source, addSuper) {
@@ -31,12 +38,25 @@ Draft.Element = class Element {
     }
   }
 
+  get type() {
+    return this.prop('type');
+  }
+
+  get id() {
+    return this.prop('id');
+  }
+
   // Construct a unique ID from the element's type and ID
-  getID() {
+  get domID() {
+    var id = String(this.id);
+    while (id.length < 4) {
+      id = `0${id}`;
+    }
+
     return [
       'DraftJS',
-      this.prop('type'),
-      zeroPad(this.prop('id'), 4)
+      this.type,
+      id
     ].join('_');
   }
 
