@@ -1,7 +1,6 @@
 var Draft = {
   mixins: {},
 
-  // BACKLOG:50 configurable dpi setting
   // TODO:50 test safety checks for Draft.px()
   px: function(val) {
     var num = parseFloat(val, 10);

@@ -6,8 +6,8 @@ Draft.Doc = class Doc extends Draft.Container {
     this.elements = {};
 
     this.prop({
-      system: defaults.system,
-      units: defaults.units
+      system: Draft.defaults.system,
+      units: Draft.defaults.units
     });
   }
 };

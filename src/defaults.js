@@ -1,5 +1,5 @@
 // TODO: configurable defaults
-const defaults = {
+Draft.defaults = {
   system: 'cartesian',
   units: 'px',
   /*width: 0,
@@ -7,8 +7,20 @@ const defaults = {
   r: 0, // radius
   a: 0, // angle*/
 
-  // Standard 96dpi resolution
-  dpi: 96/*,
+  get dpi() {
+    var test = document.createElement('div');
+    test.style.width = '1in';
+    test.style.padding = 0;
+    document.getElementsByTagName('body')[0].appendChild(test);
+
+    var dpi = test.offsetWidth;
+
+    document.getElementsByTagName('body')[0].removeChild(test);
+
+    // Fall back to standard 96dpi resolution
+    return dpi || 96;
+  }
+  /* ,
 
   // Cartesian coordinates
   cartesian: {

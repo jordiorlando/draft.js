@@ -13,7 +13,7 @@ Draft.mixins.move = {
   move: function() {
     var pos = {};
     for (var i = 0; i < arguments.length; i++) {
-      pos[defaults[this.prop('system')].vars[i]] = unit(arguments[i]);
+      pos[Draft.defaults[this.prop('system')].vars[i]] = unit(arguments[i]);
     }
     return this.prop(pos);
   }

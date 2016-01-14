@@ -81,16 +81,17 @@ Draft.Element = class Element {
       return val === undefined ? defaults[prop] || 0 : val;*/
 
       // TODO: don't return 0?
-      // If prop is undefined, return the default OR 0
-      return this._properties[prop] || defaults[prop] || 0;
     }
     // Act as an individual property setter if both prop and val are defined
     else {
+      // If prop is undefined, set it to the default OR 0
+      return this._properties[prop] ||
+        (this._properties[prop] = Draft.defaults[prop] || 0);
       // HACK:10 should use an actual unit data type, not just strings
       if (String(val).endsWith('_u')) {
         val = val.slice(0, -2);
         val = isFinite(val) ?
-          val + this.parent.prop('units') || defaults.units : val;
+          val + this.parent.prop('units') || Draft.defaults.units : val;
       }
 
       this._properties[prop] = val;
