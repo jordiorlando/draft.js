@@ -68,17 +68,11 @@ Draft.Element = class Element {
     }
     // Act as a full properties getter if prop is undefined
     else if (prop === undefined) {
-      prop = {};
-
-      for (let p in this._properties) {
-        prop[p] = this._properties[p];
-      }
-
-      return prop;
     }
     // Act as a getter if prop is an object with only null values.
     // Act as a setter if prop is an object with at least one non-null value.
     else if (typeof prop == 'object') {
+      return new Object(this._properties);
       let setter = false;
 
       for (let p in prop) {
@@ -86,7 +80,7 @@ Draft.Element = class Element {
         prop[p] = this.prop(p, prop[p]);
         // If the returned value is an object, prop[p] is non-null, so act like
         // a setter.
-        setter |= typeof prop[p] == 'object';
+        setter = setter || typeof prop[p] == 'object';
       }
 
       return setter ? this : prop;

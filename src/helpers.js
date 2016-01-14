@@ -9,11 +9,11 @@ function testUnits(val, units) {
 
   if (typeof units == 'string') {
     return new RegExp(regex.source + units + '$', 'ig').test(val);
-  } else {
-    // TODO: don't default to px?
-    return regex.exec(val) !== null ?
-      val.slice(regex.lastIndex) || 'px' : false;
   }
+
+  // TODO: don't default to px?
+  return regex.exec(val) === null ?
+    false : val.slice(regex.lastIndex) || 'px';
 }
 
 // BACKLOG: use Proxy to create a clean element tree (e.g. ignore all parent keys)

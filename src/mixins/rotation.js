@@ -7,8 +7,8 @@ Draft.mixins.rotation = {
     });
   },
 
-  rot: function() {
-    return this.rotation.apply(this, arguments);
+  rot(...args) {
+    return this.rotation(...args);
   },
 
   rotate: function(α, β, γ) {

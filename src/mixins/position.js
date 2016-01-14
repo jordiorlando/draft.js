@@ -7,8 +7,8 @@ Draft.mixins.position = {
     });
   },
 
-  pos: function() {
-    return this.position.apply(this, arguments);
+  pos(...args) {
+    return this.position(...args);
   },
 
   translate: function(x, y, z) {
