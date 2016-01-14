@@ -1,6 +1,6 @@
 // TODO:10 create an actual 'Unit' class for every unit instance
 function unit(val) {
-  return val == null ? val : val + '_u';
+  return val == null ? val : `${val}_u`;
 }
 
 function testUnits(val, units) {
@@ -8,7 +8,7 @@ function testUnits(val, units) {
   val = String(val);
 
   if (typeof units == 'string') {
-    return new RegExp(regex.source + units + '$', 'ig').test(val);
+    return new RegExp(`${regex.source}${units}$`, 'ig').test(val);
   }
 
   // TODO: don't default to px?
