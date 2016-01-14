@@ -20,10 +20,10 @@ Draft.mixins.system = {
 
   // BACKLOG:10 switch φ for θ?
   // BACKLOG:0 Spherical (ρ, θ, φ), Cylindrical (ρ, φ, z)
-  system: function(system) {
-    /*if (this.prop('system') != system) {
+  system(system) {
+    /* if (this.prop('system') != system) {
       // BACKLOG:20 recursively convert all elements to new system?
-    }*/
+    } */
     return this.prop('system', system);
   }
 };

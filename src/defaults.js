@@ -2,10 +2,10 @@
 Draft.defaults = {
   system: 'cartesian',
   units: 'px',
-  /*width: 0,
+  /* width: 0,
   length: 0,
   r: 0, // radius
-  a: 0, // angle*/
+  a: 0, // angle */
 
   get dpi() {
     var test = document.createElement('div');
@@ -107,5 +107,5 @@ Draft.defaults = {
       'φ',
       'θ'
     ]
-  }*/
+  } */
 };

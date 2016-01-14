@@ -1,6 +1,6 @@
 Draft.mixins.units = {
   // Get/set the element's measurement units
-  units: function(units) {
+  units(units) {
     return this.prop('units', units);
   }
 };

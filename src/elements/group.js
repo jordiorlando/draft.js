@@ -7,7 +7,7 @@ Draft.Group.require([
 
 // TODO: mixin to Draft.group
 Draft.Container.mixin({
-  group: function() {
+  group() {
     return this.add(new Draft.Group(name)).prop({
       system: this.prop('system'),
       units: this.prop('units')

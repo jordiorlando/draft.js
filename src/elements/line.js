@@ -5,7 +5,7 @@ Draft.Line = class Line extends Draft.Element {
 };
 
 Draft.Group.mixin({
-  line: function(length) {
+  line(length) {
     return this.add(new Draft.Line()).length(length);
   }
 });

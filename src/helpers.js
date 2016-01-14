@@ -4,7 +4,7 @@ function unit(val) {
 }
 
 function testUnits(val, units) {
-  let regex = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/g;
+  var regex = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/g;
   val = String(val);
 
   if (typeof units == 'string') {
@@ -16,4 +16,4 @@ function testUnits(val, units) {
     false : val.slice(regex.lastIndex) || 'px';
 }
 
-// BACKLOG: use Proxy to create a clean element tree (e.g. ignore all parent keys)
+// BACKLOG: use Proxy to create a clean element tree (ignore all parent keys)

@@ -2,7 +2,7 @@ var Draft = {
   mixins: {},
 
   // TODO:50 test safety checks for Draft.px()
-  px: function(val) {
+  px(val) {
     var num = parseFloat(val, 10);
     var units = testUnits(val);
 

@@ -1,5 +1,5 @@
 Draft.mixins.position = {
-  position: function(x, y, z) {
+  position(x, y, z) {
     return this.prop({
       x: unit(x),
       y: unit(y),
@@ -11,7 +11,7 @@ Draft.mixins.position = {
     return this.position(...args);
   },
 
-  translate: function(x, y, z) {
+  translate(x, y, z) {
     x = this.prop('x') + x || 0;
     y = this.prop('y') + y || 0;
     z = this.prop('z') + z || 0;

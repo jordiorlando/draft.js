@@ -1,5 +1,5 @@
 Draft.mixins.json = {
-  stringify: function(replacer) {
+  stringify(replacer) {
     return JSON.stringify(this, replacer, 2);
   }
 };

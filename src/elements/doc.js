@@ -16,8 +16,8 @@ Draft.doc = function(name) {
   return new Draft.Doc(name);
 };
 
-/*Draft.mixin(Draft, {
-  doc: function(name) {
+/* Draft.mixin(Draft, {
+  doc(name) {
     return new Draft.Doc(name);
   }
-});*/
+}); */

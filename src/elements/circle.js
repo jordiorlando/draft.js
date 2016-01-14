@@ -5,7 +5,7 @@ Draft.Circle = class Circle extends Draft.Element {
 };
 
 Draft.Group.mixin({
-  circle: function(r) {
+  circle(r) {
     return this.add(new Draft.Circle()).radius(r);
   }
 });

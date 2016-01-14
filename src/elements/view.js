@@ -1,13 +1,13 @@
 Draft.View = class View extends Draft.Element {
-  /*render(renderer) {
+  /* render(renderer) {
     this['render' + renderer.toUpperCase()]();
-  }*/
+  } */
 };
 
 Draft.View.require('size');
 
 Draft.Group.mixin({
-  view: function(width, height) {
+  view(width, height) {
     return this.add(new Draft.View()).size(width, height);
   }
 });

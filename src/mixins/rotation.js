@@ -1,5 +1,5 @@
 Draft.mixins.rotation = {
-  rotation: function(α, β, γ) {
+  rotation(α, β, γ) {
     return this.prop({
       α: α,
       β: β,
@@ -11,7 +11,7 @@ Draft.mixins.rotation = {
     return this.rotation(...args);
   },
 
-  rotate: function(α, β, γ) {
+  rotate(α, β, γ) {
     α = this.prop('α') + α || 0;
     β = this.prop('β') + β || 0;
     γ = this.prop('γ') + γ || 0;

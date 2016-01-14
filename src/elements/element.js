@@ -61,21 +61,19 @@ Draft.Element = class Element {
   }
 
   prop(prop, val) {
-    // BACKLOG: test deleting all properties, perhaps remove it
-    // Delete all properties if prop is null
     if (prop === null) {
+      // BACKLOG: test deleting all properties, perhaps remove it
+      // Delete all properties if prop is null
       this._properties = {};
-    }
-    // Act as a full properties getter if prop is undefined
-    else if (prop === undefined) {
-    }
-    // Act as a getter if prop is an object with only null values.
-    // Act as a setter if prop is an object with at least one non-null value.
-    else if (typeof prop == 'object') {
+    } else if (prop === undefined) {
+      // Act as a full properties getter if prop is undefined
       return new Object(this._properties);
+    } else if (typeof prop == 'object') {
+      // Act as a getter if prop is an object with only null values.
+      // Act as a setter if prop is an object with at least one non-null value.
       let setter = false;
 
-      for (let p in prop) {
+      for (var p in prop) {
         // Get this._properties[p] and save it to prop[p]
         prop[p] = this.prop(p, prop[p]);
         // If the returned value is an object, prop[p] is non-null, so act like
@@ -84,23 +82,19 @@ Draft.Element = class Element {
       }
 
       return setter ? this : prop;
-    }
-    // Delete the property if val is null
-    else if (val === null) {
+    } else if (val === null) {
+      // Delete the property if val is null
       delete this._properties[prop];
-    }
-    // Act as an individual property getter if val is undefined
-    else if (val === undefined) {
-      /*val = this._properties[prop];
-      return val === undefined ? defaults[prop] || 0 : val;*/
+    } else if (val === undefined) {
+      // Act as an individual property getter if val is undefined
 
       // TODO: don't return 0?
-    }
-    // Act as an individual property setter if both prop and val are defined
-    else {
       // If prop is undefined, set it to the default OR 0
       return this._properties[prop] ||
         (this._properties[prop] = Draft.defaults[prop] || 0);
+    } else {
+      // Act as an individual property setter if both prop and val are defined
+
       // HACK:10 should use an actual unit data type, not just strings
       if (String(val).endsWith('_u')) {
         val = val.slice(0, -2);
@@ -121,12 +115,13 @@ Draft.Element = class Element {
 
       this.dom.node.dispatchEvent(event);
 
-      this.fire('change', [prop, val]); /*{
+      this.fire('change', [prop, val]);
+      /* {
         // target: this,
         // type: this._properties.type,
         prop: prop,
         val: val
-      });*/
+      }); */
     }
 
     // prop() is chainable if 'this' is returned

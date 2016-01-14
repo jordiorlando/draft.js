@@ -9,13 +9,13 @@ Draft.Container = class Container extends Draft.Element {
     this.children = [];
   }
 
-  /*child(child) {
   get name() {
     return this.prop('name');
   }
 
+  /* child(child) {
     return this.children[child];
-  }*/
+  } */
 
   push(child) {
     // Add a reference to the child's parent and containing doc

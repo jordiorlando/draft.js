@@ -13,6 +13,7 @@ const del = require('del');
 
 
 
+// TODO: rename to draft and remove exception for "Draft" from eslint config
 var name = 'Draft';
 
 
