@@ -6,39 +6,52 @@ var Draft = {
     var num = parseFloat(val, 10);
     var units = testUnits(val);
 
-    // Remain unchanged if units are already px
-    if (units == 'px') {
-      return num;
-    }
-    // Points and picas (pt, pc)
-    else if (units == 'pt') {
-      return Draft.px(num / 72 + 'in');
-    } else if (units == 'pc') {
-      return Draft.px(num * 12 + 'pt');
-    }
-    // Imperial units (in, ft, yd, mi)
-    else if (units == 'in') {
-      return num * defaults.dpi;
-    } else if (units == 'ft') {
-      return Draft.px(num * 12 + 'in');
-    } else if (units == 'yd') {
-      return Draft.px(num * 3 + 'ft');
-    } else if (units == 'mi') {
-      return Draft.px(num * 1760 + 'yd');
-    }
-    // Metric units (mm, cm, m, km)
-    else if (units.endsWith('m')) {
-      if (units == 'mm') {
-        num *= 1;
-      } else if (units == 'cm') {
-        num *= 10;
-      } else if (units == 'km') {
-        num *= 1000000;
-      }
+    switch (units) {
+      // Remain unchanged if units are already px
+      case 'px':
+        return num;
 
-      return Draft.px(num / 25.4 + 'in');
-    } else {
-      return undefined;
+      // Points and picas (pt, pc)
+      case 'pc':
+        num *= 12;
+        // Falls through
+      case 'pt':
+        num /= 72;
+        break;
+
+      // Metric units (mm, cm, dm, m, km)
+      case 'km':
+        num *= 1000;
+        // Falls through
+      case 'm':
+        num *= 10;
+        // Falls through
+      case 'dm':
+        num *= 10;
+        // Falls through
+      case 'cm':
+        num *= 10;
+        // Falls through
+      case 'mm':
+        num /= 25.4;
+        break;
+
+      // Imperial units (in, ft, yd, mi)
+      case 'mi':
+        num *= 1760;
+        // Falls through
+      case 'yd':
+        num *= 3;
+        // Falls through
+      case 'ft':
+        num *= 12;
+        // Falls through
+      case 'in':
+        break;
+      default:
+        return undefined;
     }
+
+    return num * Draft.defaults.dpi;
   }
 };
