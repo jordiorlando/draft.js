@@ -13,9 +13,11 @@
 
 ## Plugins
 
-- [ ] draft-svg
-  - 2D rendering
-- [ ] draft-page
+- [x] draft-svg
+  - 2D rendering via SVG
+- [ ] draft-canvas
+  - 2D/3D rendering via canvas
+- [ ] draft-page?
   - 2D page view (with layers?)
   - Basic styling (fill, stroke, etc)
 - [x] draft-treeview
