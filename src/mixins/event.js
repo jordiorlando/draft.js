@@ -81,9 +81,9 @@ draft.mixins.event = {
     return this;
   },
 
-  defineEvent() {
-    for (let i = 0; i < arguments.length; i++) {
-      this.getListeners(arguments[i]);
+  defineEvent(...evts) {
+    for (var evt of evts) {
+      this.getListeners(evt);
     }
 
     return this;
