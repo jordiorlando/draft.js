@@ -6,7 +6,7 @@
 * copyright Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>
 * license MIT
 *
-* BUILT: Thu Jan 14 2016 17:53:35 GMT-0600 (CST)
+* BUILT: Fri Jan 15 2016 17:25:31 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -25,63 +25,99 @@
     root.draft = factory(root, root.document);
   }
 }(typeof window !== 'undefined' ? window : this, function(window, document) {
-var draft = {
-  mixins: {},
+var draft = function(name) {
+  return new draft.Doc(name);
+};
 
-  // TODO:50 test safety checks for draft.px()
-  px(val) {
-    var num = parseFloat(val, 10);
-    var units = testUnits(val);
+// TODO: configurable defaults
+draft.defaults = {
+  system: 'cartesian',
+  units: 'px',
+  get dpi() {
+    var test = document.createElement('div');
+    test.style.width = '1in';
+    test.style.padding = 0;
+    document.getElementsByTagName('body')[0].appendChild(test);
 
-    switch (units) {
-      // Remain unchanged if units are already px
-      case 'px':
-        return num;
+    var dpi = test.offsetWidth;
 
-      // Points and picas (pt, pc)
-      case 'pc':
-        num *= 12;
-        // Falls through
-      case 'pt':
-        num /= 72;
-        break;
+    document.getElementsByTagName('body')[0].removeChild(test);
 
-      // Metric units (mm, cm, dm, m, km)
-      case 'km':
-        num *= 1000;
-        // Falls through
-      case 'm':
-        num *= 10;
-        // Falls through
-      case 'dm':
-        num *= 10;
-        // Falls through
-      case 'cm':
-        num *= 10;
-        // Falls through
-      case 'mm':
-        num /= 25.4;
-        break;
-
-      // Imperial units (in, ft, yd, mi)
-      case 'mi':
-        num *= 1760;
-        // Falls through
-      case 'yd':
-        num *= 3;
-        // Falls through
-      case 'ft':
-        num *= 12;
-        // Falls through
-      case 'in':
-        break;
-      default:
-        return undefined;
-    }
-
-    return num * draft.defaults.dpi;
+    // Fall back to standard 96dpi resolution
+    return dpi || 96;
   }
 };
+
+draft.mixins = {};
+
+// TODO:50 test safety checks for draft.px()
+draft.px = function(val) {
+  val = String(val);
+  var num = parseFloat(val, 10);
+
+  var regex = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/g;
+
+  /* if (typeof units == 'string') {
+    return new RegExp(`${regex.source}${units}$`, 'ig').test(val);
+  } */
+
+  // TODO: don't default to px?
+  var units = regex.exec(val) === null ?
+    false : val.slice(regex.lastIndex) || 'px';
+
+  switch (units) {
+    // Remain unchanged if units are already px
+    case 'px':
+      return num;
+
+    // Points and picas (pt, pc)
+    case 'pc':
+      num *= 12;
+      // Falls through
+    case 'pt':
+      num /= 72;
+      break;
+
+    // Metric units (mm, cm, dm, m, km)
+    case 'km':
+      num *= 1000;
+      // Falls through
+    case 'm':
+      num *= 10;
+      // Falls through
+    case 'dm':
+      num *= 10;
+      // Falls through
+    case 'cm':
+      num *= 10;
+      // Falls through
+    case 'mm':
+      num /= 25.4;
+      break;
+
+    // Imperial units (in, ft, yd, mi)
+    case 'mi':
+      num *= 1760;
+      // Falls through
+    case 'yd':
+      num *= 3;
+      // Falls through
+    case 'ft':
+      num *= 12;
+      // Falls through
+    case 'in':
+      break;
+    default:
+      return undefined;
+  }
+
+  return num * draft.defaults.dpi;
+};
+
+// TODO:10 create an actual 'Unit' class for every unit instance
+function unit(val) {
+  return val == null ? val : `${val}_u`;
+}
 
 // These methods are adapted from Oliver Caldwell's Heir script, which he has
 // released under the Unlicense (public domain).
@@ -103,138 +139,6 @@ draft.mixin = function(destination, source) {
     }
   }
 };
-
-// TODO: configurable defaults
-draft.defaults = {
-  system: 'cartesian',
-  units: 'px',
-  /* width: 0,
-  length: 0,
-  r: 0, // radius
-  a: 0, // angle */
-
-  get dpi() {
-    var test = document.createElement('div');
-    test.style.width = '1in';
-    test.style.padding = 0;
-    document.getElementsByTagName('body')[0].appendChild(test);
-
-    var dpi = test.offsetWidth;
-
-    document.getElementsByTagName('body')[0].removeChild(test);
-
-    // Fall back to standard 96dpi resolution
-    return dpi || 96;
-  }
-  /* ,
-
-  // Cartesian coordinates
-  cartesian: {
-    layer: 1,
-    vars: [
-      'x',
-      'y',
-      'z'
-    ],
-    web: [
-      function(pos) {
-        return pos[0];
-      },
-      function(pos) {
-        return height - pos[1];
-      },
-      function(pos) {
-        return pos[2];
-      },
-      // Full position
-      function(pos) {
-        return [
-          pos[0],
-          height - pos[1],
-          pos[2]
-        ];
-      }
-    ],
-    polar: [
-      function(pos) {
-        return Math.sqrt(Math.pow(pos[0], 2) + Math.pow(pos[1], 2));
-      },
-      function(pos) {
-        return Math.atan2(pos[1], pos[0]);
-      },
-      function(pos) {
-        return pos[2];
-      },
-      // Full position
-      function(pos) {
-        return [
-          Math.sqrt(Math.pow(pos[0], 2) + Math.pow(pos[1], 2)),
-          Math.atan2(pos[1], pos[0]),
-          pos[2]
-        ];
-      }
-    ],
-    origin: {
-      x: 0,
-      y: 'height'
-    }
-  },
-
-  // Polar/Cylindrical coordinates
-  polar: {
-    layer: 2,
-    vars: [
-      'ρ',
-      'φ',
-      'z'
-    ],
-    cartesian: [
-      function(pos) {
-        return pos[0] * Math.cos(pos[1] * (Math.PI / 180));
-      },
-      function(pos) {
-        return pos[0] * Math.sin(pos[1] * (Math.PI / 180));
-      },
-      function(pos) {
-        return pos[2];
-      }
-    ],
-    origin: {
-      x: 'width/2',
-      y: 'height/2'
-    }
-  },
-
-  // Spherical coordinates
-  spherical: {
-    layer: 2,
-    vars: [
-      'ρ',
-      'φ',
-      'θ'
-    ]
-  } */
-};
-
-// TODO:10 create an actual 'Unit' class for every unit instance
-function unit(val) {
-  return val == null ? val : `${val}_u`;
-}
-
-function testUnits(val, units) {
-  var regex = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/g;
-  val = String(val);
-
-  if (typeof units == 'string') {
-    return new RegExp(`${regex.source}${units}$`, 'ig').test(val);
-  }
-
-  // TODO: don't default to px?
-  return regex.exec(val) === null ?
-    false : val.slice(regex.lastIndex) || 'px';
-}
-
-// BACKLOG: use Proxy to create a clean element tree (ignore all parent keys)
 
 // These methods are adapted from Oliver Caldwell's EventEmitter library, which
 // he has released under the Unlicense (public domain).
@@ -506,12 +410,6 @@ draft.mixins.radius = {
   }
 };
 
-draft.mixins.json = {
-  stringify(replacer) {
-    return JSON.stringify(this, replacer, 2);
-  }
-};
-
 // draft.Element =
 draft.Element = class Element {
   constructor() {
@@ -527,7 +425,7 @@ draft.Element = class Element {
     // HACK:0 need a better way of getting an element's type
     for (var type in draft) {
       if (this.constructor === draft[type]) {
-        this.prop('type', type.toLowerCase());
+        this._type = type.toLowerCase();
         break;
       }
     }
@@ -553,11 +451,11 @@ draft.Element = class Element {
   }
 
   get type() {
-    return this.prop('type');
+    return this._type;
   }
 
   get id() {
-    return this.prop('id');
+    return this._id;
   }
 
   // Construct a unique ID from the element's type and ID
@@ -567,11 +465,7 @@ draft.Element = class Element {
       id = `0${id}`;
     }
 
-    return [
-      'draft',
-      this.type,
-      id
-    ].join('_');
+    return `draft_${this.type}_${id}`;
   }
 
   prop(prop, val) {
@@ -630,16 +524,43 @@ draft.Element = class Element {
       this.dom.node.dispatchEvent(event);
 
       this.fire('change', [prop, val]);
-      /* {
-        // target: this,
-        // type: this._properties.type,
-        prop: prop,
-        val: val
-      }); */
     }
 
-    // prop() is chainable if 'this' is returned
+    // Chainable if 'this' is returned
     return this;
+  }
+
+  stringify(blacklist) {
+    var replacer;
+
+    if (Array.isArray(blacklist)) {
+      replacer = function(key, val) {
+        if (blacklist.includes(key)) {
+          return undefined;
+        }
+
+        return val;
+      };
+    } else if (blacklist instanceof RegExp) {
+      replacer = function(key, val) {
+        if (blacklist.test(key)) {
+          return undefined;
+        }
+
+        return val;
+      };
+    }
+
+    return JSON.stringify(this, replacer, 2);
+  }
+
+  toJSON() {
+    return {
+      type: this.type,
+      id: this.id,
+      properties: this.prop(),
+      children: this.children
+    };
   }
 };
 
@@ -680,7 +601,7 @@ draft.Container = class Container extends draft.Element {
     child.doc.elements[type] = child.doc.elements[type] || [];
     child.doc.elements[type].push(child);
     // Set the child's basic properties
-    child.prop('id', child.doc.elements[child.type].length);
+    child._id = child.doc.elements[child.type].length;
 
     // Add the child to the end of the children array
     this.children.push(child);
@@ -708,9 +629,9 @@ draft.Doc = class Doc extends draft.Container {
   }
 };
 
-draft.doc = function(name) {
+/* draft.doc = function(name) {
   return new draft.Doc(name);
-};
+}; */
 
 /* draft.mixin(draft, {
   doc(name) {

@@ -117,6 +117,39 @@ draft.Element = class Element {
     // Chainable if 'this' is returned
     return this;
   }
+
+  stringify(blacklist) {
+    var replacer;
+
+    if (Array.isArray(blacklist)) {
+      replacer = function(key, val) {
+        if (blacklist.includes(key)) {
+          return undefined;
+        }
+
+        return val;
+      };
+    } else if (blacklist instanceof RegExp) {
+      replacer = function(key, val) {
+        if (blacklist.test(key)) {
+          return undefined;
+        }
+
+        return val;
+      };
+    }
+
+    return JSON.stringify(this, replacer, 2);
+  }
+
+  toJSON() {
+    return {
+      type: this.type,
+      id: this.id,
+      properties: this.prop(),
+      children: this.children
+    };
+  }
 };
 
 draft.Element.require([

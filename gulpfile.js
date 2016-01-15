@@ -33,8 +33,6 @@ var src = [
   'src/mixins/size.js',
   'src/mixins/radius.js',
 
-  'src/mixins/json.js',
-
   // Containers
   'src/elements/element.js',
   'src/elements/container.js',
