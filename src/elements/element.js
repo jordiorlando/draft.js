@@ -13,7 +13,7 @@ draft.Element = class Element {
     // HACK:0 need a better way of getting an element's type
     for (var type in draft) {
       if (this.constructor === draft[type]) {
-        this.prop('type', type.toLowerCase());
+        this._type = type.toLowerCase();
         break;
       }
     }
@@ -39,11 +39,11 @@ draft.Element = class Element {
   }
 
   get type() {
-    return this.prop('type');
+    return this._type;
   }
 
   get id() {
-    return this.prop('id');
+    return this._id;
   }
 
   // Construct a unique ID from the element's type and ID
@@ -53,11 +53,7 @@ draft.Element = class Element {
       id = `0${id}`;
     }
 
-    return [
-      'draft',
-      this.type,
-      id
-    ].join('_');
+    return `draft_${this.type}_${id}`;
   }
 
   prop(prop, val) {
@@ -116,15 +112,9 @@ draft.Element = class Element {
       this.dom.node.dispatchEvent(event);
 
       this.fire('change', [prop, val]);
-      /* {
-        // target: this,
-        // type: this._properties.type,
-        prop: prop,
-        val: val
-      }); */
     }
 
-    // prop() is chainable if 'this' is returned
+    // Chainable if 'this' is returned
     return this;
   }
 };
