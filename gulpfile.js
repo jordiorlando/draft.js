@@ -21,7 +21,6 @@ var src = [
   'src/draft.js',
   'src/inherit.js',
   'src/defaults.js',
-  'src/helpers.js',
 
   // Mixins
   'src/mixins/event.js',

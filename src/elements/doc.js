@@ -12,9 +12,9 @@ draft.Doc = class Doc extends draft.Container {
   }
 };
 
-draft.doc = function(name) {
+/* draft.doc = function(name) {
   return new draft.Doc(name);
-};
+}; */
 
 /* draft.mixin(draft, {
   doc(name) {
