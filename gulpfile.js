@@ -20,7 +20,6 @@ var src = [
   // Main
   'src/draft.js',
   'src/inherit.js',
-  'src/defaults.js',
 
   // Mixins
   'src/mixins/event.js',

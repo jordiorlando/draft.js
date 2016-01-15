@@ -2,6 +2,25 @@ var draft = function(name) {
   return new draft.Doc(name);
 };
 
+// TODO: configurable defaults
+draft.defaults = {
+  system: 'cartesian',
+  units: 'px',
+  get dpi() {
+    var test = document.createElement('div');
+    test.style.width = '1in';
+    test.style.padding = 0;
+    document.getElementsByTagName('body')[0].appendChild(test);
+
+    var dpi = test.offsetWidth;
+
+    document.getElementsByTagName('body')[0].removeChild(test);
+
+    // Fall back to standard 96dpi resolution
+    return dpi || 96;
+  }
+};
+
 draft.mixins = {};
 
 // TODO:50 test safety checks for draft.px()
