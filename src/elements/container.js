@@ -17,7 +17,7 @@ draft.Container = class Container extends draft.Element {
     return this.children[child];
   } */
 
-  push(child) {
+  add(child) {
     // Add a reference to the child's parent and containing doc
     child.parent = this;
     child.doc = this.doc || this;
@@ -37,8 +37,8 @@ draft.Container = class Container extends draft.Element {
     return this;
   }
 
-  add(child) {
-    this.push(child);
+  push(child) {
+    this.add(child);
     return child;
   }
 };

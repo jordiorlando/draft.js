@@ -8,6 +8,6 @@ draft.View.require('size');
 
 draft.Group.mixin({
   view(width, height) {
-    return this.add(new draft.View()).size(width, height);
+    return this.push(new draft.View()).size(width, height);
   }
 });

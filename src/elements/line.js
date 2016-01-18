@@ -6,6 +6,6 @@ draft.Line = class Line extends draft.Element {
 
 draft.Group.mixin({
   line(length) {
-    return this.add(new draft.Line()).length(length);
+    return this.push(new draft.Line()).length(length);
   }
 });
