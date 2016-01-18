@@ -17,6 +17,14 @@ draft.Container = class Container extends draft.Element {
     return this.children[child];
   } */
 
+  get firstChild() {
+    return this.children[0];
+  }
+
+  get lastChild() {
+    return this.children[this.children.length - 1];
+  }
+
   add(child) {
     // Add a reference to the child's parent and containing doc
     child.parent = this;
@@ -34,11 +42,19 @@ draft.Container = class Container extends draft.Element {
     // Add the child to the end of the children array
     this.children.push(child);
 
+    // Fire the 'add' event to all listeners
+    this.fire('add', [child]);
+
     return this;
   }
 
   push(child) {
     this.add(child);
     return child;
+  }
+
+  remove(child) {
+    this.fire('remove', [child]);
+    return this;
   }
 };
