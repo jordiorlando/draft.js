@@ -63,7 +63,7 @@ draft.Element = class Element {
       this._properties = {};
     } else if (prop === undefined) {
       // Act as a full properties getter if prop is undefined
-      return new Object(this._properties);
+      return Object(this._properties);
     } else if (typeof prop == 'object') {
       // Act as a getter if prop is an object with only null values.
       // Act as a setter if prop is an object with at least one non-null value.
@@ -80,14 +80,18 @@ draft.Element = class Element {
       return setter ? this : prop;
     } else if (val === null) {
       // Delete the property if val is null
+      this.fire('change', [prop, val]);
       delete this._properties[prop];
     } else if (val === undefined) {
       // Act as an individual property getter if val is undefined
 
       // TODO: don't return 0?
       // If prop is undefined, set it to the default OR 0
-      return this._properties[prop] ||
-        (this._properties[prop] = draft.defaults[prop] || 0);
+      if (!this._properties[prop]) {
+        this.prop(prop, draft.defaults[prop] || 0);
+      }
+
+      return this._properties[prop];
     } else {
       // Act as an individual property setter if both prop and val are defined
 
@@ -118,6 +122,7 @@ draft.Element = class Element {
     return this;
   }
 
+  // TODO: use rest (...blacklist)
   stringify(blacklist) {
     var replacer;
 

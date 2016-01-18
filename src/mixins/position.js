@@ -1,4 +1,5 @@
 draft.mixins.position = {
+  // TODO: find better way of only applying supplied values
   position(x, y, z) {
     return this.prop({
       x: unit(x),

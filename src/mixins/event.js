@@ -44,6 +44,7 @@ draft.mixins.event = {
     return this;
   },
 
+  // TODO: use rest for args (...args)
   fire(evt, args) {
     // Put args in an array if it isn't already one
     if (!Array.isArray(args)) {
@@ -56,18 +57,16 @@ draft.mixins.event = {
       var listeners = listenersMap[key];
       var i = listeners.length;
 
-      while (i--) {
-        console.info('event fired:', {
-          target: this,
-          timeStamp: new Date(),
-          type: key
-        }, args);
+      if (i > 0) {
+        console.info(`${this.domID.slice(6)} ${key}:`, args);
+      }
 
+      while (i--) {
         var listener = listeners[i];
         var response = listener.listener.apply({
           target: this,
           // TODO: Date.now() to prevent memory leaks?
-          timeStamp: new Date(),
+          timeStamp: Date(),
           type: key
         }, args);
 
