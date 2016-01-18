@@ -6,7 +6,7 @@
 * copyright Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>
 * license MIT
 *
-* BUILT: Fri Jan 15 2016 17:25:31 GMT-0600 (CST)
+* BUILT: Mon Jan 18 2016 00:00:22 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -186,6 +186,7 @@ draft.mixins.event = {
     return this;
   },
 
+  // TODO: use rest for args (...args)
   fire(evt, args) {
     // Put args in an array if it isn't already one
     if (!Array.isArray(args)) {
@@ -198,18 +199,16 @@ draft.mixins.event = {
       var listeners = listenersMap[key];
       var i = listeners.length;
 
-      while (i--) {
-        console.info('event fired:', {
-          target: this,
-          timeStamp: new Date(),
-          type: key
-        }, args);
+      if (i > 0) {
+        console.info(`${this.domID.slice(6)} ${key}:`, args);
+      }
 
+      while (i--) {
         var listener = listeners[i];
         var response = listener.listener.apply({
           target: this,
           // TODO: Date.now() to prevent memory leaks?
-          timeStamp: new Date(),
+          timeStamp: Date(),
           type: key
         }, args);
 
@@ -331,6 +330,7 @@ draft.mixins.units = {
 };
 
 draft.mixins.position = {
+  // TODO: find better way of only applying supplied values
   position(x, y, z) {
     return this.prop({
       x: unit(x),
@@ -413,12 +413,6 @@ draft.mixins.radius = {
 // draft.Element =
 draft.Element = class Element {
   constructor() {
-    // DOING:10 create DOM node
-    this.dom = {};
-    this.dom.node = document.createElement('object');
-    // Store a circular reference in the node
-    this.dom.node.element = this;
-
     // Make sure this._properties is initialized
     this._properties = {};
 
@@ -475,7 +469,7 @@ draft.Element = class Element {
       this._properties = {};
     } else if (prop === undefined) {
       // Act as a full properties getter if prop is undefined
-      return new Object(this._properties);
+      return Object(this._properties);
     } else if (typeof prop == 'object') {
       // Act as a getter if prop is an object with only null values.
       // Act as a setter if prop is an object with at least one non-null value.
@@ -492,14 +486,18 @@ draft.Element = class Element {
       return setter ? this : prop;
     } else if (val === null) {
       // Delete the property if val is null
+      this.fire('change', [prop, val]);
       delete this._properties[prop];
     } else if (val === undefined) {
       // Act as an individual property getter if val is undefined
 
       // TODO: don't return 0?
       // If prop is undefined, set it to the default OR 0
-      return this._properties[prop] ||
-        (this._properties[prop] = draft.defaults[prop] || 0);
+      if (!this._properties[prop]) {
+        this.prop(prop, draft.defaults[prop] || 0);
+      }
+
+      return this._properties[prop];
     } else {
       // Act as an individual property setter if both prop and val are defined
 
@@ -512,17 +510,6 @@ draft.Element = class Element {
 
       this._properties[prop] = val;
 
-      var event = new CustomEvent('update', {
-        detail: {
-          type: this._properties.type,
-          prop: prop,
-          val: val
-        },
-        bubbles: true
-      });
-
-      this.dom.node.dispatchEvent(event);
-
       this.fire('change', [prop, val]);
     }
 
@@ -530,6 +517,7 @@ draft.Element = class Element {
     return this;
   }
 
+  // TODO: use rest (...blacklist)
   stringify(blacklist) {
     var replacer;
 
@@ -589,12 +577,18 @@ draft.Container = class Container extends draft.Element {
     return this.children[child];
   } */
 
-  push(child) {
+  get firstChild() {
+    return this.children[0];
+  }
+
+  get lastChild() {
+    return this.children[this.children.length - 1];
+  }
+
+  add(child) {
     // Add a reference to the child's parent and containing doc
     child.parent = this;
     child.doc = this.doc || this;
-
-    this.dom.node.appendChild(child.dom.node);
 
     // Add the child to its type array
     var type = child.type;
@@ -606,12 +600,20 @@ draft.Container = class Container extends draft.Element {
     // Add the child to the end of the children array
     this.children.push(child);
 
+    // Fire the 'add' event to all listeners
+    this.fire('add', [child]);
+
     return this;
   }
 
-  add(child) {
-    this.push(child);
+  push(child) {
+    this.add(child);
     return child;
+  }
+
+  remove(child) {
+    this.fire('remove', [child]);
+    return this;
   }
 };
 
@@ -649,7 +651,7 @@ draft.Group.require([
 // TODO: mixin to draft.group
 draft.Container.mixin({
   group() {
-    return this.add(new draft.Group(name)).prop({
+    return this.push(new draft.Group(name)).prop({
       system: this.prop('system'),
       units: this.prop('units')
     });
@@ -666,7 +668,7 @@ draft.View.require('size');
 
 draft.Group.mixin({
   view(width, height) {
-    return this.add(new draft.View()).size(width, height);
+    return this.push(new draft.View()).size(width, height);
   }
 });
 
@@ -676,7 +678,7 @@ draft.Page.require('size');
 
 draft.Doc.mixin({
   page(name) {
-    return this.add(new draft.Page(name)).prop({
+    return this.push(new draft.Page(name)).prop({
       system: this.prop('system'),
       units: this.prop('units')
     });
@@ -691,7 +693,7 @@ draft.Line = class Line extends draft.Element {
 
 draft.Group.mixin({
   line(length) {
-    return this.add(new draft.Line()).length(length);
+    return this.push(new draft.Line()).length(length);
   }
 });
 
@@ -708,7 +710,7 @@ draft.Rect.require([
 
 draft.Group.mixin({
   rect(width, height) {
-    return this.add(new draft.Rect()).size(width, height);
+    return this.push(new draft.Rect()).size(width, height);
   }
 });
 
@@ -720,7 +722,7 @@ draft.Circle = class Circle extends draft.Element {
 
 draft.Group.mixin({
   circle(r) {
-    return this.add(new draft.Circle()).radius(r);
+    return this.push(new draft.Circle()).radius(r);
   }
 });
 

@@ -30,8 +30,6 @@ draft.Container = class Container extends draft.Element {
     child.parent = this;
     child.doc = this.doc || this;
 
-    this.dom.node.appendChild(child.dom.node);
-
     // Add the child to its type array
     var type = child.type;
     child.doc.elements[type] = child.doc.elements[type] || [];

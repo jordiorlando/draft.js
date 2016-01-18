@@ -1,12 +1,6 @@
 // draft.Element =
 draft.Element = class Element {
   constructor() {
-    // DOING:10 create DOM node
-    this.dom = {};
-    this.dom.node = document.createElement('object');
-    // Store a circular reference in the node
-    this.dom.node.element = this;
-
     // Make sure this._properties is initialized
     this._properties = {};
 
@@ -103,17 +97,6 @@ draft.Element = class Element {
       }
 
       this._properties[prop] = val;
-
-      var event = new CustomEvent('update', {
-        detail: {
-          type: this._properties.type,
-          prop: prop,
-          val: val
-        },
-        bubbles: true
-      });
-
-      this.dom.node.dispatchEvent(event);
 
       this.fire('change', [prop, val]);
     }
