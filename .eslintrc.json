@@ -161,7 +161,7 @@
       2,
       "methods"
     ],
-    "prefer-const": 1,
+    "prefer-const": 0,
     "prefer-reflect": 0,
     "prefer-spread": 2,
     "prefer-template": 2
