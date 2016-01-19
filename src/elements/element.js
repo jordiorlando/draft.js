@@ -1,8 +1,13 @@
 // draft.Element =
 draft.Element = class Element {
-  constructor() {
+  constructor(name) {
     // Make sure this._properties is initialized
     this._properties = {};
+
+    // Set a name if given
+    if (name) {
+      this.prop('name', name);
+    }
 
     // HACK:0 need a better way of getting an element's type
     for (var type in draft) {
@@ -38,6 +43,10 @@ draft.Element = class Element {
 
   get id() {
     return this._id;
+  }
+
+  get name() {
+    return this.prop('name');
   }
 
   // Construct a unique ID from the element's type and ID

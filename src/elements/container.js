@@ -1,21 +1,10 @@
 draft.Container = class Container extends draft.Element {
   constructor(name) {
-    super();
-
-    // Set a name if given
-    this.prop('name', name || null);
+    super(name);
 
     // Initialize children array
     this.children = [];
   }
-
-  get name() {
-    return this.prop('name');
-  }
-
-  /* child(child) {
-    return this.children[child];
-  } */
 
   get firstChild() {
     return this.children[0];
