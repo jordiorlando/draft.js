@@ -4,7 +4,7 @@
 
     "block-scoped-var": 2,
     "curly": 2,
-    "default-case": 1,
+    "default-case": 0,
     "dot-location": [
       2,
       "object"
