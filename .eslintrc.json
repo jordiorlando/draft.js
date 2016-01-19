@@ -173,8 +173,7 @@
   },
   "globals": {
     "draft": true,
-    "unit": false,
-    "testUnits": false
+    "unit": false
   },
   "extends": "eslint:recommended"
 }

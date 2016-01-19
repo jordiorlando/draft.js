@@ -58,7 +58,7 @@ draft.mixins.event = {
       var i = listeners.length;
 
       if (i > 0) {
-        console.info(`${this.domID.slice(6)} ${key}:`, args);
+        console.info(`${this.domID} ${key}:`, args);
       }
 
       while (i--) {

@@ -47,7 +47,7 @@ draft.Element = class Element {
       id = `0${id}`;
     }
 
-    return `draft_${this.type}_${id}`;
+    return `${this.type}_${id}`;
   }
 
   prop(prop, val) {
@@ -81,7 +81,7 @@ draft.Element = class Element {
 
       // TODO: don't return 0?
       // If prop is undefined, set it to the default OR 0
-      if (!this._properties[prop]) {
+      if (this._properties[prop] === undefined) {
         this.prop(prop, draft.defaults[prop] || 0);
       }
 

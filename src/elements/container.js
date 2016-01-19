@@ -32,10 +32,9 @@ draft.Container = class Container extends draft.Element {
 
     // Add the child to its type array
     var type = child.type;
-    child.doc.elements[type] = child.doc.elements[type] || [];
-    child.doc.elements[type].push(child);
-    // Set the child's basic properties
-    child._id = child.doc.elements[child.type].length;
+    (child.doc.elements[type] || (child.doc.elements[type] = [])).push(child);
+    // Set the child's id
+    child._id = child.doc.elements[type].length;
 
     // Add the child to the end of the children array
     this.children.push(child);
