@@ -4,12 +4,21 @@ draft.View = class View extends draft.Element {
   } */
 
   // Get/set the element's width
-  maxWidth(maxWidth) {
-    return draft.px(this.prop('maxWidth', unit(maxWidth)));
+  get maxWidth() {
+    return draft.px(this.prop('maxWidth'));
   }
   // Get/set the element's height
-  maxHeight(maxHeight) {
-    return draft.px(this.prop('maxHeight', unit(maxHeight)));
+  get maxHeight() {
+    return draft.px(this.prop('maxHeight'));
+  }
+
+  get aspectRatio() {
+    var gcd = function(a, b) {
+      return b ? gcd(b, a % b) : a;
+    };
+
+    gcd = gcd(this.width(), this.height());
+    return `${this.width() / gcd}:${this.height() / gcd}`;
   }
 };
 

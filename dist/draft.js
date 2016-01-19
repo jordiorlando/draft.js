@@ -6,7 +6,7 @@
 * copyright Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>
 * license MIT
 *
-* BUILT: Tue Jan 19 2016 06:08:26 GMT-0600 (CST)
+* BUILT: Tue Jan 19 2016 17:34:12 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -114,7 +114,7 @@ draft.px = function(val) {
   return num * draft.defaults.dpi;
 };
 
-// TODO:10 create an actual 'Unit' class for every unit instance
+// DOING:10 create an actual 'Unit' class for every unit instance
 function unit(val) {
   return val == null ? val : `${val}_u`;
 }
@@ -144,7 +144,7 @@ draft.mixin = function(destination, source) {
 // he has released under the Unlicense (public domain).
 // GitHub Repository: https://github.com/Olical/EventEmitter
 
-// TODO: implement bubbling?
+// BACKLOG: implement bubbling?
 
 draft.mixins.event = {
   on(evt, listener) {
@@ -412,9 +412,14 @@ draft.mixins.radius = {
 
 // draft.Element =
 draft.Element = class Element {
-  constructor() {
+  constructor(name) {
     // Make sure this._properties is initialized
     this._properties = {};
+
+    // Set a name if given
+    if (name) {
+      this.prop('name', name);
+    }
 
     // HACK:0 need a better way of getting an element's type
     for (var type in draft) {
@@ -450,6 +455,10 @@ draft.Element = class Element {
 
   get id() {
     return this._id;
+  }
+
+  get name() {
+    return this.prop('name');
   }
 
   // Construct a unique ID from the element's type and ID
@@ -491,7 +500,7 @@ draft.Element = class Element {
     } else if (val === undefined) {
       // Act as an individual property getter if val is undefined
 
-      // TODO: don't return 0?
+      // HACK: don't return 0?
       // If prop is undefined, set it to the default OR 0
       if (this._properties[prop] === undefined) {
         this.prop(prop, draft.defaults[prop] || 0);
@@ -560,22 +569,11 @@ draft.Element.require([
 
 draft.Container = class Container extends draft.Element {
   constructor(name) {
-    super();
-
-    // Set a name if given
-    this.prop('name', name || null);
+    super(name);
 
     // Initialize children array
     this.children = [];
   }
-
-  get name() {
-    return this.prop('name');
-  }
-
-  /* child(child) {
-    return this.children[child];
-  } */
 
   get firstChild() {
     return this.children[0];
@@ -652,7 +650,7 @@ draft.Group.require([
   'units'
 ]);
 
-// TODO: mixin to draft.group
+// TODO: mixin to draft.Group?
 draft.Container.mixin({
   group(name) {
     return this.push(new draft.Group(name)).prop({
@@ -668,12 +666,21 @@ draft.View = class View extends draft.Element {
   } */
 
   // Get/set the element's width
-  maxWidth(maxWidth) {
-    return draft.px(this.prop('maxWidth', unit(maxWidth)));
+  get maxWidth() {
+    return draft.px(this.prop('maxWidth'));
   }
   // Get/set the element's height
-  maxHeight(maxHeight) {
-    return draft.px(this.prop('maxHeight', unit(maxHeight)));
+  get maxHeight() {
+    return draft.px(this.prop('maxHeight'));
+  }
+
+  get aspectRatio() {
+    var gcd = function(a, b) {
+      return b ? gcd(b, a % b) : a;
+    };
+
+    gcd = gcd(this.width(), this.height());
+    return `${this.width() / gcd}:${this.height() / gcd}`;
   }
 };
 
@@ -698,6 +705,7 @@ draft.Group.mixin({
 });
 
 draft.Rect = class Rect extends draft.Element {
+  // Hehehe
   get rekt() {
     return `${Math.floor(Math.random() * 101)}% rekt`;
   }
