@@ -39,7 +39,6 @@ var src = [
   'src/elements/doc.js',
   'src/elements/group.js',
   'src/elements/view.js',
-  'src/elements/page.js',
   // Elements
   'src/elements/line.js',
   'src/elements/rect.js',

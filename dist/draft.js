@@ -6,7 +6,7 @@
 * copyright Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>
 * license MIT
 *
-* BUILT: Mon Jan 18 2016 00:00:22 GMT-0600 (CST)
+* BUILT: Tue Jan 19 2016 06:08:26 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -26,7 +26,7 @@
   }
 }(typeof window !== 'undefined' ? window : this, function(window, document) {
 var draft = function(name) {
-  return new draft.Doc(name);
+  return draft.doc(name);
 };
 
 // TODO: configurable defaults
@@ -200,7 +200,7 @@ draft.mixins.event = {
       var i = listeners.length;
 
       if (i > 0) {
-        console.info(`${this.domID.slice(6)} ${key}:`, args);
+        console.info(`${this.domID} ${key}:`, args);
       }
 
       while (i--) {
@@ -375,20 +375,20 @@ draft.mixins.rotation = {
 };
 
 draft.mixins.size = {
-  // Get/set the element's width
-  width(width) {
-    return this.prop('width', unit(width));
-  },
-  // Get/set the element's height
-  height(height) {
-    return this.prop('height', unit(height));
-  },
   // Get/set the element's width & height
   size(width, height) {
     return this.prop({
       width: unit(width),
       height: unit(height)
     });
+  },
+  // Get/set the element's width
+  width(width) {
+    return draft.px(this.prop('width', unit(width)));
+  },
+  // Get/set the element's height
+  height(height) {
+    return draft.px(this.prop('height', unit(height)));
   }
 };
 
@@ -459,7 +459,7 @@ draft.Element = class Element {
       id = `0${id}`;
     }
 
-    return `draft_${this.type}_${id}`;
+    return `${this.type}_${id}`;
   }
 
   prop(prop, val) {
@@ -493,7 +493,7 @@ draft.Element = class Element {
 
       // TODO: don't return 0?
       // If prop is undefined, set it to the default OR 0
-      if (!this._properties[prop]) {
+      if (this._properties[prop] === undefined) {
         this.prop(prop, draft.defaults[prop] || 0);
       }
 
@@ -592,10 +592,9 @@ draft.Container = class Container extends draft.Element {
 
     // Add the child to its type array
     var type = child.type;
-    child.doc.elements[type] = child.doc.elements[type] || [];
-    child.doc.elements[type].push(child);
-    // Set the child's basic properties
-    child._id = child.doc.elements[child.type].length;
+    (child.doc.elements[type] || (child.doc.elements[type] = [])).push(child);
+    // Set the child's id
+    child._id = child.doc.elements[type].length;
 
     // Add the child to the end of the children array
     this.children.push(child);
@@ -631,9 +630,14 @@ draft.Doc = class Doc extends draft.Container {
   }
 };
 
-/* draft.doc = function(name) {
-  return new draft.Doc(name);
-}; */
+draft.doc = function(name) {
+  var doc = new draft.Doc(name);
+
+  (draft.docs || (draft.docs = [])).push(doc);
+  doc._id = draft.docs.length;
+
+  return doc;
+};
 
 /* draft.mixin(draft, {
   doc(name) {
@@ -650,7 +654,7 @@ draft.Group.require([
 
 // TODO: mixin to draft.group
 draft.Container.mixin({
-  group() {
+  group(name) {
     return this.push(new draft.Group(name)).prop({
       system: this.prop('system'),
       units: this.prop('units')
@@ -662,6 +666,15 @@ draft.View = class View extends draft.Element {
   /* render(renderer) {
     this['render' + renderer.toUpperCase()]();
   } */
+
+  // Get/set the element's width
+  maxWidth(maxWidth) {
+    return draft.px(this.prop('maxWidth', unit(maxWidth)));
+  }
+  // Get/set the element's height
+  maxHeight(maxHeight) {
+    return draft.px(this.prop('maxHeight', unit(maxHeight)));
+  }
 };
 
 draft.View.require('size');
@@ -669,19 +682,6 @@ draft.View.require('size');
 draft.Group.mixin({
   view(width, height) {
     return this.push(new draft.View()).size(width, height);
-  }
-});
-
-draft.Page = class Page extends draft.Group {};
-
-draft.Page.require('size');
-
-draft.Doc.mixin({
-  page(name) {
-    return this.push(new draft.Page(name)).prop({
-      system: this.prop('system'),
-      units: this.prop('units')
-    });
   }
 });
 
@@ -709,7 +709,7 @@ draft.Rect.require([
 ]);
 
 draft.Group.mixin({
-  rect(width, height) {
+  rect(width = 100, height = 100) {
     return this.push(new draft.Rect()).size(width, height);
   }
 });
@@ -721,7 +721,7 @@ draft.Circle = class Circle extends draft.Element {
 };
 
 draft.Group.mixin({
-  circle(r) {
+  circle(r = 50) {
     return this.push(new draft.Circle()).radius(r);
   }
 });
