@@ -1,5 +1,5 @@
 var draft = function(name) {
-  return new draft.Doc(name);
+  return draft.doc(name);
 };
 
 // TODO: configurable defaults

@@ -12,9 +12,14 @@ draft.Doc = class Doc extends draft.Container {
   }
 };
 
-/* draft.doc = function(name) {
-  return new draft.Doc(name);
-}; */
+draft.doc = function(name) {
+  var doc = new draft.Doc(name);
+
+  (draft.docs || (draft.docs = [])).push(doc);
+  doc._id = draft.docs.length;
+
+  return doc;
+};
 
 /* draft.mixin(draft, {
   doc(name) {
