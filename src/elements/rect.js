@@ -10,7 +10,7 @@ draft.Rect.require([
 ]);
 
 draft.Group.mixin({
-  rect(width, height) {
+  rect(width = 100, height = 100) {
     return this.push(new draft.Rect()).size(width, height);
   }
 });
