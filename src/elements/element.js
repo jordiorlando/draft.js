@@ -79,7 +79,7 @@ draft.Element = class Element {
     } else if (val === undefined) {
       // Act as an individual property getter if val is undefined
 
-      // TODO: don't return 0?
+      // HACK: don't return 0?
       // If prop is undefined, set it to the default OR 0
       if (this._properties[prop] === undefined) {
         this.prop(prop, draft.defaults[prop] || 0);

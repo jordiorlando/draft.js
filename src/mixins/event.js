@@ -2,7 +2,7 @@
 // he has released under the Unlicense (public domain).
 // GitHub Repository: https://github.com/Olical/EventEmitter
 
-// TODO: implement bubbling?
+// BACKLOG: implement bubbling?
 
 draft.mixins.event = {
   on(evt, listener) {

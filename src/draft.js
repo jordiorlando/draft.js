@@ -87,7 +87,7 @@ draft.px = function(val) {
   return num * draft.defaults.dpi;
 };
 
-// TODO:10 create an actual 'Unit' class for every unit instance
+// DOING:10 create an actual 'Unit' class for every unit instance
 function unit(val) {
   return val == null ? val : `${val}_u`;
 }

@@ -5,7 +5,7 @@ draft.Group.require([
   'units'
 ]);
 
-// TODO: mixin to draft.group
+// TODO: mixin to draft.Group?
 draft.Container.mixin({
   group(name) {
     return this.push(new draft.Group(name)).prop({
