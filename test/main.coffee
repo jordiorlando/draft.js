@@ -1,11 +1,10 @@
 doc = draft('my_document')
-page = doc.page('test_page_1').size(600, 400)
+group = doc.group()
 
-page.origin(250, 0)
-page.size(500, 200)
+rect = group.rect(200, 150)
+circle = group.circle(50)
 
-rect = page.rect(200, 150)
-circle = page.circle(50)
+view = group.view(600, 400)
 
-view = document.getElementById('view')
-view.appendChild(page.svg())
+body = document.getElementById('body')
+body.appendChild(view.svg())
