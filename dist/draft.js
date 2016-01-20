@@ -6,7 +6,7 @@
 * copyright Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>
 * license MIT
 *
-* BUILT: Tue Jan 19 2016 17:34:12 GMT-0600 (CST)
+* BUILT: Tue Jan 19 2016 19:07:42 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -664,15 +664,6 @@ draft.View = class View extends draft.Element {
   /* render(renderer) {
     this['render' + renderer.toUpperCase()]();
   } */
-
-  // Get/set the element's width
-  get maxWidth() {
-    return draft.px(this.prop('maxWidth'));
-  }
-  // Get/set the element's height
-  get maxHeight() {
-    return draft.px(this.prop('maxHeight'));
-  }
 
   get aspectRatio() {
     var gcd = function(a, b) {
