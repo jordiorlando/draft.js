@@ -1,30 +1,22 @@
 /*
 * draft.js - A lightweight library for parametric design
-* version v0.0.0
+* version v0.0.2
 * http://draft.D1SC0te.ch
 *
 * copyright Jordi Pakey-Rodriguez <jordi.orlando@hexa.io>
 * license MIT
 *
-* BUILT: Thu Jan 21 2016 05:28:14 GMT-0600 (CST)
+* BUILT: Thu Jan 21 2016 16:42:56 GMT-0600 (CST)
 */
-(function(root, factory) {
+;(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-    define(function() {
-      return factory(root, root.document);
-    });
-  } else if (typeof module === 'object' && module.exports) {
-    // Node. Does not work with strict CommonJS.
-    module.exports = root.document ? factory(root, root.document) :
-      function(w) {
-        return factory(w, w.document);
-      };
+    define([], factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory();
   } else {
-    // Browser globals (root is window)
-    root.draft = factory(root, root.document);
+    root.draft = factory();
   }
-}(typeof window !== 'undefined' ? window : this, function(window, document) {
+}(this, function() {
 var draft = function(name) {
   return draft.doc(name);
 };
@@ -725,5 +717,5 @@ draft.Group.mixin({
   }
 });
 
-  return draft;
+return draft;
 }));
