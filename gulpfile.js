@@ -10,7 +10,6 @@ const size = require('gulp-size');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
 const wrap = require('gulp-wrap');
-var wrapContent = '<%= data.contents %>';
 const del = require('del');
 
 
@@ -45,7 +44,7 @@ var src = [
   'src/elements/circle.js'
 ];
 
-var umdTop = [
+var umd = [
   '(function(root, factory) {',
   '  if (typeof define === \'function\' && define.amd) {',
   '    // AMD. Register as an anonymous module.',
@@ -62,13 +61,11 @@ var umdTop = [
   '    // Browser globals (root is window)',
   '    root.<%= data.name %> = factory(root, root.document);',
   '  }',
-  '}(typeof window !== \'undefined\' ? window : this, function(window, document) {'
-].join('\n');
-var umdBottom = [
+  '}(typeof window !== \'undefined\' ? window : this, function(window, document) {',
+  '<%= data.contents %>',
   '  return <%= data.name %>;',
   '}));'
 ].join('\n');
-var umd = [umdTop, wrapContent, umdBottom].join('\n');
 
 var headerLong = [
   '/*',
