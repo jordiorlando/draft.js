@@ -41,8 +41,5 @@
     "doc": "docs",
     "example": "example",
     "test": "spec"
-  },
-  "scripts": {
-    "prepublish": "coffee -c example/main.coffee"
   }
 }
