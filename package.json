@@ -42,5 +42,12 @@
     "doc": "docs",
     "example": "example",
     "test": "spec"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "build": "gulp",
+    "preversion": "npm test",
+    "version": "npm run build && git add --all dist",
+    "postversion": "git push && git push --tags"
   }
 }
