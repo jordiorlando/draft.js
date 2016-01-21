@@ -4,18 +4,19 @@
   "description": "A lightweight library for parametric design",
   "keywords": [
     "draft",
+    "design",
     "parametric",
-    "svg",
+    "CAD",
     "js",
     "javascript"
   ],
-  "homepage": "https://github.com/D1SC0tech/draft.js",
+  "homepage": "http://draft.D1SC0te.ch",
   "license": "MIT",
-  "author": "Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>",
-  "main": "dist/draft.min.js",
+  "author": "Jordi Pakey-Rodriguez <jordi.orlando@hexa.io>",
+  "main": "dist/draft.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/D1SC0tech/draft.js.git"
+    "url": "git+https://github.com/D1SC0tech/draft.js.git"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
@@ -31,8 +32,17 @@
     "gulp-uglify": "^1.5.1",
     "gulp-wrap": "^0.11.0"
   },
-  "private": true,
-  "jshintConfig": {
-    "esnext": true
+  "bugs": {
+    "url": "https://github.com/D1SC0tech/draft.js/issues"
+  },
+  "directories": {
+    "lib": "dist",
+    "src": "src",
+    "doc": "docs",
+    "example": "example",
+    "test": "spec"
+  },
+  "scripts": {
+    "prepublish": "coffee -c example/main.coffee"
   }
 }

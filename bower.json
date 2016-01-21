@@ -1,23 +1,33 @@
 {
   "name": "draft.js",
-  "authors": [
-    "Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>"
-  ],
   "description": "A lightweight library for parametric design",
-  "main": "dist/draft.min.js",
   "keywords": [
     "draft",
+    "design",
     "parametric",
-    "svg",
+    "CAD",
     "js",
     "javascript"
   ],
-  "license": "MIT",
   "homepage": "draft.D1SC0te.ch",
+  "license": "MIT",
+  "authors": [
+    "Jordi Pakey-Rodriguez <jordi.orlando@hexa.io>"
+  ],
+  "main": "dist/draft.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/D1SC0tech/draft.js.git"
+  },
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
-    "test"
+    "spec"
+  ],
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
   ]
 }
