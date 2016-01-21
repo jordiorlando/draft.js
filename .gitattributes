@@ -1,0 +1,2 @@
+# Convert line endings to LF on checkout for all files
+* text eol=lf
