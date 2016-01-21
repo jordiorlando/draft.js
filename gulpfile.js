@@ -9,12 +9,15 @@ const rename = require('gulp-rename');
 const size = require('gulp-size');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
-const wrap = require('gulp-wrap');
+const umd = require('gulp-umd');
 const del = require('del');
 
-
-
 var pkg = require('./package.json');
+
+var umdName = function() {
+  return pkg.name.replace('.js', '');
+};
+
 var src = [
   // Main
   'src/draft.js',
@@ -43,29 +46,6 @@ var src = [
   'src/elements/rect.js',
   'src/elements/circle.js'
 ];
-
-var umd = [
-  '(function(root, factory) {',
-  '  if (typeof define === \'function\' && define.amd) {',
-  '    // AMD. Register as an anonymous module.',
-  '    define(function() {',
-  '      return factory(root, root.document);',
-  '    });',
-  '  } else if (typeof module === \'object\' && module.exports) {',
-  '    // Node. Does not work with strict CommonJS.',
-  '    module.exports = root.document ? factory(root, root.document) :',
-  '      function(w) {',
-  '        return factory(w, w.document);',
-  '      };',
-  '  } else {',
-  '    // Browser globals (root is window)',
-  '    root.<%= data.name %> = factory(root, root.document);',
-  '  }',
-  '}(typeof window !== \'undefined\' ? window : this, function(window, document) {',
-  '<%= data.contents %>',
-  '  return <%= data.name %>;',
-  '}));'
-].join('\n');
 
 var headerLong = [
   '/*',
@@ -97,7 +77,10 @@ gulp.task('unify', ['clean'], function() {
 
   return gulp.src(src)
     .pipe(concat('draft.js', {newLine: '\n'}))
-    .pipe(wrap(umd, {name: pkg.name.replace('.js', '')}, {variable: 'data'}))
+    .pipe(umd({
+      exports: umdName,
+      namespace: umdName
+    }))
     .pipe(header(headerLong, {pkg: pkg}))
     .pipe(gulp.dest('dist'))
     .pipe(size({showFiles: true, title: 'Full'}));
