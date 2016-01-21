@@ -1,12 +1,12 @@
 /*
 * draft.js - A lightweight library for parametric design
 * version v0.0.0
-* https://github.com/D1SC0tech/draft.js
+* http://draft.D1SC0te.ch
 *
-* copyright Jordi Pakey-Rodriguez <jordi.orlando@gmail.com>
+* copyright Jordi Pakey-Rodriguez <jordi.orlando@hexa.io>
 * license MIT
 *
-* BUILT: Tue Jan 19 2016 19:07:42 GMT-0600 (CST)
+* BUILT: Thu Jan 21 2016 05:28:14 GMT-0600 (CST)
 */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -199,9 +199,9 @@ draft.mixins.event = {
       var listeners = listenersMap[key];
       var i = listeners.length;
 
-      if (i > 0) {
+      /* if (i > 0) {
         console.info(`${this.domID} ${key}:`, args);
-      }
+      } */
 
       while (i--) {
         var listener = listeners[i];
