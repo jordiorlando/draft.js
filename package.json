@@ -48,6 +48,7 @@
     "build": "gulp",
     "preversion": "npm test",
     "version": "npm run build && git add --all dist",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "prepublish": "git checkout master && git merge --no-ff dev && git push"
   }
 }
