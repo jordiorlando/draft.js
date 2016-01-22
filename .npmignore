@@ -1,0 +1,14 @@
+docs/
+example/
+spec/
+src/
+
+.DS_Store
+.eslintrc.*
+.git*
+.npmignore
+
+bower.json
+gulpfile.*
+CHANGELOG.*
+ROADMAP.*
