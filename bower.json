@@ -23,7 +23,13 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "spec"
+    "docs",
+    "example",
+    "spec",
+    "src",
+    "gulpfile.*",
+    "CHANGELOG.*",
+    "ROADMAP.*"
   ],
   "moduleType": [
     "amd",
