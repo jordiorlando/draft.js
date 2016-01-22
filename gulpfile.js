@@ -12,10 +12,13 @@ const uglify = require('gulp-uglify');
 const umd = require('gulp-umd');
 const del = require('del');
 
+
+
 var pkg = require('./package.json');
+pkg.buildDate = Date();
 
 var umdName = function() {
-  return pkg.name.replace('.js', '');
+  return 'draft';
 };
 
 var src = [
@@ -72,25 +75,31 @@ gulp.task('clean', function() {
   del.sync(['dist/*']);
 });
 
-gulp.task('unify', ['clean'], function() {
-  pkg.buildDate = Date();
-
+gulp.task('es6', ['clean'], function() {
   return gulp.src(src)
-    .pipe(concat('draft.js', {newLine: '\n'}))
+    .pipe(concat('draft-es6.js', {newLine: '\n'}))
     .pipe(umd({
       exports: umdName,
       namespace: umdName
     }))
     .pipe(header(headerLong, {pkg: pkg}))
-    .pipe(gulp.dest('dist'))
-    .pipe(size({showFiles: true, title: 'Full'}));
+    .pipe(size({showFiles: true, title: 'Full'}))
+    .pipe(gulp.dest('dist'));
 });
 
 // BACKLOG: figure out why sourcemaps don't exactly work
-gulp.task('minify', ['unify'], function() {
-  return gulp.src('dist/draft.js')
+gulp.task('build', ['clean'], function() {
+  return gulp.src(src)
+    .pipe(concat('draft.js', {newLine: '\n'}))
+    .pipe(babel({presets: ['es2015']}))
+    .pipe(umd({
+      exports: umdName,
+      namespace: umdName
+    }))
+    .pipe(header(headerLong, {pkg: pkg}))
+    .pipe(size({showFiles: true, title: 'Full'}))
+    .pipe(gulp.dest('dist'))
     .pipe(sourcemaps.init({loadMaps: true}))
-      .pipe(babel({presets: ['es2015']}))
       .pipe(uglify())
       .pipe(rename({suffix: '.min'}))
       .pipe(header(headerShort, {pkg: pkg}))
@@ -100,4 +109,4 @@ gulp.task('minify', ['unify'], function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['clean', 'unify', 'minify'], function() {});
+gulp.task('default', ['clean', 'es6', 'build'], function() {});

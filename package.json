@@ -1,6 +1,6 @@
 {
   "name": "draft.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A lightweight library for parametric design",
   "keywords": [
     "draft",
@@ -48,6 +48,7 @@
     "build": "gulp",
     "preversion": "npm test",
     "version": "npm run build && git add --all dist",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "prepublish": "git checkout master && git merge --no-ff dev && git push"
   }
 }
