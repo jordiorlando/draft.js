@@ -17,6 +17,7 @@ const del = require('del');
 var pkg = require('./package.json');
 pkg.buildDate = Date();
 
+var name = 'draft.js';
 var umdName = function() {
   return 'draft';
 };
@@ -77,11 +78,12 @@ gulp.task('clean', function() {
 
 gulp.task('es6', ['clean'], function() {
   return gulp.src(src)
-    .pipe(concat('draft-es6.js', {newLine: '\n'}))
+    .pipe(concat(name, {newLine: '\n'}))
     .pipe(umd({
       exports: umdName,
       namespace: umdName
     }))
+    .pipe(rename({suffix: '-es6'}))
     .pipe(header(headerLong, {pkg: pkg}))
     .pipe(size({showFiles: true, title: 'Full'}))
     .pipe(gulp.dest('dist'));
@@ -90,7 +92,7 @@ gulp.task('es6', ['clean'], function() {
 // BACKLOG: figure out why sourcemaps don't exactly work
 gulp.task('build', ['clean'], function() {
   return gulp.src(src)
-    .pipe(concat('draft.js', {newLine: '\n'}))
+    .pipe(concat(name, {newLine: '\n'}))
     .pipe(babel({presets: ['es2015']}))
     .pipe(umd({
       exports: umdName,

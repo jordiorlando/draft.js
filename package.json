@@ -1,6 +1,6 @@
 {
   "name": "draft.js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A lightweight library for parametric design",
   "keywords": [
     "draft",
@@ -30,8 +30,7 @@
     "gulp-size": "^2.0.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^1.5.1",
-    "gulp-umd": "^0.2.0",
-    "gulp-wrap": "^0.11.0"
+    "gulp-umd": "^0.2.0"
   },
   "bugs": {
     "url": "https://github.com/D1SC0tech/draft.js/issues"
@@ -47,8 +46,8 @@
     "test": "echo \"Error: no test specified\" && exit 0",
     "build": "gulp",
     "preversion": "npm test",
-    "version": "npm run build && git add --all dist",
-    "postversion": "git push && git push --tags",
-    "prepublish": "git checkout master && git merge --no-ff dev && git push"
+    "version": "git checkout dev && npm run build && git add --all dist",
+    "postversion": "git push",
+    "prepublish": "git checkout master && git merge dev && git push && git push --tags"
   }
 }
