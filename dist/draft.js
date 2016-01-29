@@ -1,12 +1,12 @@
 /*
 * draft.js - A lightweight library for parametric design
-* version v0.0.4
+* version v0.0.5
 * http://draft.D1SC0te.ch
 *
 * copyright Jordi Pakey-Rodriguez <jordi.orlando@hexa.io>
 * license MIT
 *
-* BUILT: Fri Jan 29 2016 11:54:06 GMT-0600 (CST)
+* BUILT: Fri Jan 29 2016 13:27:45 GMT-0600 (CST)
 */
 ;(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
