@@ -1,16 +1,14 @@
-/* eslint dot-location: [2, "property"] */
+const del = require('del');
 
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const concat = require('gulp-concat');
 const header = require('gulp-header');
-// const jasmine = require('gulp-jasmine');
 const rename = require('gulp-rename');
 const size = require('gulp-size');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
 const umd = require('gulp-umd');
-const del = require('del');
 
 
 
