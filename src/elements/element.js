@@ -9,13 +9,15 @@ draft.Element = class Element {
       this.prop('name', name);
     }
 
-    // HACK:0 need a better way of getting an element's type
+    // HACK:0 use this.constructor.name to get an element's type. Requires all
+    // subclasses to have a defined constructor.
     for (var type in draft) {
       if (this.constructor === draft[type]) {
         this._type = type.toLowerCase();
         break;
       }
     }
+    // console.log('TYPE:', type, 'NAME:', this.constructor.name);
   }
 
   static inherit(source, addSuper) {
