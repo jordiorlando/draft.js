@@ -1,4 +1,4 @@
-var draft = function(name) {
+var draft = function draft(name) {
   return draft.doc(name);
 };
 
@@ -24,7 +24,7 @@ draft.defaults = {
 draft.mixins = {};
 
 // TODO:50 test safety checks for draft.px()
-draft.px = function(val) {
+draft.px = function px(val) {
   val = String(val);
   var num = parseFloat(val, 10);
 
