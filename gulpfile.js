@@ -25,6 +25,11 @@ var src = [
   'src/draft.js',
   'src/inherit.js',
 
+  // Types
+  'src/types/unit.js',
+  'src/types/color.js',
+  'src/types/opacity.js',
+
   // Mixins
   'src/mixins/event.js',
 
@@ -33,6 +38,9 @@ var src = [
 
   'src/mixins/position.js',
   'src/mixins/rotation.js',
+
+  'src/mixins/fill.js',
+  'src/mixins/stroke.js',
 
   'src/mixins/size.js',
   'src/mixins/radius.js',

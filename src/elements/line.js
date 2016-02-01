@@ -4,6 +4,8 @@ draft.Line = class Line extends draft.Element {
   }
 };
 
+draft.Line.require('stroke');
+
 draft.Group.mixin({
   line(length) {
     return this.push(new draft.Line()).length(length);

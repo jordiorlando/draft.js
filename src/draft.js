@@ -21,6 +21,8 @@ draft.defaults = {
   }
 };
 
+// Initialize types and mixins
+draft.types = {};
 draft.mixins = {};
 
 // TODO:50 test safety checks for draft.px()
