@@ -172,8 +172,7 @@
     "browser": true
   },
   "globals": {
-    "draft": true,
-    "unit": false
+    "draft": true
   },
   "extends": "eslint:recommended"
 }
