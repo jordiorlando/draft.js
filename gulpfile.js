@@ -45,6 +45,7 @@ var src = [
   'src/elements/view.js',
   // Elements
   'src/elements/line.js',
+  'src/elements/shape.js',
   'src/elements/rect.js',
   'src/elements/circle.js'
 ];

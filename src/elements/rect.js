@@ -1,4 +1,4 @@
-draft.Rect = class Rect extends draft.Element {
+draft.Rect = class Rect extends draft.Shape {
   // Hehehe
   get rekt() {
     return `${Math.floor(Math.random() * 101)}% rekt`;
@@ -6,7 +6,6 @@ draft.Rect = class Rect extends draft.Element {
 };
 
 draft.Rect.require([
-  'size',
   'radius'
 ]);
 
