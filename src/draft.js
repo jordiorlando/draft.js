@@ -88,6 +88,6 @@ draft.px = function px(val) {
 };
 
 // DOING:10 create an actual 'Unit' class for every unit instance
-function unit(val) {
+function unitHack(val) {
   return val == null ? val : `${val}_u`;
 }

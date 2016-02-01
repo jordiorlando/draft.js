@@ -1,4 +1,3 @@
-// draft.Element =
 draft.Element = class Element {
   constructor(name) {
     // Make sure this._properties is initialized

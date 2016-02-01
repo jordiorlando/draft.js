@@ -2,9 +2,9 @@ draft.mixins.position = {
   // TODO: find better way of only applying supplied values
   position(x, y, z) {
     return this.prop({
-      x: unit(x),
-      y: unit(y),
-      z: unit(z)
+      x: unitHack(x),
+      y: unitHack(y),
+      z: unitHack(z)
     });
   },
 
