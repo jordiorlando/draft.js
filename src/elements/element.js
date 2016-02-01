@@ -60,55 +60,74 @@ draft.Element = class Element {
     return `${this.type}_${id}`;
   }
 
-  prop(prop, val) {
+  prop(prop, val, obj = this._properties) {
     if (prop === null) {
       // BACKLOG: test deleting all properties, perhaps remove it
       // Delete all properties if prop is null
       this._properties = {};
     } else if (prop === undefined) {
       // Act as a full properties getter if prop is undefined
+      // TODO: don't create a new object?
       return Object(this._properties);
+    } else if (typeof prop === 'string') {
+      let arr = prop.split('.');
+
+      if (arr.length > 1) {
+        return this.prop(arr, val, obj);
+      } else if (val === null) {
+        // Delete the property if val is null
+        this.fire('change', [prop, val]);
+        delete obj[prop];
+      } else if (val === undefined) {
+        // Act as an individual property getter if val is undefined
+
+        // HACK: don't return 0?
+        // If prop is undefined, set it to the default OR 0
+        if (obj[prop] === undefined) {
+          this.prop(prop, draft.defaults[prop] || 0, obj);
+        }
+
+        return obj[prop];
+      } else {
+        // Act as an individual property setter if both prop and val are defined
+
+        // HACK:10 should use an actual unit data type, not just strings
+        if (String(val).endsWith('_u')) {
+          val = val.slice(0, -2);
+          val = isFinite(val) ?
+            val + this.parent.prop('units') || draft.defaults.units : val;
+        }
+
+        obj[prop] = val;
+
+        this.fire('change', [prop, val]);
+      }
+    } else if (Array.isArray(prop)) {
+      let p = prop.shift();
+
+      if (prop.length > 0) {
+        if (obj[p] === undefined) {
+          obj[p] = {};
+        }
+
+        return this.prop(prop, val, obj[p]);
+      }
+
+      return this.prop(p, val, obj);
     } else if (typeof prop == 'object') {
       // Act as a getter if prop is an object with only null values.
       // Act as a setter if prop is an object with at least one non-null value.
       let setter = false;
 
-      for (var p in prop) {
+      for (let p in prop) {
         // Get this._properties[p] and save it to prop[p]
-        prop[p] = this.prop(p, prop[p]);
+        prop[p] = this.prop(p, prop[p], obj);
         // If the returned value is an object, prop[p] is non-null, so act like
         // a setter.
         setter = setter || typeof prop[p] == 'object';
       }
 
       return setter ? this : prop;
-    } else if (val === null) {
-      // Delete the property if val is null
-      this.fire('change', [prop, val]);
-      delete this._properties[prop];
-    } else if (val === undefined) {
-      // Act as an individual property getter if val is undefined
-
-      // HACK: don't return 0?
-      // If prop is undefined, set it to the default OR 0
-      if (this._properties[prop] === undefined) {
-        this.prop(prop, draft.defaults[prop] || 0);
-      }
-
-      return this._properties[prop];
-    } else {
-      // Act as an individual property setter if both prop and val are defined
-
-      // HACK:10 should use an actual unit data type, not just strings
-      if (String(val).endsWith('_u')) {
-        val = val.slice(0, -2);
-        val = isFinite(val) ?
-          val + this.parent.prop('units') || draft.defaults.units : val;
-      }
-
-      this._properties[prop] = val;
-
-      this.fire('change', [prop, val]);
     }
 
     // Chainable if 'this' is returned
