@@ -19,6 +19,7 @@
     "url": "https://github.com/D1SC0tech/draft.js.git"
   },
   "devDependencies": {
+    "babel-plugin-array-includes": "^2.0.3",
     "babel-preset-es2015": "^6.3.13",
     "del": "^2.2.0",
     "gulp": "^3.9.0",

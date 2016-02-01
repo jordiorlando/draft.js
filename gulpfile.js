@@ -91,7 +91,10 @@ gulp.task('es6', ['clean'], function() {
 gulp.task('build', ['clean'], function() {
   return gulp.src(src)
     .pipe(concat(name, {newLine: '\n'}))
-    .pipe(babel({presets: ['es2015']}))
+    .pipe(babel({
+      plugins: ['array-includes'],
+      presets: ['es2015']
+    }))
     .pipe(umd({
       exports: umdName,
       namespace: umdName
