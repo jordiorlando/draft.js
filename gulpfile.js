@@ -103,7 +103,7 @@ gulp.task('build', ['clean'], function() {
   return gulp.src(src)
     .pipe(concat(name, {newLine: '\n'}))
     .pipe(babel({
-      plugins: ['array-includes'],
+      plugins: ['array-includes', 'transform-remove-console'],
       presets: ['es2015']
     }))
     .pipe(umd({

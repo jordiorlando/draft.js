@@ -58,9 +58,9 @@ draft.mixins.event = {
       var i = listeners.length;
 
       // NOTE: fire event
-      /* if (i > 0) {
+      if (i > 0) {
         console.info(`${this.domID} ${key}:`, args);
-      } */
+      }
 
       while (i--) {
         var listener = listeners[i];
