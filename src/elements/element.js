@@ -61,33 +61,30 @@ draft.Element = class Element {
   }
 
   prop(prop, val, obj = this._properties) {
-    if (prop === null) {
-      // BACKLOG: test deleting all properties, perhaps remove it
-      // Delete all properties if prop is null
-      this._properties = {};
-    } else if (prop === undefined) {
+    if (prop === undefined) {
       // Act as a full properties getter if prop is undefined
       // TODO: don't create a new object?
       return Object(this._properties);
+    } else if (prop === null) {
+      // BACKLOG: test deleting all properties, perhaps remove it
+      // Delete all properties if prop is null
+      this._properties = {};
     } else if (typeof prop === 'string') {
-      let arr = prop.split('.');
+      var props = draft.proxy(this._properties);
 
-      if (arr.length > 1) {
-        return this.prop(arr, val, obj);
-      } else if (val === null) {
-        // Delete the property if val is null
-        this.fire('change', [prop, val]);
-        delete obj[prop];
-      } else if (val === undefined) {
+      if (val === undefined) {
         // Act as an individual property getter if val is undefined
 
         // HACK: don't return 0?
         // If prop is undefined, set it to the default OR 0
-        if (obj[prop] === undefined) {
-          this.prop(prop, draft.defaults[prop] || 0, obj);
+        if (props[prop] === undefined) {
+          this.prop(prop, draft.defaults[prop] || 0);
         }
 
-        return obj[prop];
+        return props[prop];
+      } else if (val === null) {
+        // Delete the property if val is null
+        delete props[prop];
       } else {
         // Act as an individual property setter if both prop and val are defined
 
@@ -98,22 +95,10 @@ draft.Element = class Element {
             val + this.parent.prop('units') || draft.defaults.units : val;
         }
 
-        obj[prop] = val;
-
-        this.fire('change', [prop, val]);
-      }
-    } else if (Array.isArray(prop)) {
-      let p = prop.shift();
-
-      if (prop.length > 0) {
-        if (obj[p] === undefined) {
-          obj[p] = {};
-        }
-
-        return this.prop(prop, val, obj[p]);
+        props[prop] = val;
       }
 
-      return this.prop(p, val, obj);
+      this.fire('change', [prop, val]);
     } else if (typeof prop == 'object') {
       // Act as a getter if prop is an object with only null values.
       // Act as a setter if prop is an object with at least one non-null value.
