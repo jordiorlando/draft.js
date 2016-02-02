@@ -24,6 +24,7 @@ var src = [
   // Main
   'src/draft.js',
   'src/inherit.js',
+  'src/defaults.js',
 
   // Types
   'src/types/unit.js',

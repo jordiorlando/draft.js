@@ -4,3 +4,5 @@ draft.mixins.units = {
     return this.prop('units', units);
   }
 };
+
+draft.defaults.units = 'px';
