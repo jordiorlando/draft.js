@@ -82,7 +82,7 @@ var headerShort = [
 
 
 gulp.task('clean', function() {
-  del.sync(['dist/*']);
+  return del(['dist/*']);
 });
 
 gulp.task('es6', ['clean'], function() {
