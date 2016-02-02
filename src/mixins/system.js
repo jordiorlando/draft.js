@@ -27,3 +27,5 @@ draft.mixins.system = {
     return this.prop('system', system);
   }
 };
+
+draft.defaults.system = 'cartesian';

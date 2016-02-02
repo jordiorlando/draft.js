@@ -1,16 +1,14 @@
-/* eslint dot-location: [2, "property"] */
+const del = require('del');
 
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const concat = require('gulp-concat');
 const header = require('gulp-header');
-// const jasmine = require('gulp-jasmine');
 const rename = require('gulp-rename');
 const size = require('gulp-size');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
 const umd = require('gulp-umd');
-const del = require('del');
 
 
 
@@ -26,6 +24,13 @@ var src = [
   // Main
   'src/draft.js',
   'src/inherit.js',
+  'src/proxy.js',
+  'src/defaults.js',
+
+  // Types
+  'src/types/unit.js',
+  'src/types/color.js',
+  'src/types/opacity.js',
 
   // Mixins
   'src/mixins/event.js',
@@ -35,6 +40,9 @@ var src = [
 
   'src/mixins/position.js',
   'src/mixins/rotation.js',
+
+  'src/mixins/fill.js',
+  'src/mixins/stroke.js',
 
   'src/mixins/size.js',
   'src/mixins/radius.js',
@@ -47,6 +55,7 @@ var src = [
   'src/elements/view.js',
   // Elements
   'src/elements/line.js',
+  'src/elements/shape.js',
   'src/elements/rect.js',
   'src/elements/circle.js'
 ];
@@ -73,7 +82,7 @@ var headerShort = [
 
 
 gulp.task('clean', function() {
-  del.sync(['dist/*']);
+  return del(['dist/*']);
 });
 
 gulp.task('es6', ['clean'], function() {
@@ -93,7 +102,10 @@ gulp.task('es6', ['clean'], function() {
 gulp.task('build', ['clean'], function() {
   return gulp.src(src)
     .pipe(concat(name, {newLine: '\n'}))
-    .pipe(babel({presets: ['es2015']}))
+    .pipe(babel({
+      plugins: ['array-includes', 'transform-remove-console'],
+      presets: ['es2015']
+    }))
     .pipe(umd({
       exports: umdName,
       namespace: umdName

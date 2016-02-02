@@ -1,4 +1,3 @@
-// draft.Element =
 draft.Element = class Element {
   constructor(name) {
     // Make sure this._properties is initialized
@@ -9,13 +8,15 @@ draft.Element = class Element {
       this.prop('name', name);
     }
 
-    // HACK:0 need a better way of getting an element's type
+    // HACK:0 use this.constructor.name to get an element's type. Requires all
+    // subclasses to have a defined constructor.
     for (var type in draft) {
       if (this.constructor === draft[type]) {
         this._type = type.toLowerCase();
         break;
       }
     }
+    // console.log('TYPE:', type, 'NAME:', this.constructor.name);
   }
 
   static inherit(source, addSuper) {
@@ -59,55 +60,59 @@ draft.Element = class Element {
     return `${this.type}_${id}`;
   }
 
-  prop(prop, val) {
-    if (prop === null) {
+  prop(prop, val, obj = this._properties) {
+    if (prop === undefined) {
+      // Act as a full properties getter if prop is undefined
+      // TODO: don't create a new object?
+      return Object(this._properties);
+    } else if (prop === null) {
       // BACKLOG: test deleting all properties, perhaps remove it
       // Delete all properties if prop is null
       this._properties = {};
-    } else if (prop === undefined) {
-      // Act as a full properties getter if prop is undefined
-      return Object(this._properties);
+    } else if (typeof prop === 'string') {
+      var props = draft.proxy(this._properties);
+
+      if (val === undefined) {
+        // Act as an individual property getter if val is undefined
+
+        // HACK: don't return 0?
+        // If prop is undefined, set it to the default OR 0
+        if (props[prop] === undefined) {
+          this.prop(prop, draft.defaults[prop] || 0);
+        }
+
+        return props[prop];
+      } else if (val === null) {
+        // Delete the property if val is null
+        delete props[prop];
+      } else {
+        // Act as an individual property setter if both prop and val are defined
+
+        // HACK:10 should use an actual unit data type, not just strings
+        if (String(val).endsWith('_u')) {
+          val = val.slice(0, -2);
+          val = isFinite(val) ?
+            val + this.parent.prop('units') || draft.defaults.units : val;
+        }
+
+        props[prop] = val;
+      }
+
+      this.fire('change', [prop, val]);
     } else if (typeof prop == 'object') {
       // Act as a getter if prop is an object with only null values.
       // Act as a setter if prop is an object with at least one non-null value.
       let setter = false;
 
-      for (var p in prop) {
+      for (let p in prop) {
         // Get this._properties[p] and save it to prop[p]
-        prop[p] = this.prop(p, prop[p]);
+        prop[p] = this.prop(p, prop[p], obj);
         // If the returned value is an object, prop[p] is non-null, so act like
         // a setter.
         setter = setter || typeof prop[p] == 'object';
       }
 
       return setter ? this : prop;
-    } else if (val === null) {
-      // Delete the property if val is null
-      this.fire('change', [prop, val]);
-      delete this._properties[prop];
-    } else if (val === undefined) {
-      // Act as an individual property getter if val is undefined
-
-      // HACK: don't return 0?
-      // If prop is undefined, set it to the default OR 0
-      if (this._properties[prop] === undefined) {
-        this.prop(prop, draft.defaults[prop] || 0);
-      }
-
-      return this._properties[prop];
-    } else {
-      // Act as an individual property setter if both prop and val are defined
-
-      // HACK:10 should use an actual unit data type, not just strings
-      if (String(val).endsWith('_u')) {
-        val = val.slice(0, -2);
-        val = isFinite(val) ?
-          val + this.parent.prop('units') || draft.defaults.units : val;
-      }
-
-      this._properties[prop] = val;
-
-      this.fire('change', [prop, val]);
     }
 
     // Chainable if 'this' is returned

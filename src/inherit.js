@@ -2,7 +2,7 @@
 // released under the Unlicense (public domain).
 // GitHub Repository: https://github.com/Olical/Heir
 
-draft.inherit = function(destination, source, addSuper) {
+draft.inherit = function inherit(destination, source, addSuper) {
   var proto = destination.prototype = Object.create(source.prototype);
   proto.constructor = destination;
 
@@ -11,7 +11,7 @@ draft.inherit = function(destination, source, addSuper) {
   }
 };
 
-draft.mixin = function(destination, source) {
+draft.mixin = function mixin(destination, source) {
   for (var key in source) {
     if (source.hasOwnProperty(key)) {
       destination.prototype[key] = source[key];

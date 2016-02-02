@@ -19,13 +19,14 @@
     "url": "https://github.com/D1SC0tech/draft.js.git"
   },
   "devDependencies": {
+    "babel-plugin-array-includes": "^2.0.3",
+    "babel-plugin-transform-remove-console": "^6.3.13",
     "babel-preset-es2015": "^6.3.13",
     "del": "^2.2.0",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.1",
     "gulp-concat": "^2.6.0",
     "gulp-header": "^1.7.1",
-    "gulp-jasmine": "^2.2.1",
     "gulp-rename": "^1.2.2",
     "gulp-size": "^2.0.0",
     "gulp-sourcemaps": "^1.6.0",
@@ -47,6 +48,7 @@
     "build": "gulp",
     "preversion": "npm test && git checkout master && git merge --no-ff dev",
     "version": "npm run build && git add --all dist",
+    "postversion": "git checkout dev && git merge --ff master",
     "prepublish": "git checkout master",
     "publish": "git push && git push --tags"
   }

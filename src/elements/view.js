@@ -4,7 +4,7 @@ draft.View = class View extends draft.Element {
   } */
 
   get aspectRatio() {
-    var gcd = function(a, b) {
+    var gcd = function gcd(a, b) {
       return b ? gcd(b, a % b) : a;
     };
 
