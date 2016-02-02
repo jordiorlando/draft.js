@@ -16,3 +16,7 @@ draft.mixins.stroke = {
     return this.prop('stroke.width', draft.types.unit(width));
   }
 };
+
+draft.defaults['stroke.color'] = '#000';
+draft.defaults['stroke.opacity'] = 1;
+draft.defaults['stroke.width'] = 1;

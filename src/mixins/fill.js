@@ -12,3 +12,6 @@ draft.mixins.fill = {
     return this.prop('fill.opacity', draft.types.opacity(opacity));
   }
 };
+
+draft.defaults['fill.color'] = '#fff';
+draft.defaults['fill.opacity'] = 1;
