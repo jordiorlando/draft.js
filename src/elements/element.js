@@ -77,11 +77,7 @@ draft.Element = class Element {
 
         // HACK: don't return 0?
         // If prop is undefined, set it to the default OR 0
-        if (props[prop] === undefined) {
-          this.prop(prop, draft.defaults[prop] || 0);
-        }
-
-        return props[prop];
+        return prop in props ? props[prop] : draft.defaults[prop] || 0;
       } else if (val === null) {
         // Delete the property if val is null
         delete props[prop];
