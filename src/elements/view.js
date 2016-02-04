@@ -4,12 +4,15 @@ draft.View = class View extends draft.Element {
   } */
 
   get aspectRatio() {
+    var width = draft.px(this.prop('width'));
+    var height = draft.px(this.prop('height'));
+
     var gcd = function gcd(a, b) {
       return b ? gcd(b, a % b) : a;
     };
 
-    gcd = gcd(this.width(), this.height());
-    return `${this.width() / gcd}:${this.height() / gcd}`;
+    gcd = gcd(width, height);
+    return `${width / gcd}:${height / gcd}`;
   }
 };
 
