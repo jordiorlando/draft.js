@@ -54,6 +54,7 @@ var src = [
   'src/elements/group.js',
   'src/elements/view.js',
   // Elements
+  'src/elements/point.js',
   'src/elements/line.js',
   'src/elements/shape.js',
   'src/elements/rect.js',
