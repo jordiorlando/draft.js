@@ -15,7 +15,12 @@ draft.proxy = function proxy(obj, setInit = true) {
     return [target, p];
   };
 
+  // TODO: return null if the property does not exist or was not set/deleted?
   var handler = {
+    has(target, prop) {
+      var [t, p] = access(target, prop);
+      return !!t[p];
+    },
     get(target, prop) {
       var [t, p] = access(target, prop);
       return t[p];
