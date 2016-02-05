@@ -1,7 +1,7 @@
 # v1.0.0
 
 - [x] Cartesian coordinate system
-- [ ] 2D primitives (point, line, rect, square?, ellipse?, circle)
+- [x] 2D primitives (point, line, rect, square?, ellipse?, circle)
 - [ ] Relative transformations (translate, rotate, scale, skew)
 - [ ] Matrix transformations
 - [ ] Decide on document model:
