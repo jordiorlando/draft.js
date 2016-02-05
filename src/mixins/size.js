@@ -8,10 +8,10 @@ draft.mixins.size = {
     });
   },
 
-  scale(width, height) {
+  scale(width = 1, height = 1) {
     return this.prop({
-      width: this.prop('width') * width || undefined,
-      height: this.prop('height') * height || undefined
+      width: draft.types.length(this.prop('width')) * width || undefined,
+      height: draft.types.length(this.prop('height')) * height || undefined
       // depth: this.prop('depth') * depth || undefined
     });
   }
