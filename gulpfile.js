@@ -29,6 +29,7 @@ var src = [
 
   // Types
   'src/types/unit.js',
+  'src/types/float.js',
   'src/types/color.js',
 
   // Mixins
