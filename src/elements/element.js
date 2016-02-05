@@ -95,7 +95,7 @@ draft.Element = class Element {
       }
 
       this.fire('change', [prop, val]);
-    } else if (typeof prop == 'object') {
+    } else if (typeof prop === 'object') {
       // Act as a getter if prop is an object with only null values.
       // Act as a setter if prop is an object with at least one non-null value.
       let setter = false;
