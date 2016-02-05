@@ -1,12 +1,12 @@
 /*
 * draft.js - A lightweight library for parametric design
-* version v0.1.0
+* version v0.2.0
 * http://draft.D1SC0te.ch
 *
 * copyright Jordi Pakey-Rodriguez <jordi.orlando@hexa.io>
 * license MIT
 *
-* BUILT: Tue Feb 02 2016 02:49:16 GMT-0600 (CST)
+* BUILT: Fri Feb 05 2016 10:46:44 GMT-0600 (CST)
 */
 ;(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -24,6 +24,8 @@ var draft = function draft(name) {
 // Initialize types and mixins
 draft.types = {};
 draft.mixins = {};
+
+// TODO: prefer operators at beginning of lines?
 
 // These methods are adapted from Oliver Caldwell's Heir script, which he has
 // released under the Unlicense (public domain).
@@ -46,35 +48,41 @@ draft.mixin = function mixin(destination, source) {
   }
 };
 
-draft.proxy = function proxy(obj) {
-  var access = function(target, prop) {
+draft.proxy = function proxy(obj, setInit = true) {
+  var access = function(target, prop, init) {
     if (typeof prop === 'string') {
-      return access(target, prop.split('.'));
+      return access(target, prop.split('.'), init);
     }
 
     let p = prop.shift();
 
-    if (prop.length > 0) {
-      return access(target[p] || (target[p] = {}), prop);
+    if (prop.length && typeof target === 'object' && (init || p in target)) {
+      // TODO: when init is false, setting obj['foo.bar'] will incorrectly set
+      // obj['foo'] instead
+      return access(p in target ? target[p] : (target[p] = {}), prop, init);
     }
 
     return [target, p];
   };
 
+  // TODO: return null if the property does not exist or was not set/deleted?
   var handler = {
+    has(target, prop) {
+      var [t, p] = access(target, prop);
+      return !!t[p];
+    },
     get(target, prop) {
       var [t, p] = access(target, prop);
       return t[p];
     },
     set(target, prop, val) {
-      var [t, p] = access(target, prop);
+      var [t, p] = access(target, prop, setInit);
       t[p] = val;
       return true;
     },
     deleteProperty(target, prop) {
       var [t, p] = access(target, prop);
-      delete t[p];
-      return true;
+      return delete t[p];
     }
   };
 
@@ -99,99 +107,171 @@ draft.defaults = draft.proxy({
   }
 });
 
-draft.types.unit = function unit(val) {
-  // TODO: add real code
-  return val;
-};
-
-// TODO:50 test safety checks for draft.px()
-draft.px = function px(val) {
-  val = String(val);
-  var num = parseFloat(val, 10);
-
-  var regex = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/g;
-
-  /* if (typeof units == 'string') {
-    return new RegExp(`${regex.source}${units}$`, 'ig').test(val);
-  } */
-
-  // TODO: don't default to px?
-  var units = regex.exec(val) === null ?
-    false : val.slice(regex.lastIndex) || 'px';
-
-  switch (units) {
-    // Remain unchanged if units are already px
-    case 'px':
-      return num;
-
-    // Points and picas (pt, pc)
-    case 'pc':
-      num *= 12;
-      // Falls through
-    case 'pt':
-      num /= 72;
-      break;
-
-    // Metric units (mm, cm, dm, m, km)
-    case 'km':
-      num *= 1000;
-      // Falls through
-    case 'm':
-      num *= 10;
-      // Falls through
-    case 'dm':
-      num *= 10;
-      // Falls through
-    case 'cm':
-      num *= 10;
-      // Falls through
-    case 'mm':
-      num /= 25.4;
-      break;
-
-    // Imperial units (in, ft, yd, mi)
-    case 'mi':
-      num *= 1760;
-      // Falls through
-    case 'yd':
-      num *= 3;
-      // Falls through
-    case 'ft':
-      num *= 12;
-      // Falls through
-    case 'in':
-      break;
-    default:
-      return undefined;
+draft.types.Float = class Float {
+  constructor(value) {
+    this.value = parseFloat(value);
   }
 
-  return num * draft.defaults.dpi;
-};
+  get type() {
+    return 'float';
+  }
 
-// DOING:10 create an actual 'Unit' class for every unit instance
-function unitHack(val) {
-  return val == null ? val : `${val}_u`;
-}
+  get regex() {
+    // Matches all floating point values. Should match:
+    // 123
+    // -123.45
+    // 123e5
+    // 123.45E+5
+    return '[-+]?[0-9]*\\.?[0-9]+(?:[eE][-+]?[0-9]+)?';
+  }
 
-draft.types.color = function color(val) {
-  var hex = /^#?([a-f0-9]{6}|[a-f0-9]{3})$/i;
-
-  var rgb255 = '([01]?\\d\\d?|2[0-4]\\d|25[0-5])';
-  var rgb = new RegExp(`^rgb\\(${rgb255}\\, ?${rgb255}\\, ?${rgb255}\\)$`, 'i');
-
-  if (val === undefined || val === null || hex.test(val) || rgb.test(val)) {
-    return val;
+  valueOf() {
+    return this.value;
   }
 };
 
-draft.types.opacity = function opacity(val) {
-  var from0to1 = /^(0(\.\d*)?|1(\.0*)?)$/;
+draft.types.float = function float(value) {
+  return value == undefined ? value : new draft.types.Float(value);
+};
 
-  if (val === undefined || val === null) {
-    return val;
-  } else if (from0to1.test(val)) {
-    return parseFloat(val, 10);
+var test = function(val, regex) {
+  // TODO: strict match anchor (^ instead of word end)
+  regex = new RegExp(`${regex}$`, 'i');
+  val = regex.exec(val);
+  return val ? val[0].toLowerCase() : false;
+};
+
+draft.types.Length = class Length extends draft.types.Float {
+  constructor(value, unit) {
+    super(value);
+
+    value = test(value, this.regex);
+    unit = test(unit, this.regex);
+
+    if (!isNaN(this.value) && (value || unit)) {
+      this.unit = value || unit;
+      this.convert(unit);
+    } else {
+      this.unit = '';
+    }
   }
+
+  get type() {
+    return 'length';
+  }
+
+  get regex() {
+    return `(px|pt|pc|in|ft|yd|mi|mm|cm|dm|km|m)`;
+  }
+
+  get units() {
+    return {
+      px: [1, 1, 'px'],
+      pt: [1, 72, 'px'],
+      pc: [12, 1, 'pt'],
+      in: [draft.defaults.dpi, 1, 'px'],
+      ft: [12, 1, 'in'],
+      yd: [3, 1, 'ft'],
+      mi: [1760, 1, 'yd'],
+      mm: [1, 25.4, 'in'],
+      cm: [10, 1, 'mm'],
+      dm: [10, 1, 'cm'],
+      m: [10, 1, 'dm'],
+      km: [1000, 1, 'm']
+    };
+  }
+
+  convert(newUnit) {
+    newUnit = test(newUnit, this.regex);
+
+    if (!newUnit) {
+      return false;
+    }
+
+    var chain = (unit, reverse) => {
+      let units = this.units[unit];
+
+      this.value *= reverse ? units[1] : units[0];
+      this.value /= reverse ? units[0] : units[1];
+
+      return units[2];
+    };
+
+    let unit = this.unit;
+    while (unit !== newUnit && unit !== 'px') {
+      unit = chain(unit);
+    }
+
+    if (unit !== newUnit) {
+      unit = newUnit;
+      while (unit !== 'px') {
+        unit = chain(unit, true);
+      }
+    }
+
+    this.unit = newUnit;
+
+    return this.toString();
+  }
+
+  valueOf() {
+    return new Length(this.toString(), draft.defaults.units).value;
+  }
+
+  toString() {
+    return this.value + this.unit;
+  }
+};
+
+draft.types.length = function length(value, unit) {
+  return value == undefined ? value : new draft.types.Length(value, unit);
+};
+
+draft.types.Color = class Color {
+  constructor(color) {
+    color = new RegExp(`^(?:${this.regex})$`, 'i').exec(
+      isNaN(color) ? color : color.toString(16));
+
+    if (color !== null) {
+      this.color = color[0].toLowerCase();
+
+      for (let i = 1; i <= 3; i++) {
+        color[i] = parseInt(color[i] ||
+          parseInt(color[i + 3] || color[i + 6].repeat(2), 16), 10);
+      }
+
+      this.red = color[1];
+      this.green = color[2];
+      this.blue = color[3];
+    }
+  }
+
+  get type() {
+    return 'color';
+  }
+
+  get regex() {
+    var rgbColor = '([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])';
+    var rgb = `rgb\\(${rgbColor}, ?${rgbColor}, ?${rgbColor}\\)`;
+
+    var hexColor = '([0-9a-f]{2})'.repeat(3);
+    var hex = `#?(?:${hexColor}|${hexColor.replace(/\{2\}/g, '')})`;
+    // var hex = '#?(?:[0-9a-f]{3}){1,2}';
+
+    return `${rgb}|${hex}`;
+  }
+
+  valueOf() {
+    return (this.red << 16) | (this.green << 8) | this.blue;
+  }
+
+  toString() {
+    return this.color;
+  }
+};
+
+draft.types.color = function color(value) {
+  return value == undefined ? value : new draft.types.Color(value);
 };
 
 // These methods are adapted from Oliver Caldwell's EventEmitter library, which
@@ -253,7 +333,6 @@ draft.mixins.event = {
       var listeners = listenersMap[key];
       var i = listeners.length;
 
-      // NOTE: fire event
       if (i > 0) {
         console.info(`${this.domID} ${key}:`, args);
       }
@@ -392,9 +471,9 @@ draft.mixins.position = {
   // TODO: find better way of only applying supplied values
   position(x, y, z) {
     return this.prop({
-      x: unitHack(x),
-      y: unitHack(y),
-      z: unitHack(z)
+      x: draft.types.length(x),
+      y: draft.types.length(y),
+      z: draft.types.length(z)
     });
   },
 
@@ -444,7 +523,12 @@ draft.mixins.fill = {
   },
 
   fillOpacity(opacity) {
-    return this.prop('fill.opacity', draft.types.opacity(opacity));
+    // TODO: move into generic function?
+    if (/^(0(\.\d*)?|1(\.0*)?)$/.test(opacity)) {
+      opacity = parseFloat(opacity, 10);
+    }
+
+    return this.prop('fill.opacity', opacity);
   }
 };
 
@@ -462,11 +546,16 @@ draft.mixins.stroke = {
   },
 
   strokeOpacity(opacity) {
-    return this.prop('stroke.opacity', draft.types.opacity(opacity));
+    // TODO: move into generic function?
+    if (/^(0(\.\d*)?|1(\.0*)?)$/.test(opacity)) {
+      opacity = parseFloat(opacity, 10);
+    }
+
+    return this.prop('stroke.opacity', opacity);
   },
 
   strokeWidth(width) {
-    return this.prop('stroke.width', draft.types.unit(width));
+    return this.prop('stroke.width', draft.types.length(width));
   }
 };
 
@@ -478,34 +567,35 @@ draft.mixins.size = {
   // Get/set the element's width & height
   size(width, height) {
     return this.prop({
-      width: unitHack(width),
-      height: unitHack(height)
+      width: draft.types.length(width),
+      height: draft.types.length(height)
+      // depth: draft.types.length(depth)
     });
   },
-  // Get/set the element's width
-  width(width) {
-    return draft.px(this.prop('width', unitHack(width)));
-  },
-  // Get/set the element's height
-  height(height) {
-    return draft.px(this.prop('height', unitHack(height)));
+
+  scale(width, height) {
+    return this.prop({
+      width: this.prop('width') * width || undefined,
+      height: this.prop('height') * height || undefined
+      // depth: this.prop('depth') * depth || undefined
+    });
   }
 };
 
 draft.mixins.radius = {
   // Get/set the element's x radius
   rx(rx) {
-    return this.prop('rx', unitHack(rx));
+    return this.prop('rx', draft.types.length(rx));
   },
   // Get/set the element's y radius
   ry(ry) {
-    return this.prop('ry', unitHack(ry));
+    return this.prop('ry', draft.types.length(ry));
   },
   // Get/set the element's radius
   radius(rx, ry) {
     return this.prop({
-      rx: unitHack(rx),
-      ry: unitHack(ry)
+      rx: draft.types.length(rx),
+      ry: draft.types.length(ry)
     });
   }
 };
@@ -586,32 +676,35 @@ draft.Element = class Element {
 
       if (val === undefined) {
         // Act as an individual property getter if val is undefined
-
-        // HACK: don't return 0?
-        // If prop is undefined, set it to the default OR 0
-        if (props[prop] === undefined) {
-          this.prop(prop, draft.defaults[prop] || 0);
-        }
-
-        return props[prop];
+        // TODO: do a fuzzy-find? For example, el.prop('width') would match
+        // el._properties.size.width if el._properties.width is undefined
+        return prop in props ? props[prop] : null;
       } else if (val === null) {
         // Delete the property if val is null
         delete props[prop];
       } else {
         // Act as an individual property setter if both prop and val are defined
 
-        // HACK:10 should use an actual unit data type, not just strings
-        if (String(val).endsWith('_u')) {
-          val = val.slice(0, -2);
-          val = isFinite(val) ?
-            val + this.parent.prop('units') || draft.defaults.units : val;
+        if (typeof val === 'object') {
+          let unit;
+
+          switch (val.type) {
+            case 'length':
+              unit = this.parent.prop('units') || draft.defaults.units;
+              val.unit = val.unit || unit;
+              val.convert(unit);
+              // Falls through
+            case 'color':
+              val = String(val);
+              break;
+          }
         }
 
         props[prop] = val;
       }
 
       this.fire('change', [prop, val]);
-    } else if (typeof prop == 'object') {
+    } else if (typeof prop === 'object') {
       // Act as a getter if prop is an object with only null values.
       // Act as a setter if prop is an object with at least one non-null value.
       let setter = false;
@@ -765,42 +858,53 @@ draft.View = class View extends draft.Element {
   } */
 
   get aspectRatio() {
+    var width = draft.types.length(this.prop('width')).value;
+    var height = draft.types.length(this.prop('height')).value;
+
     var gcd = function gcd(a, b) {
       return b ? gcd(b, a % b) : a;
     };
 
-    gcd = gcd(this.width(), this.height());
-    return `${this.width() / gcd}:${this.height() / gcd}`;
+    gcd = gcd(width, height);
+    return `${width / gcd}:${height / gcd}`;
   }
 };
 
 draft.View.require('size');
 
 draft.Group.mixin({
-  view(width, height) {
+  // TODO: get group bounding box for default size
+  view(width = 100, height = 100) {
     return this.push(new draft.View()).size(width, height);
   }
 });
 
-draft.Line = class Line extends draft.Element {
+draft.Point = class Point extends draft.Element {};
+
+draft.Point.require('stroke');
+
+draft.Group.mixin({
+  point() {
+    return this.push(new draft.Point());
+  }
+});
+
+draft.Line = class Line extends draft.Point {
   length(length) {
-    return this.prop('length', unitHack(length));
+    return this.prop('length', draft.types.length(length));
   }
 };
 
-draft.Line.require('stroke');
-
 draft.Group.mixin({
-  line(length) {
+  line(length = 100) {
     return this.push(new draft.Line()).length(length);
   }
 });
 
-draft.Shape = class Shape extends draft.Element {};
+draft.Shape = class Shape extends draft.Point {};
 
 draft.Shape.require([
   'fill',
-  'stroke',
   'size'
 ]);
 
@@ -811,9 +915,7 @@ draft.Rect = class Rect extends draft.Shape {
   }
 };
 
-draft.Rect.require([
-  'radius'
-]);
+draft.Rect.require('radius');
 
 draft.Group.mixin({
   rect(width = 100, height = 100) {
@@ -823,7 +925,7 @@ draft.Group.mixin({
 
 draft.Circle = class Circle extends draft.Shape {
   radius(r) {
-    return this.prop('r', unitHack(r));
+    return this.prop('r', draft.types.length(r));
   }
 };
 
