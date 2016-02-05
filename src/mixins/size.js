@@ -2,8 +2,9 @@ draft.mixins.size = {
   // Get/set the element's width & height
   size(width, height) {
     return this.prop({
-      width: unitHack(width),
-      height: unitHack(height)
+      width: draft.types.length(width),
+      height: draft.types.length(height)
+      // depth: draft.types.length(depth)
     });
   },
   // Get/set the element's width

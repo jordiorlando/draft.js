@@ -88,6 +88,19 @@ draft.Element = class Element {
           val = val.slice(0, -2);
           val = isFinite(val) ?
             val + this.parent.prop('units') || draft.defaults.units : val;
+        if (typeof val === 'object') {
+          let unit;
+
+          switch (val.type) {
+            case 'length':
+              unit = this.parent.prop('units') || draft.defaults.units;
+              val.unit = val.unit || unit;
+              val.convert(unit);
+              // Falls through
+            case 'color':
+              val = String(val);
+              break;
+          }
         }
 
         props[prop] = val;

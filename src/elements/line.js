@@ -1,6 +1,6 @@
 draft.Line = class Line extends draft.Point {
   length(length) {
-    return this.prop('length', unitHack(length));
+    return this.prop('length', draft.types.length(length));
   }
 };
 

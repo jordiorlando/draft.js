@@ -18,7 +18,7 @@ draft.mixins.stroke = {
   },
 
   strokeWidth(width) {
-    return this.prop('stroke.width', draft.types.unit(width));
+    return this.prop('stroke.width', draft.types.length(width));
   }
 };
 
