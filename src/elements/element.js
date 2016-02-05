@@ -83,11 +83,6 @@ draft.Element = class Element {
       } else {
         // Act as an individual property setter if both prop and val are defined
 
-        // HACK:10 should use an actual unit data type, not just strings
-        if (String(val).endsWith('_u')) {
-          val = val.slice(0, -2);
-          val = isFinite(val) ?
-            val + this.parent.prop('units') || draft.defaults.units : val;
         if (typeof val === 'object') {
           let unit;
 

@@ -28,7 +28,6 @@ var src = [
   'src/defaults.js',
 
   // Types
-  'src/types/unit.js',
   'src/types/float.js',
   'src/types/length.js',
   'src/types/color.js',
