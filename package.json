@@ -50,6 +50,6 @@
     "version": "npm run build && git add --all dist",
     "postversion": "git checkout dev && git merge --ff master",
     "prepublish": "git checkout master",
-    "publish": "git push && git push --tags"
+    "publish": "git push --all && git push --tags"
   }
 }

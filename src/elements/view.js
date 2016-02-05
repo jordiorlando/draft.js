@@ -4,19 +4,23 @@ draft.View = class View extends draft.Element {
   } */
 
   get aspectRatio() {
+    var width = draft.types.length(this.prop('width')).value;
+    var height = draft.types.length(this.prop('height')).value;
+
     var gcd = function gcd(a, b) {
       return b ? gcd(b, a % b) : a;
     };
 
-    gcd = gcd(this.width(), this.height());
-    return `${this.width() / gcd}:${this.height() / gcd}`;
+    gcd = gcd(width, height);
+    return `${width / gcd}:${height / gcd}`;
   }
 };
 
 draft.View.require('size');
 
 draft.Group.mixin({
-  view(width, height) {
+  // TODO: get group bounding box for default size
+  view(width = 100, height = 100) {
     return this.push(new draft.View()).size(width, height);
   }
 });

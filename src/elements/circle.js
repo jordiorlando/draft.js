@@ -1,6 +1,6 @@
 draft.Circle = class Circle extends draft.Shape {
   radius(r) {
-    return this.prop('r', unitHack(r));
+    return this.prop('r', draft.types.length(r));
   }
 };
 

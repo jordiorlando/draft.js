@@ -5,9 +5,7 @@ draft.Rect = class Rect extends draft.Shape {
   }
 };
 
-draft.Rect.require([
-  'radius'
-]);
+draft.Rect.require('radius');
 
 draft.Group.mixin({
   rect(width = 100, height = 100) {

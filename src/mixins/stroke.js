@@ -9,11 +9,16 @@ draft.mixins.stroke = {
   },
 
   strokeOpacity(opacity) {
-    return this.prop('stroke.opacity', draft.types.opacity(opacity));
+    // TODO: move into generic function?
+    if (/^(0(\.\d*)?|1(\.0*)?)$/.test(opacity)) {
+      opacity = parseFloat(opacity, 10);
+    }
+
+    return this.prop('stroke.opacity', opacity);
   },
 
   strokeWidth(width) {
-    return this.prop('stroke.width', draft.types.unit(width));
+    return this.prop('stroke.width', draft.types.length(width));
   }
 };
 

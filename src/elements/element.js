@@ -74,32 +74,35 @@ draft.Element = class Element {
 
       if (val === undefined) {
         // Act as an individual property getter if val is undefined
-
-        // HACK: don't return 0?
-        // If prop is undefined, set it to the default OR 0
-        if (props[prop] === undefined) {
-          this.prop(prop, draft.defaults[prop] || 0);
-        }
-
-        return props[prop];
+        // TODO: do a fuzzy-find? For example, el.prop('width') would match
+        // el._properties.size.width if el._properties.width is undefined
+        return prop in props ? props[prop] : null;
       } else if (val === null) {
         // Delete the property if val is null
         delete props[prop];
       } else {
         // Act as an individual property setter if both prop and val are defined
 
-        // HACK:10 should use an actual unit data type, not just strings
-        if (String(val).endsWith('_u')) {
-          val = val.slice(0, -2);
-          val = isFinite(val) ?
-            val + this.parent.prop('units') || draft.defaults.units : val;
+        if (typeof val === 'object') {
+          let unit;
+
+          switch (val.type) {
+            case 'length':
+              unit = this.parent.prop('units') || draft.defaults.units;
+              val.unit = val.unit || unit;
+              val.convert(unit);
+              // Falls through
+            case 'color':
+              val = String(val);
+              break;
+          }
         }
 
         props[prop] = val;
       }
 
       this.fire('change', [prop, val]);
-    } else if (typeof prop == 'object') {
+    } else if (typeof prop === 'object') {
       // Act as a getter if prop is an object with only null values.
       // Act as a setter if prop is an object with at least one non-null value.
       let setter = false;

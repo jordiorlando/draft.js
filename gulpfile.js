@@ -28,9 +28,9 @@ var src = [
   'src/defaults.js',
 
   // Types
-  'src/types/unit.js',
+  'src/types/float.js',
+  'src/types/length.js',
   'src/types/color.js',
-  'src/types/opacity.js',
 
   // Mixins
   'src/mixins/event.js',
@@ -54,6 +54,7 @@ var src = [
   'src/elements/group.js',
   'src/elements/view.js',
   // Elements
+  'src/elements/point.js',
   'src/elements/line.js',
   'src/elements/shape.js',
   'src/elements/rect.js',
