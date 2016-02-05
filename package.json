@@ -31,7 +31,8 @@
     "gulp-size": "^2.0.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^1.5.1",
-    "gulp-umd": "^0.2.0"
+    "gulp-umd": "^0.2.0",
+    "jasmine": "^2.4.1"
   },
   "bugs": {
     "url": "https://github.com/D1SC0tech/draft.js/issues"
@@ -44,9 +45,9 @@
     "test": "spec"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "gulp test",
     "build": "gulp",
-    "preversion": "npm test && git checkout master && git merge --no-ff dev",
+    "preversion": "git checkout master && git merge --no-ff dev",
     "version": "npm run build && git add --all dist",
     "postversion": "git checkout dev && git merge --ff master",
     "prepublish": "git checkout master",

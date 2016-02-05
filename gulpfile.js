@@ -10,6 +10,9 @@ const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
 const umd = require('gulp-umd');
 
+const Jasmine = require('jasmine');
+const jasmine = new Jasmine();
+
 
 
 var pkg = require('./package.json');
@@ -124,4 +127,18 @@ gulp.task('build', ['clean'], function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['clean', 'es6', 'build'], function() {});
+gulp.task('test', ['build'], function() {
+  jasmine.loadConfig({
+    spec_dir: 'spec',
+    spec_files: [
+      '**/*[sS]pec.js'
+    ],
+    helpers: [
+      'helpers/**/*.js'
+    ],
+    random: false
+  });
+  return jasmine.execute();
+});
+
+gulp.task('default', ['clean', 'es6', 'build', 'test'], function() {});
