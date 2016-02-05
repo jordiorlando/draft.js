@@ -19,7 +19,8 @@ draft.View = class View extends draft.Element {
 draft.View.require('size');
 
 draft.Group.mixin({
-  view(width, height) {
+  // TODO: get group bounding box for default size
+  view(width = 100, height = 100) {
     return this.push(new draft.View()).size(width, height);
   }
 });
