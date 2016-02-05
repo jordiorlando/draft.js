@@ -74,10 +74,9 @@ draft.Element = class Element {
 
       if (val === undefined) {
         // Act as an individual property getter if val is undefined
-
-        // HACK: don't return 0?
-        // If prop is undefined, set it to the default OR 0
-        return prop in props ? props[prop] : draft.defaults[prop] || 0;
+        // TODO: do a fuzzy-find? For example, el.prop('width') would match
+        // el._properties.size.width if el._properties.width is undefined
+        return prop in props ? props[prop] : null;
       } else if (val === null) {
         // Delete the property if val is null
         delete props[prop];
