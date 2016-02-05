@@ -30,7 +30,6 @@ var src = [
   // Types
   'src/types/unit.js',
   'src/types/color.js',
-  'src/types/opacity.js',
 
   // Mixins
   'src/mixins/event.js',

@@ -9,7 +9,12 @@ draft.mixins.fill = {
   },
 
   fillOpacity(opacity) {
-    return this.prop('fill.opacity', draft.types.opacity(opacity));
+    // TODO: move into generic function?
+    if (/^(0(\.\d*)?|1(\.0*)?)$/.test(opacity)) {
+      opacity = parseFloat(opacity, 10);
+    }
+
+    return this.prop('fill.opacity', opacity);
   }
 };
 
