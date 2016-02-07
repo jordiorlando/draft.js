@@ -25,7 +25,7 @@ draft.types.Length = class Length extends draft.types.Float {
   }
 
   get regex() {
-    return `(px|pt|pc|in|ft|yd|mi|mm|cm|dm|km|m)`;
+    return '(px|pt|pc|in|ft|yd|mi|mm|cm|dm|km|m)';
   }
 
   get units() {
