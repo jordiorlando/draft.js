@@ -12,6 +12,11 @@ const umd = require('gulp-umd');
 
 const Jasmine = require('jasmine');
 const jasmine = new Jasmine();
+const Reporter = require('jasmine-terminal-reporter');
+const reporter = new Reporter({
+  isVerbose: true,
+  showColors: true
+});
 
 
 
@@ -136,8 +141,10 @@ gulp.task('test', ['build'], function() {
     helpers: [
       'helpers/**/*.js'
     ],
-    random: false
+    random: true
   });
+  jasmine.addReporter(reporter);
+
   return jasmine.execute();
 });
 
