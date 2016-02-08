@@ -32,7 +32,7 @@ var src = [
   // Main
   'src/draft.js',
   'src/inherit.js',
-  'src/proxy.js',
+  'src/proxy-fallback.js',
   'src/defaults.js',
 
   // Types
@@ -95,7 +95,7 @@ gulp.task('clean', function() {
 });
 
 gulp.task('es6', ['clean'], function() {
-  return gulp.src(src)
+  return gulp.src(src.map(value => value.replace('-fallback', '')))
     .pipe(concat(name, {newLine: '\n'}))
     .pipe(umd({
       exports: umdName,

@@ -37,5 +37,5 @@ draft.proxy = function proxy(obj, setInit = true) {
   };
 
   // BACKLOG: wait for browser support for ES6 proxies
-  return typeof Proxy === 'function' ? new Proxy(obj, handler) : obj;
+  return new Proxy(obj, handler);
 };
