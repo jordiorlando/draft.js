@@ -63,8 +63,7 @@ draft.Element = class Element {
   prop(prop, val, obj = this._properties) {
     if (prop === undefined) {
       // Act as a full properties getter if prop is undefined
-      // TODO: don't create a new object?
-      return Object(this._properties);
+      return this._properties;
     } else if (prop === null) {
       // BACKLOG: test deleting all properties, perhaps remove it
       // Delete all properties if prop is null
