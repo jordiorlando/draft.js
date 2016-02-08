@@ -1,12 +1,10 @@
 draft.Element = class Element {
   constructor(name) {
-    // Make sure this._properties is initialized
+    // Make sure _metadata and _properties are initialized
+    this._metadata = {
+      name: name
+    };
     this._properties = {};
-
-    // Set a name if given
-    if (name) {
-      this.prop('name', name);
-    }
 
     // HACK:0 use this.constructor.name to get an element's type. Requires all
     // subclasses to have a defined constructor.
@@ -46,10 +44,6 @@ draft.Element = class Element {
     return this._id;
   }
 
-  get name() {
-    return this.prop('name');
-  }
-
   // Construct a unique ID from the element's type and ID
   get domID() {
     var id = String(this.id);
@@ -60,6 +54,10 @@ draft.Element = class Element {
     }
 
     return `${this.type}_${id}`;
+  }
+
+  get meta() {
+    return this._metadata;
   }
 
   prop(prop, val, obj = this._properties) {
