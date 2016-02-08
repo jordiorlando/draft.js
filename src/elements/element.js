@@ -10,13 +10,13 @@ draft.Element = class Element {
 
     // HACK:0 use this.constructor.name to get an element's type. Requires all
     // subclasses to have a defined constructor.
-    for (var type in draft) {
+    for (let type in draft) {
       if (this.constructor === draft[type]) {
         this._type = type.toLowerCase();
         break;
       }
     }
-    // console.log('TYPE:', type, 'NAME:', this.constructor.name);
+    // console.log('TYPE:', this.type, 'NAME:', this.constructor.name);
   }
 
   static inherit(source, addSuper) {
@@ -53,6 +53,8 @@ draft.Element = class Element {
   // Construct a unique ID from the element's type and ID
   get domID() {
     var id = String(this.id);
+
+    // TODO: make the domID digit length configurable
     while (id.length < 4) {
       id = `0${id}`;
     }
@@ -65,7 +67,6 @@ draft.Element = class Element {
       // Act as a full properties getter if prop is undefined
       return this._properties;
     } else if (prop === null) {
-      // BACKLOG: test deleting all properties, perhaps remove it
       // Delete all properties if prop is null
       this._properties = {};
     } else if (typeof prop === 'string') {
@@ -82,6 +83,7 @@ draft.Element = class Element {
       } else {
         // Act as an individual property setter if both prop and val are defined
 
+        // TODO: let properties be objects (don't stringify)
         if (typeof val === 'object') {
           let unit;
 
@@ -121,7 +123,7 @@ draft.Element = class Element {
     return this;
   }
 
-  // TODO: use rest (...blacklist)
+  // TODO: use rest (...blacklist) for multiple blacklist items?
   stringify(blacklist) {
     var replacer;
 
