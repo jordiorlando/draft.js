@@ -25,10 +25,6 @@ draft.Element = class Element {
     draft.mixin(this, source);
   }
 
-  static require(source) {
-    this.mixin(source);
-  }
-
   get type() {
     return this._type;
   }
@@ -149,7 +145,7 @@ draft.Element = class Element {
   }
 };
 
-draft.Element.require([
+draft.Element.mixin([
   'event',
   'position',
   'rotation'

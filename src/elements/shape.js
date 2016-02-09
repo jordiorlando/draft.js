@@ -1,6 +1,6 @@
 draft.Shape = class Shape extends draft.Point {};
 
-draft.Shape.require([
+draft.Shape.mixin([
   'fill',
   'size'
 ]);

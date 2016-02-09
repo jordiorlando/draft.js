@@ -1,6 +1,6 @@
 draft.Group = class Group extends draft.Container {};
 
-draft.Group.require([
+draft.Group.mixin([
   'system',
   'units'
 ]);

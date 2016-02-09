@@ -16,7 +16,7 @@ draft.View = class View extends draft.Element {
   }
 };
 
-draft.View.require('size');
+draft.View.mixin('size');
 
 draft.Group.mixin({
   // TODO: get group bounding box for default size
