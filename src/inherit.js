@@ -2,11 +2,11 @@
 // released under the Unlicense (public domain).
 // GitHub Repository: https://github.com/Olical/Heir
 
-draft.inherit = function inherit(destination, source, addSuper) {
+draft.inherit = function inherit(destination, source, addSuper = true) {
   var proto = destination.prototype = Object.create(source.prototype);
   proto.constructor = destination;
 
-  if (addSuper || typeof addSuper === 'undefined') {
+  if (addSuper) {
     destination._super = source.prototype;
   }
 };
