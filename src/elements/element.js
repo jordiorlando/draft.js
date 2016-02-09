@@ -38,11 +38,7 @@ draft.Element = class Element {
     var id = String(this.id);
 
     // TODO: make the domID digit length configurable
-    while (id.length < 4) {
-      id = `0${id}`;
-    }
-
-    return `${this.type}_${id}`;
+    return `${this.type}_${'0'.repeat(Math.max(4 - id.length, 0))}${id}`;
   }
 
   get meta() {
