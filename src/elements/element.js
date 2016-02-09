@@ -25,15 +25,8 @@ draft.Element = class Element {
     draft.mixin(this, source);
   }
 
-  // TODO:40 merge require() with mixin()?
   static require(source) {
-    if (typeof source == 'string') {
-      this.mixin(draft.mixins[source]);
-    } else if (Array.isArray(source)) {
-      for (var mixin of source) {
-        this.require(mixin);
-      }
-    }
+    this.mixin(source);
   }
 
   get type() {
