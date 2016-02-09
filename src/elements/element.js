@@ -60,7 +60,7 @@ draft.Element = class Element {
     } else if (prop === null) {
       // Delete all properties if prop is null
       this._properties = {};
-    } else if (typeof prop === 'string') {
+    } else if (typeof prop == 'string') {
       var props = draft.proxy(this._properties);
 
       if (val === undefined) {
@@ -75,7 +75,7 @@ draft.Element = class Element {
         // Act as an individual property setter if both prop and val are defined
 
         // TODO: let properties be objects (don't stringify)
-        if (typeof val === 'object') {
+        if (typeof val == 'object') {
           let unit;
 
           switch (val.type) {
@@ -94,7 +94,7 @@ draft.Element = class Element {
       }
 
       this.fire('change', [prop, val]);
-    } else if (typeof prop === 'object') {
+    } else if (typeof prop == 'object') {
       // Act as a getter if prop is an object with only null values.
       // Act as a setter if prop is an object with at least one non-null value.
       let setter = false;

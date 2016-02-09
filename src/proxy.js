@@ -1,12 +1,12 @@
 draft.proxy = function proxy(obj, setInit = true) {
   var access = function(target, prop, init) {
-    if (typeof prop === 'string') {
+    if (typeof prop == 'string') {
       return access(target, prop.split('.'), init);
     }
 
     let p = prop.shift();
 
-    if (prop.length && typeof target === 'object' && (init || p in target)) {
+    if (prop.length && typeof target == 'object' && (init || p in target)) {
       // TODO: when init is false, setting obj['foo.bar'] will incorrectly set
       // obj['foo'] instead
       return access(p in target ? target[p] : (target[p] = {}), prop, init);

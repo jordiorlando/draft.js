@@ -12,7 +12,7 @@ draft.mixins.event = {
       var listeners = listenersMap[key];
 
       if (!listeners.map(l => l.listener).includes(listener)) {
-        listeners.push(typeof listener === 'object' ? listener : {
+        listeners.push(typeof listener == 'object' ? listener : {
           listener: listener,
           once: false
         });
@@ -92,7 +92,7 @@ draft.mixins.event = {
     var events = this._getEvents();
 
     // Remove different things depending on the state of evt
-    if (typeof evt === 'string') {
+    if (typeof evt == 'string') {
       // Remove all listeners for the specified event
       delete events[evt];
     } else if (evt instanceof RegExp) {
