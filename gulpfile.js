@@ -69,23 +69,23 @@ var src = [
   'src/elements/circle.js'
 ];
 
-var headerLong = [
-  '/*',
-  '* <%= pkg.name %> - <%= pkg.description %>',
-  '* version v<%= pkg.version %>',
-  '* <%= pkg.homepage %>',
-  '*',
-  '* copyright <%= pkg.author %>',
-  '* license <%= pkg.license %>',
-  '*',
-  '* BUILT: <%= pkg.buildDate %>',
-  '*/\n'
-].join('\n');
+var headerLong = `/*
+ * <%= pkg.name %> - <%= pkg.description %>
+ * version v<%= pkg.version %>
+ * <%= pkg.homepage %>
+ *
+ * copyright <%= pkg.author %>
+ * license <%= pkg.license %>
+ *
+ * BUILT: <%= pkg.buildDate %>
+ */
+
+`;
 
 var headerShort = [
-  '/*<%= pkg.name %> v<%= pkg.version %>',
+  '/* <%= pkg.name %> v<%= pkg.version %>',
   '<%= pkg.homepage %>',
-  '<%= pkg.license %> license*/\n'
+  'license <%= pkg.license %> */\n'
 ].join(' | ');
 
 
