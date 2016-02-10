@@ -65,7 +65,6 @@ draft.mixins.event = {
         var listener = listeners[i];
         var response = listener.listener.apply({
           target: this,
-          // TODO: Date.now() to prevent memory leaks?
           timeStamp: Date(),
           type: key
         }, args);
