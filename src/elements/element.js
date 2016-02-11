@@ -1,3 +1,6 @@
+// let _type = new WeakMap();
+// let _id = new WeakMap();
+
 draft.Element = class Element {
   constructor(name) {
     // Make sure _metadata and _properties are initialized
@@ -11,6 +14,7 @@ draft.Element = class Element {
     for (let type in draft) {
       if (this.constructor === draft[type]) {
         this._type = type.toLowerCase();
+        // _type.set(this, type.toLowerCase());
         break;
       }
     }
@@ -27,10 +31,12 @@ draft.Element = class Element {
 
   get type() {
     return this._type;
+    // return _type.get(this);
   }
 
   get id() {
     return this._id;
+    // return _id.get(this);
   }
 
   // Construct a unique ID from the element's type and ID

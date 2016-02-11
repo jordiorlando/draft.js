@@ -24,6 +24,7 @@ draft.Container = class Container extends draft.Element {
     (child.doc.elements[type] || (child.doc.elements[type] = [])).push(child);
     // Set the child's id
     child._id = child.doc.elements[type].length;
+    // _id.set(child, child.doc.elements[type].length);
 
     // Add the child to the end of the children array
     this.children.push(child);
@@ -43,4 +44,11 @@ draft.Container = class Container extends draft.Element {
     this.fire('remove', [child]);
     return this;
   }
+
+  /* delete(child) {
+    child.fire('delete', child);
+    _type.delete(child);
+    _id.delete(child);
+    return this;
+  } */
 };
