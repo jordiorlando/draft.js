@@ -30,7 +30,7 @@ draft.Container = class Container extends draft.Element {
     this.children.push(child);
 
     // Fire the 'add' event to all listeners
-    this.fire('add', [child]);
+    this.fire('add', child);
 
     return this;
   }
@@ -41,7 +41,7 @@ draft.Container = class Container extends draft.Element {
   }
 
   remove(child) {
-    this.fire('remove', [child]);
+    this.fire('remove', child);
     return this;
   }
 
