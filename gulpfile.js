@@ -66,6 +66,7 @@ var src = [
   'src/elements/line.js',
   'src/elements/shape.js',
   'src/elements/rect.js',
+  'src/elements/ellipse.js',
   'src/elements/circle.js'
 ];
 

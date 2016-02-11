@@ -1,4 +1,4 @@
-draft.Circle = class Circle extends draft.Shape {
+draft.Circle = class Circle extends draft.Ellipse {
   radius(r) {
     return this.prop('r', draft.types.length(r));
   }
