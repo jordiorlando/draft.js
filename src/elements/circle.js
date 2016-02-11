@@ -5,7 +5,7 @@ draft.Circle = class Circle extends draft.Shape {
 };
 
 draft.Group.mixin({
-  circle(r = 50) {
-    return this.push(new draft.Circle()).radius(r);
+  circle(name) {
+    return this.push(new draft.Circle(name)).radius(50);
   }
 });

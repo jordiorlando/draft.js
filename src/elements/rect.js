@@ -8,7 +8,7 @@ draft.Rect = class Rect extends draft.Shape {
 draft.Rect.mixin('radius');
 
 draft.Group.mixin({
-  rect(width = 100, height = 100) {
-    return this.push(new draft.Rect()).size(width, height);
+  rect(name) {
+    return this.push(new draft.Rect(name)).size(100, 100);
   }
 });
