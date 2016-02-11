@@ -51,7 +51,7 @@ draft.Element = class Element {
     return this._metadata;
   }
 
-  prop(prop, val, obj = this._properties) {
+  prop(prop, val) {
     if (prop === undefined) {
       // Act as a full properties getter if prop is undefined
       return this._properties;
@@ -99,7 +99,7 @@ draft.Element = class Element {
 
       for (let p in prop) {
         // Get this._properties[p] and save it to prop[p]
-        prop[p] = this.prop(p, prop[p], obj);
+        prop[p] = this.prop(p, prop[p]);
         // If the returned value is an object, prop[p] is non-null, so act like
         // a setter.
         setter = setter || typeof prop[p] == 'object';
