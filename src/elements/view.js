@@ -21,6 +21,6 @@ draft.View.mixin('size');
 draft.Group.mixin({
   // TODO: get group bounding box for default size
   view(name) {
-    return this.push(new draft.View(name)).size(100, 100);
+    return this.append(new draft.View(name)).size(100, 100);
   }
 });

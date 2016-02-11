@@ -35,7 +35,7 @@ draft.Container = class Container extends draft.Element {
     return this;
   }
 
-  push(child) {
+  append(child) {
     this.add(child);
     return child;
   }
@@ -44,11 +44,4 @@ draft.Container = class Container extends draft.Element {
     this.fire('remove', child);
     return this;
   }
-
-  /* delete(child) {
-    child.fire('delete', child);
-    _type.delete(child);
-    _id.delete(child);
-    return this;
-  } */
 };

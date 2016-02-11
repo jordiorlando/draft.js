@@ -9,6 +9,6 @@ draft.Ellipse = class Ellipse extends draft.Shape {
 
 draft.Group.mixin({
   ellipse(name) {
-    return this.push(new draft.Ellipse(name)).radius(50, 25);
+    return this.append(new draft.Ellipse(name)).radius(50, 25);
   }
 });

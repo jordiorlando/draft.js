@@ -9,6 +9,6 @@ draft.Rect.mixin('radius');
 
 draft.Group.mixin({
   rect(name) {
-    return this.push(new draft.Rect(name)).size(100, 100);
+    return this.append(new draft.Rect(name)).size(100, 100);
   }
 });

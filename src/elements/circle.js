@@ -6,6 +6,6 @@ draft.Circle = class Circle extends draft.Ellipse {
 
 draft.Group.mixin({
   circle(name) {
-    return this.push(new draft.Circle(name)).radius(50);
+    return this.append(new draft.Circle(name)).radius(50);
   }
 });
