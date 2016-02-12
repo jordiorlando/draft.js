@@ -38,7 +38,7 @@ var src = [
   // Types
   'src/types/float.js',
   'src/types/length.js',
-  'src/types/color.js',
+  'src/types/styles/color.js',
 
   // Mixins
   'src/mixins/event.js',
