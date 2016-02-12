@@ -42,7 +42,7 @@ var src = [
 
   // Mixins
   'src/mixins/event.js',
-  'src/mixins/system.js',
+  'src/mixins/transforms/system.js',
   'src/mixins/transforms/position.js',
   'src/mixins/transforms/rotation.js',
   'src/mixins/transforms/size.js',
