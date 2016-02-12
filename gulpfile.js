@@ -55,12 +55,12 @@ var src = [
   'src/elements/groups/group.js',
   'src/elements/groups/doc.js',
   'src/elements/view.js',
-  'src/elements/point.js',
-  'src/elements/line.js',
-  'src/elements/shapes/shape.js',
-  'src/elements/shapes/rectangle.js',
-  'src/elements/shapes/ellipse.js',
-  'src/elements/shapes/circle.js'
+  'src/elements/primitives/point.js',
+  'src/elements/primitives/line.js',
+  'src/elements/primitives/shapes/shape.js',
+  'src/elements/primitives/shapes/rectangle.js',
+  'src/elements/primitives/shapes/ellipse.js',
+  'src/elements/primitives/shapes/circle.js'
 ];
 
 var headerLong = `/*
