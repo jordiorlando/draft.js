@@ -5,6 +5,8 @@ var test = function(val, regex) {
   return val ? val[0].toLowerCase() : false;
 };
 
+draft.defaults.units = 'px';
+
 draft.types.Length = class Length extends draft.types.Float {
   constructor(value, unit) {
     super(value);

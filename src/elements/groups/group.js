@@ -44,11 +44,15 @@ draft.Group = class Group extends draft.Element {
     this.fire('remove', child);
     return this;
   }
+
+  // Get/set the element's measurement units
+  units(units) {
+    return this.prop('units', units);
+  }
 };
 
 draft.Group.mixin([
-  'system',
-  'units'
+  'system'
 ]);
 
 draft.Group.mixin({
