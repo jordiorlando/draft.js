@@ -48,9 +48,8 @@ var src = [
   'src/mixins/transforms/rotation.js',
   'src/mixins/transforms/size.js',
   'src/mixins/transforms/radius.js',
-
-  'src/mixins/fill.js',
-  'src/mixins/stroke.js',
+  'src/mixins/styles/fill.js',
+  'src/mixins/styles/stroke.js',
 
   // Containers
   'src/elements/element.js',
