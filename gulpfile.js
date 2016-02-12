@@ -51,19 +51,18 @@ var src = [
   'src/mixins/styles/fill.js',
   'src/mixins/styles/stroke.js',
 
-  // Containers
+  // Elements
   'src/elements/element.js',
   'src/elements/container.js',
   'src/elements/doc.js',
   'src/elements/group.js',
   'src/elements/view.js',
-  // Elements
   'src/elements/point.js',
   'src/elements/line.js',
-  'src/elements/shape.js',
-  'src/elements/rectangle.js',
-  'src/elements/ellipse.js',
-  'src/elements/circle.js'
+  'src/elements/shapes/shape.js',
+  'src/elements/shapes/rectangle.js',
+  'src/elements/shapes/ellipse.js',
+  'src/elements/shapes/circle.js'
 ];
 
 var headerLong = `/*
