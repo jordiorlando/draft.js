@@ -53,9 +53,8 @@ var src = [
 
   // Elements
   'src/elements/element.js',
-  'src/elements/containers/container.js',
-  'src/elements/containers/doc.js',
-  'src/elements/containers/group.js',
+  'src/elements/groups/group.js',
+  'src/elements/groups/doc.js',
   'src/elements/view.js',
   'src/elements/point.js',
   'src/elements/line.js',

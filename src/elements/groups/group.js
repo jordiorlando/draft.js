@@ -1,4 +1,4 @@
-draft.Container = class Container extends draft.Element {
+draft.Group = class Group extends draft.Element {
   constructor(name) {
     super(name);
 
@@ -45,3 +45,17 @@ draft.Container = class Container extends draft.Element {
     return this;
   }
 };
+
+draft.Group.mixin([
+  'system',
+  'units'
+]);
+
+draft.Group.mixin({
+  group(name) {
+    return this.append(new draft.Group(name)).prop({
+      system: this.prop('system'),
+      units: this.prop('units')
+    });
+  }
+});

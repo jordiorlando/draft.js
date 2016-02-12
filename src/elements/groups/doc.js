@@ -1,4 +1,4 @@
-draft.Doc = class Doc extends draft.Container {
+draft.Doc = class Doc extends draft.Group {
   constructor(name) {
     super(name);
 
