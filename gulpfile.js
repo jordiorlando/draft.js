@@ -61,6 +61,7 @@ var src = [
   'src/elements/primitives/line.js',
   'src/elements/primitives/shapes/shape.js',
   'src/elements/primitives/shapes/rectangle.js',
+  'src/elements/primitives/shapes/square.js',
   'src/elements/primitives/shapes/ellipse.js',
   'src/elements/primitives/shapes/circle.js'
 ];
