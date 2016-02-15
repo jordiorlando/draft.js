@@ -70,7 +70,8 @@ draft.Element = class Element {
       } else if (val === null) {
         // Delete the property if val is null
         delete props[prop];
-      } else {
+        this.fire('change', [prop, val]);
+      } else if (props[prop] !== val) {
         // Act as an individual property setter if both prop and val are defined
 
         // TODO: let properties be objects (don't stringify)
@@ -90,9 +91,8 @@ draft.Element = class Element {
         }
 
         props[prop] = val;
+        this.fire('change', [prop, val]);
       }
-
-      this.fire('change', [prop, val]);
     } else if (typeof prop == 'object') {
       // Act as a getter if prop is an object with only null values.
       // Act as a setter if prop is an object with at least one non-null value.
