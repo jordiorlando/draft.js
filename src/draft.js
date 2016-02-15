@@ -5,5 +5,20 @@ var draft = function draft(name) {
 // Initialize types and mixins
 draft.types = {};
 draft.mixins = {};
+draft.transforms = {};
 
 // TODO: prefer operators at beginning of lines?
+
+// TODO: come up with a better location/interface for createTransform()
+draft.createTransform = function createTransform(name) {
+  var mixin = {
+    [name]: Object.defineProperty(function(...args) {
+      return this.transform(name, ...args);
+    }, 'name', {
+      configurable: true,
+      value: name
+    })
+  };
+
+  return mixin[name];
+};

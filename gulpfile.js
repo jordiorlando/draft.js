@@ -42,6 +42,11 @@ var src = [
 
   // Mixins
   'src/mixins/event.js',
+  'src/mixins/transform.js',
+  'src/mixins/transforms/translate.js',
+  'src/mixins/transforms/rotate.js',
+  'src/mixins/transforms/scale.js',
+  'src/mixins/transforms/skew.js',
   'src/mixins/transforms/system.js',
   'src/mixins/transforms/position.js',
   'src/mixins/transforms/rotation.js',
