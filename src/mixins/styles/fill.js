@@ -19,4 +19,4 @@ draft.mixins.fill = {
 };
 
 draft.defaults['fill.color'] = '#fff';
-draft.defaults['fill.opacity'] = 1;
+draft.defaults['fill.opacity'] = 0;
