@@ -1,11 +1,18 @@
 draft.Line = class Line extends draft.Point {
-  length(length) {
-    return this.prop('length', draft.types.length(length));
+  get map() {
+    // TODO: remove angles from element properties
+    return super.map.concat(...['alpha', 'width']);
   }
 };
 
+// TODO: skew transformation?
+draft.Line.mixin([
+  'rotate',
+  'scale'
+]);
+
 draft.Group.mixin({
   line(name) {
-    return this.append(new draft.Line(name)).length(100);
+    return this.append(new draft.Line(name)).size(100);
   }
 });

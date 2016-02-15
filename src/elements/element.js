@@ -8,6 +8,7 @@ draft.Element = class Element {
       name: name
     };
     this._properties = {};
+    this.transforms = [];
 
     // HACK:0 use this.constructor.name to get an element's type. Requires all
     // subclasses to have a defined constructor.
@@ -149,6 +150,5 @@ draft.Element = class Element {
 
 draft.Element.mixin([
   'event',
-  'position',
-  'rotation'
+  'transform'
 ]);

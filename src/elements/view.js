@@ -3,6 +3,10 @@ draft.View = class View extends draft.Element {
     this['render' + renderer.toUpperCase()]();
   } */
 
+  get map() {
+    return ['x', 'y', 'z', 'alpha', 'width', 'height'];
+  }
+
   get aspectRatio() {
     var width = draft.types.length(this.prop('width')).value;
     var height = draft.types.length(this.prop('height')).value;
@@ -16,7 +20,11 @@ draft.View = class View extends draft.Element {
   }
 };
 
-draft.View.mixin('size');
+draft.View.mixin([
+  'translate',
+  'rotate',
+  'scale'
+]);
 
 draft.Group.mixin({
   // TODO: get group bounding box for default size

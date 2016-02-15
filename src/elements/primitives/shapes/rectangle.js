@@ -5,11 +5,9 @@ draft.Rectangle = class Rectangle extends draft.Shape {
   }
 };
 
-draft.Rectangle.mixin('radius');
-
 draft.Group.mixin({
   // TODO: rename to rectangle(name)
   rect(name) {
-    return this.append(new draft.Rectangle(name)).size(100, 100);
+    return this.append(new draft.Rectangle(name)).size(75, 100);
   }
 });

@@ -1,6 +1,10 @@
-draft.Shape = class Shape extends draft.Point {};
+draft.Shape = class Shape extends draft.Line {
+  get map() {
+    return super.map.concat(...['height', 'skewX', 'skewY', 'fill']);
+  }
+};
 
 draft.Shape.mixin([
-  'fill',
-  'size'
+  'skew',
+  'fill'
 ]);
