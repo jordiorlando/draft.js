@@ -75,19 +75,8 @@ draft.Element = class Element {
         // Act as an individual property setter if both prop and val are defined
 
         // TODO: let properties be objects (don't stringify)
-        if (typeof val == 'object') {
-          let unit;
-
-          switch (val.type) {
-            case 'length':
-              unit = this.parent.prop('units') || draft.defaults.units;
-              val.unit = val.unit || unit;
-              val.convert(unit);
-              // Falls through
-            case 'color':
-              val = String(val);
-              break;
-          }
+        if (val.type === 'color') {
+          val = String(val);
         }
 
         props[prop] = val;
