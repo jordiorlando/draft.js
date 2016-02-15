@@ -7,7 +7,7 @@ draft.Doc = class Doc extends draft.Group {
 
     this.prop({
       system: draft.defaults.system,
-      units: draft.defaults.units
+      unit: draft.defaults.unit
     });
   }
 };

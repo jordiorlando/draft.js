@@ -30,6 +30,11 @@ draft.Group = class Group extends draft.Element {
     child._id = child.doc.elements[type].length;
     // _id.set(child, child.doc.elements[type].length);
 
+    child.unit(this.unit());
+    if (type === 'group') {
+      child.system(this.system());
+    }
+
     // Add the child to the end of the children array
     this.children.push(child);
 
@@ -45,13 +50,9 @@ draft.Group = class Group extends draft.Element {
   }
 
   remove(child) {
+    // BACKLOG: return child?
     this.fire('remove', child);
     return this;
-  }
-
-  // Get/set the element's measurement units
-  units(units) {
-    return this.prop('units', units);
   }
 };
 
@@ -64,9 +65,6 @@ draft.Group.mixin([
 
 draft.Group.mixin({
   group(name) {
-    return this.append(new draft.Group(name)).prop({
-      system: this.prop('system'),
-      units: this.prop('units')
-    });
+    return this.append(new draft.Group(name));
   }
 });

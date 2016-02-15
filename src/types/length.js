@@ -1,24 +1,18 @@
-var test = function(val, regex) {
-  // TODO: strict match anchor (^ instead of word end)
-  regex = new RegExp(`${regex}$`, 'i');
-  val = regex.exec(val);
-  return val ? val[0].toLowerCase() : false;
-};
+draft.defaults.unit = 'px';
 
-draft.defaults.units = 'px';
-
+// TODO: make type, regex, units, and test static
 draft.types.Length = class Length extends draft.types.Float {
   constructor(value, unit) {
     super(value);
 
-    value = test(value, this.regex);
-    unit = test(unit, this.regex);
+    value = this.test(value);
+    unit = this.test(unit);
 
     if (!isNaN(this.value) && (value || unit)) {
       this.unit = value || unit;
       this.convert(unit);
     } else {
-      this.unit = '';
+      this.unit = draft.defaults.unit;
     }
   }
 
@@ -47,8 +41,14 @@ draft.types.Length = class Length extends draft.types.Float {
     };
   }
 
+  test(val) {
+    // TODO: strict match anchor (^ instead of word end)
+    val = new RegExp(`${this.regex}$`, 'i').exec(val);
+    return val ? val[0].toLowerCase() : false;
+  }
+
   convert(newUnit) {
-    newUnit = test(newUnit, this.regex);
+    newUnit = this.test(newUnit);
 
     if (!newUnit) {
       return false;
@@ -81,7 +81,8 @@ draft.types.Length = class Length extends draft.types.Float {
   }
 
   valueOf() {
-    return new Length(this.toString(), draft.defaults.units).value;
+    // TODO: use px instead of draft.defaults.unit?
+    return new Length(this.toString(), draft.defaults.unit).value;
   }
 
   toString() {

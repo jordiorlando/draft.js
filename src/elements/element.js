@@ -102,6 +102,11 @@ draft.Element = class Element {
     return this;
   }
 
+  // Get/set the element's default length unit
+  unit(unit) {
+    return this.prop('unit', unit);
+  }
+
   // TODO: use rest (...blacklist) for multiple blacklist items?
   stringify(blacklist) {
     var replacer;
