@@ -19,11 +19,73 @@ draft.Element = class Element {
         break;
       }
     }
-    // console.log('TYPE:', this.type, 'NAME:', this.constructor.name);
+    if (!this._type) {
+      this._type = this.constructor.name;
+    }
+    console.log('NAME:', this.constructor.name);
   }
 
-  static inherit(source, addSuper) {
+  /* static inherit(source, addSuper) {
     draft.inherit(this, source, addSuper);
+  } */
+
+  static extend(name, config, parent) {
+    var Class = class extends this {
+      constructor() {
+        super();
+
+        /* if ('construct' in config) {
+          super();
+          // config.construct.call(this, ...args);
+        } else {
+          super(...args);
+        } */
+      }
+      foo() {
+        return 'foo';
+      }
+      get getter() {
+        return 'get';
+      }
+    };
+
+    Object.defineProperty(Class, 'name', {
+      configurable: true,
+      value: name
+    });
+
+    var mixin = (destination, source) => {
+      for (let prop in source) {
+        if (prop === 'static') {
+          mixin(destination.constructor, source.static);
+        } else if (prop !== 'construct') {
+          let descriptor = Object.getOwnPropertyDescriptor(source, prop);
+          descriptor.enumerable = false;
+
+          console.info(prop, descriptor);
+
+          Object.defineProperty(destination, prop, descriptor);
+        }
+      }
+    };
+
+    mixin(Class.prototype, config);
+
+    console.log(`${name}:`, Class);
+
+    if (parent !== null) {
+      (parent || draft.Group).mixin({
+        [name.toLowerCase()](...args) {
+          var instance = this.append(new Class());
+          if ('construct' in config) {
+            config.construct.call(instance, ...args);
+          }
+          return instance;
+        }
+      });
+    }
+
+    return Class;
   }
 
   static mixin(source) {
