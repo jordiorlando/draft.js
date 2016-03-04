@@ -18,6 +18,14 @@ draft.Group = class Group extends draft.Element {
     return this.children[this.children.length - 1];
   }
 
+  child(name) {
+    for (let child of this.children) {
+      if (child.meta.name === name) {
+        return child;
+      }
+    }
+  }
+
   add(child) {
     // Add a reference to the child's parent and containing doc
     child.parent = this;
