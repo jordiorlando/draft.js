@@ -6,9 +6,9 @@ draft.Group = class Group extends draft.Element {
     this.children = [];
   }
 
-  /* get map() {
-    return ['x', 'y', 'z', 'alpha', 'width', 'height', 'length'];
-  } */
+  get map() {
+    return ['x', 'y', 'z', 'alpha'];
+  }
 
   get firstChild() {
     return this.children[0];
@@ -65,10 +65,9 @@ draft.Group = class Group extends draft.Element {
 };
 
 draft.Group.mixin([
-  'system'/* ,
+  'system',
   'translate',
-  'rotate',
-  'scale' */
+  'rotate'
 ]);
 
 draft.Group.mixin({
