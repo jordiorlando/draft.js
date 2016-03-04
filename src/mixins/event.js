@@ -2,8 +2,6 @@
 // he has released under the Unlicense (public domain).
 // GitHub Repository: https://github.com/Olical/EventEmitter
 
-// BACKLOG: implement bubbling?
-
 draft.mixins.event = {
   on(evt, listener) {
     var listenersMap = this.getListeners(evt, true);
@@ -57,9 +55,9 @@ draft.mixins.event = {
       var listeners = listenersMap[key];
       var i = listeners.length;
 
-      if (i > 0) {
-        console.info(`${this.domID} ${key}:`, args);
-      }
+      /* if (i > 0) {
+        console.info(`${this.domID} ${key}:`, args.map(arg => String(arg)));
+      } */
 
       while (i--) {
         var listener = listeners[i];
