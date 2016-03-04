@@ -33,7 +33,7 @@ Include the library at the top of your html file:
   <script src="draft.js/dist/draft.min.js"></script>
 </head>
 <body>
-  <div id="view" style="width: 100%; height: 100%"></div>
+  <div id="body" style="width: 100%; height: 100%"></div>
 </body>
 ```
 
