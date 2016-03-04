@@ -1,8 +1,14 @@
-draft.Shape = class Shape extends draft.Line {
+draft.Shape = draft.Line.extend('Shape', {
   get map() {
-    return super.map.concat(...['height', 'skewX', 'skewY', 'fill']);
+    return [
+      'x', 'y', 'z',
+      'alpha',
+      'width', 'height',
+      'skewX', 'skewY',
+      'fill', 'stroke'
+    ];
   }
-};
+});
 
 draft.Shape.mixin([
   'skew',

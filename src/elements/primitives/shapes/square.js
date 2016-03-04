@@ -1,21 +1,14 @@
-draft.Square = class Square extends draft.Rectangle {
+draft.Square = draft.Rectangle.extend('Square', {
+  construct(width) {
+    this.size(width || 100);
+  },
   get map() {
-    return super.map.map(val => {
-      if (val !== 'height') {
-        return val;
-      }
-    });
-  }
-
-  get propMap() {
-    return {
-      width: ['width', 'height']
-    };
-  }
-};
-
-draft.Group.mixin({
-  square(name) {
-    return this.append(new draft.Square(name)).size(100);
+    return [
+      'x', 'y', 'z',
+      'alpha',
+      'width',
+      'skewX', 'skewY',
+      'fill', 'stroke'
+    ];
   }
 });
