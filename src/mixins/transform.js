@@ -17,7 +17,7 @@ draft.mixins.transform = {
     }
 
     this.transforms.push(obj);
-    this.fire(`transform.${obj.transform}`, obj);
+    this.fire(`transform:${obj.transform}`, obj);
 
     return this;
   }
