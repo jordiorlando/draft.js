@@ -5,7 +5,7 @@ draft.mixins.fill = {
   },
 
   fillColor(color) {
-    return this.prop('fill.color', draft.types.color(color));
+    return this.prop('fill.color', draft.color(color));
   },
 
   fillOpacity(opacity) {

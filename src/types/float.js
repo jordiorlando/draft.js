@@ -1,4 +1,4 @@
-draft.types.Float = class Float {
+draft.Float = class Float {
   constructor(value) {
     this.value = parseFloat(value);
   }
@@ -21,6 +21,6 @@ draft.types.Float = class Float {
   }
 };
 
-draft.types.float = function float(value) {
-  return value == undefined ? value : new draft.types.Float(value);
+draft.float = function float(value) {
+  return value == undefined ? value : new draft.Float(value);
 };

@@ -1,4 +1,4 @@
-draft.types.Color = class Color {
+draft.Color = class Color {
   constructor(color) {
     color = new RegExp(`^(?:${this.regex})$`, 'i').exec(
       isNaN(color) ? color : color.toString(16));
@@ -41,6 +41,6 @@ draft.types.Color = class Color {
   }
 };
 
-draft.types.color = function color(value) {
-  return value == undefined ? value : new draft.types.Color(value);
+draft.color = function color(value) {
+  return value == undefined ? value : new draft.Color(value);
 };

@@ -1,7 +1,7 @@
 draft.defaults.unit = 'px';
 
 // TODO: make type, regex, units, and test static
-draft.types.Length = class Length extends draft.types.Float {
+draft.Length = class Length extends draft.Float {
   constructor(value, unit) {
     super(value);
 
@@ -90,6 +90,7 @@ draft.types.Length = class Length extends draft.types.Float {
   }
 };
 
-draft.types.length = function length(value, unit) {
-  return value == undefined ? value : new draft.types.Length(value, unit);
+// TODO: make better name than newLength()
+draft.newLength = function length(value, unit) {
+  return value == undefined ? value : new draft.Length(value, unit);
 };

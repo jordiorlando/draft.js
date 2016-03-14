@@ -5,7 +5,7 @@ draft.mixins.stroke = {
   },
 
   strokeColor(color) {
-    return this.prop('stroke.color', draft.types.color(color));
+    return this.prop('stroke.color', draft.color(color));
   },
 
   strokeOpacity(opacity) {
@@ -18,7 +18,7 @@ draft.mixins.stroke = {
   },
 
   strokeWidth(width) {
-    return this.prop('stroke.width', draft.types.length(width));
+    return this.prop('stroke.width', draft.newLength(width));
   }
 };
 

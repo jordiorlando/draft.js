@@ -1,4 +1,4 @@
-draft.types.Angle = class Angle extends draft.types.Float {
+draft.Angle = class Angle extends draft.Float {
   constructor(value, unit) {
     super(value);
 
