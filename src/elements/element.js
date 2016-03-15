@@ -106,23 +106,15 @@ draft.Element = class Element {
         if (val === null) {
           delete destination[prop];
           delete Class.schema.has[prop];
-        } else if (typeof val == 'object' && !Array.isArray(val)) {
-          /* if (destination[prop]) {
-            merge(destination[prop], val);
-          } else {
-            destination[prop] = val;
-          } */
-          merge(destination[prop] || (destination[prop] = {}), val);
-
-          if ('type' in val) {
-            Class.schema.has[prop] = val.alias || [];
-          }
+        } else if (val.type === 'object') {
+          merge(destination[prop] || (destination[prop] = {}), val.properties);
+          Class.schema.has[prop] = val.alias || [];
         } else {
           destination[prop] = val;
         }
       }
     };
-    if (typeof config.schema == 'object') {
+    if (config.schema) {
       merge(Class.schema, this.schema || {});
       merge(Class.schema, config.schema);
     }

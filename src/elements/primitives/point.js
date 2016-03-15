@@ -21,30 +21,38 @@ draft.Group.mixin({
 draft.PointSchema = draft.Element.extendSchema('PointSchema', {
   schema: {
     position: {
+      type: 'object',
+      order: ['x', 'y'],
       alias: ['pos'],
-      x: {
-        type: draft.Length,
-        value: 0
-      },
-      y: {
-        type: draft.Length,
-        value: 0
+      properties: {
+        x: {
+          type: 'length',
+          default: 0
+        },
+        y: {
+          type: 'length',
+          default: 0
+        }
       }
     },
     stroke: {
-      color: {
-        type: draft.Color,
-        value: '#000'
-      },
-      opacity: {
-        type: draft.Float,
-        min: 0.0,
-        max: 1.0,
-        value: 1.0
-      },
-      width: {
-        type: draft.Length,
-        value: 1
+      type: 'object',
+      order: ['color', 'opacity', 'width'],
+      properties: {
+        color: {
+          type: 'color',
+          default: '#000'
+        },
+        opacity: {
+          type: 'float',
+          min: 0,
+          max: 1,
+          default: 1
+        },
+        width: {
+          type: 'length',
+          default: 1
+        }
       }
     }
   }

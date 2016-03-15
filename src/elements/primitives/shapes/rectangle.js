@@ -20,11 +20,13 @@ draft.Group.mixin({
 draft.RectangleSchema = draft.ShapeSchema.extendSchema('RectangleSchema', {
   schema: {
     size: {
-      width: {
-        value: 75
-      },
-      height: {
-        value: 100
+      properties: {
+        width: {
+          default: 75
+        },
+        height: {
+          default: 100
+        }
       }
     }
   },

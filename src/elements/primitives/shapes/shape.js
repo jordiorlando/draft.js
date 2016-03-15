@@ -20,26 +20,33 @@ draft.Shape.mixin([
 draft.ShapeSchema = draft.LineSchema.extendSchema('ShapeSchema', {
   schema: {
     size: {
-      length: null,
-      width: {
-        type: draft.Length,
-        alias: ['w']
-      },
-      height: {
-        type: draft.Length,
-        alias: ['h']
+      order: ['width', 'height'],
+      properties: {
+        length: null,
+        width: {
+          type: 'length',
+          alias: ['w']
+        },
+        height: {
+          type: 'length',
+          alias: ['h']
+        }
       }
     },
     fill: {
-      color: {
-        type: draft.Color,
-        value: '#fff'
-      },
-      opacity: {
-        type: draft.Float,
-        min: 0.0,
-        max: 1.0,
-        value: 1.0
+      type: 'object',
+      order: ['color', 'opacity'],
+      properties: {
+        color: {
+          type: 'color',
+          default: '#fff'
+        },
+        opacity: {
+          type: 'float',
+          min: 0,
+          max: 1,
+          default: 1
+        }
       }
     }
   }

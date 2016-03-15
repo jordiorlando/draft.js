@@ -22,17 +22,23 @@ draft.Group.mixin({
 draft.LineSchema = draft.PointSchema.extendSchema('LineSchema', {
   schema: {
     rotation: {
-      alpha: {
-        type: draft.Angle,
-        value: 0,
-        alias: ['α', 'angle']
+      type: 'object',
+      properties: {
+        alpha: {
+          type: 'angle',
+          alias: ['α', 'angle'],
+          default: 0
+        }
       }
     },
     size: {
-      length: {
-        type: draft.Length,
-        value: 100,
-        alias: ['l']
+      type: 'object',
+      properties: {
+        length: {
+          type: 'length',
+          alias: ['l'],
+          default: 100
+        }
       }
     }
   }

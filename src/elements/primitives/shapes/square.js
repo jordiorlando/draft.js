@@ -12,3 +12,18 @@ draft.Square = draft.Rectangle.extend('Square', {
     ];
   }
 });
+
+
+
+draft.SquareSchema = draft.RectangleSchema.extendSchema('SquareSchema', {
+  schema: {
+    size: {
+      properties: {
+        width: {
+          default: 100
+        },
+        height: null
+      }
+    }
+  }
+});
