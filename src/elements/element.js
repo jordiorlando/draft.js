@@ -22,7 +22,7 @@ draft.Element = class Element {
     if (!this._type) {
       this._type = this.constructor.name;
     }
-    console.log('NAME:', this.constructor.name);
+    // console.log('NAME:', this.constructor.name);
   }
 
   /* static inherit(source, addSuper) {
@@ -62,7 +62,7 @@ draft.Element = class Element {
           let descriptor = Object.getOwnPropertyDescriptor(source, prop);
           descriptor.enumerable = false;
 
-          console.info(prop, descriptor);
+          // console.info(prop, descriptor);
 
           Object.defineProperty(destination, prop, descriptor);
         }
@@ -71,7 +71,7 @@ draft.Element = class Element {
 
     mixin(Class.prototype, config);
 
-    console.log(`${name}:`, Class);
+    // console.log(`${name}:`, Class);
 
     if (parent !== null) {
       (parent || draft.Group).mixin({
@@ -80,6 +80,70 @@ draft.Element = class Element {
           if ('construct' in config) {
             config.construct.call(instance, ...args);
           }
+          return instance;
+        }
+      });
+    }
+
+    return Class;
+  }
+
+  static extendSchema(name, config, parent) {
+    var Class = class extends this {};
+
+    Object.defineProperty(Class, 'name', {
+      configurable: true,
+      value: name
+    });
+    Class.schema = draft.proxy({
+      has: {}
+    });
+
+    var merge = (destination, source) => {
+      for (let prop in source) {
+        let val = source[prop];
+
+        if (val === null) {
+          delete destination[prop];
+          delete Class.schema.has[prop];
+        } else if (typeof val == 'object' && !Array.isArray(val)) {
+          /* if (destination[prop]) {
+            merge(destination[prop], val);
+          } else {
+            destination[prop] = val;
+          } */
+          merge(destination[prop] || (destination[prop] = {}), val);
+
+          if ('type' in val) {
+            Class.schema.has[prop] = val.alias || [];
+          }
+        } else {
+          destination[prop] = val;
+        }
+      }
+    };
+    if (typeof config.schema == 'object') {
+      merge(Class.schema, this.schema || {});
+      merge(Class.schema, config.schema);
+    }
+
+    var mixin = (destination, source) => {
+      for (let prop in source) {
+        let descriptor = Object.getOwnPropertyDescriptor(source, prop);
+        descriptor.enumerable = false;
+        Object.defineProperty(destination, prop, descriptor);
+      }
+    };
+    if (typeof config.methods == 'object') {
+      mixin(Class.prototype, config.methods);
+    }
+
+    console.log(`${name}:`, Class, 'schema:', Class.schema);
+
+    if (parent !== null) {
+      (parent || draft.Group).mixin({
+        [name.substr(0, 1).toLowerCase() + name.substr(1)]() {
+          var instance = this.append(new Class());
           return instance;
         }
       });
@@ -162,6 +226,16 @@ draft.Element = class Element {
 
     // Chainable if 'this' is returned
     return this;
+  }
+
+  propSchema(prop, val) {
+    var schema = this.constructor.schema;
+
+    for (let name in schema.has) {
+      if (prop === name || schema.has[name].includes(prop)) {
+        return this.prop(name, val);
+      }
+    }
   }
 
   // Get/set the element's default length unit
