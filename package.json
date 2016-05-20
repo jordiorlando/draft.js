@@ -16,7 +16,7 @@
   "main": "dist/draft.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/D1SC0tech/draft.js.git"
+    "url": "https://github.com/0xdec/draft.js.git"
   },
   "devDependencies": {
     "babel-plugin-array-includes": "^2.0.3",
@@ -36,7 +36,7 @@
     "jasmine-terminal-reporter": "^1.0.1"
   },
   "bugs": {
-    "url": "https://github.com/D1SC0tech/draft.js/issues"
+    "url": "https://github.com/0xdec/draft.js/issues"
   },
   "directories": {
     "lib": "dist",

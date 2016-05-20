@@ -7,7 +7,7 @@ draft.js is licensed under the terms of the [MIT License](https://opensource.org
 
 ## Installation
 
-Prebuilt distributions can be found on the [releases](https://github.com/D1SC0tech/draft.js/releases) page.
+Prebuilt distributions can be found on the [releases](https://github.com/0xdec/draft.js/releases) page.
 
 You can also use [`Bower`](http://bower.io) or [`npm`](https://npmjs.com/package/draft.js):
 
@@ -21,7 +21,7 @@ npm install draft.js
 
 ## Documentation
 
-Guides and API reference are located in the [docs](https://github.com/D1SC0tech/draft.js/tree/master/docs) directory and on the [wiki](https://github.com/D1SC0tech/draft.js/wiki) page.
+Guides and API reference are located in the [docs](https://github.com/0xdec/draft.js/tree/master/docs) directory and on the [wiki](https://github.com/0xdec/draft.js/wiki) page.
 
 ## Getting Started
 
@@ -58,8 +58,8 @@ body.appendChild(view.svg());
 
 ## Plugins
 
-- [draft-svg](https://github.com/D1SC0tech/draft-svg)
-- [draft-treeview](https://github.com/D1SC0tech/draft-treeview)
+- [draft-svg](https://github.com/0xdec/draft-svg)
+- [draft-treeview](https://github.com/0xdec/draft-treeview)
 
 ## Contributing
 

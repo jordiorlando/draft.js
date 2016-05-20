@@ -17,7 +17,7 @@
   "main": "dist/draft.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/D1SC0tech/draft.js.git"
+    "url": "https://github.com/0xdec/draft.js.git"
   },
   "ignore": [
     "**/.*",
