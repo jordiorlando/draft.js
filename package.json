@@ -12,7 +12,7 @@
   ],
   "homepage": "http://draft.js.org",
   "license": "MIT",
-  "author": "Jordi Pakey-Rodriguez <jordi.orlando@hexa.io>",
+  "author": "Jordi Pakey-Rodriguez <me@jordi.codes>",
   "main": "dist/draft.js",
   "repository": {
     "type": "git",
