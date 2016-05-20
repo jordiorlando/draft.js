@@ -2,13 +2,14 @@ draft.Angle = class Angle extends draft.Float {
   constructor(value, unit) {
     super(value);
 
-    value = test(value, this.regex);
-    unit = test(unit, this.regex);
+    value = this.test(value);
+    unit = this.test(unit);
 
     if (!isNaN(this.value) && (value || unit)) {
       this.unit = value || unit;
       this.convert(unit);
     } else {
+      // TODO: draft.defaults.units.angle
       this.unit = '';
     }
   }
@@ -26,6 +27,12 @@ draft.Angle = class Angle extends draft.Float {
       deg: [1, 1, 'deg'],
       rad: [180, Math.PI, 'deg']
     };
+  }
+
+  test(val) {
+    // TODO: strict match anchor (^ instead of word end)
+    val = new RegExp(`${this.regex}$`, 'i').exec(val);
+    return val ? val[0].toLowerCase() : false;
   }
 
   convert(newUnit) {
@@ -62,7 +69,7 @@ draft.Angle = class Angle extends draft.Float {
   }
 
   valueOf() {
-    return new Length(this.toString(), 'deg').value;
+    return new Angle(this.toString(), 'deg').value;
   }
 
   toString() {
