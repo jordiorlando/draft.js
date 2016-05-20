@@ -1,6 +1,6 @@
-draft.Angle = class Angle extends draft.Float {
+draft.Angle = class Angle {
   constructor(value, unit) {
-    super(value);
+    this.value = parseFloat(value);
 
     value = this.test(value);
     unit = this.test(unit);

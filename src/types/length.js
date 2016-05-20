@@ -1,9 +1,9 @@
 draft.defaults.unit = 'px';
 
 // TODO: make type, regex, units, and test static
-draft.Length = class Length extends draft.Float {
+draft.Length = class Length {
   constructor(value, unit) {
-    super(value);
+    this.value = parseFloat(value);
 
     value = this.test(value);
     unit = this.test(unit);
