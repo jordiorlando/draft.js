@@ -25,7 +25,7 @@
 
 # v2.0.0
 
-- [ ] 2D boolean operations (masks, clips)
+- [ ] 2D boolean operations (union, difference, intersection, masks, clips)
 - [ ] Complex SVG features (text, images, paths)
 - [ ] Configurable coordinate systems (polar, cylindrical, spherical)
 - [ ] Animations
