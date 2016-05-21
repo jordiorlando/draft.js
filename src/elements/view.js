@@ -23,7 +23,8 @@ draft.View = class View extends draft.Element {
 draft.View.mixin([
   'translate',
   'rotate',
-  'scale'
+  'scale',
+  'svg'
 ]);
 
 draft.Group.mixin({

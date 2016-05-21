@@ -54,6 +54,7 @@ var src = [
   'src/mixins/transforms/radius.js',
   'src/mixins/styles/fill.js',
   'src/mixins/styles/stroke.js',
+  'src/mixins/renderers/svg.js',
 
   // Elements
   'src/elements/element.js',
