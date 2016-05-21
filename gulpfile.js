@@ -1,3 +1,6 @@
+/* eslint dot-location: ["error", "property"] */
+/* eslint camelcase: ["error", {properties: "never"}] */
+
 const del = require('del');
 
 const gulp = require('gulp');
