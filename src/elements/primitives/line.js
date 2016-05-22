@@ -23,6 +23,7 @@ draft.LineSchema = draft.PointSchema.extendSchema('LineSchema', {
   schema: {
     rotation: {
       type: 'object',
+      alias: ['rot'],
       properties: {
         alpha: {
           type: 'angle',
