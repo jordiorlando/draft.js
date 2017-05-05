@@ -1,0 +1,8 @@
+title: draft.js
+description: A lightweight library for parametric design
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-modernist
+
+gems:
+  - jekyll-mentions
