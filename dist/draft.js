@@ -6,7 +6,7 @@
 * copyright Jordi Pakey-Rodriguez <jordi.orlando@hexa.io>
 * license MIT
 *
-* BUILT: Fri Feb 05 2016 10:46:44 GMT-0600 (CST)
+* BUILT: Thu Aug 25 2016 11:06:38 GMT-0500 (CDT)
 */
 ;(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -19,17 +19,17 @@
 }(this, function() {
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
 
 var draft = function draft(name) {
   return draft.doc(name);
@@ -147,7 +147,7 @@ draft.defaults = draft.proxy({
   }
 });
 
-draft.types.Float = (function () {
+draft.types.Float = function () {
   function Float(value) {
     _classCallCheck(this, Float);
 
@@ -177,7 +177,7 @@ draft.types.Float = (function () {
   }]);
 
   return Float;
-})();
+}();
 
 draft.types.float = function float(value) {
   return value == undefined ? value : new draft.types.Float(value);
@@ -190,13 +190,13 @@ var test = function test(val, regex) {
   return val ? val[0].toLowerCase() : false;
 };
 
-draft.types.Length = (function (_draft$types$Float) {
+draft.types.Length = function (_draft$types$Float) {
   _inherits(Length, _draft$types$Float);
 
   function Length(value, unit) {
     _classCallCheck(this, Length);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Length).call(this, value));
+    var _this = _possibleConstructorReturn(this, (Length.__proto__ || Object.getPrototypeOf(Length)).call(this, value));
 
     value = test(value, _this.regex);
     unit = test(unit, _this.regex);
@@ -287,13 +287,13 @@ draft.types.Length = (function (_draft$types$Float) {
   }]);
 
   return Length;
-})(draft.types.Float);
+}(draft.types.Float);
 
 draft.types.length = function length(value, unit) {
   return value == undefined ? value : new draft.types.Length(value, unit);
 };
 
-draft.types.Color = (function () {
+draft.types.Color = function () {
   function Color(color) {
     _classCallCheck(this, Color);
 
@@ -342,7 +342,7 @@ draft.types.Color = (function () {
   }]);
 
   return Color;
-})();
+}();
 
 draft.types.color = function color(value) {
   return value == undefined ? value : new draft.types.Color(value);
@@ -395,6 +395,7 @@ draft.mixins.event = {
 
     return this;
   },
+
 
   // TODO: use rest for args (...args)
   fire: function fire(evt, args) {
@@ -510,6 +511,7 @@ draft.mixins.event = {
 
     return listeners;
   },
+
 
   /**
    * Fetches the events object and creates one if required.
@@ -695,7 +697,7 @@ draft.mixins.radius = {
   }
 };
 
-draft.Element = (function () {
+draft.Element = function () {
   function Element(name) {
     _classCallCheck(this, Element);
 
@@ -746,7 +748,7 @@ draft.Element = (function () {
           // Act as an individual property setter if both prop and val are defined
 
           if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object') {
-            var unit = undefined;
+            var unit = void 0;
 
             switch (val.type) {
               case 'length':
@@ -792,7 +794,7 @@ draft.Element = (function () {
       var replacer;
 
       if (Array.isArray(blacklist)) {
-        replacer = function (key, val) {
+        replacer = function replacer(key, val) {
           if (blacklist.indexOf(key) !== -1) {
             return undefined;
           }
@@ -800,7 +802,7 @@ draft.Element = (function () {
           return val;
         };
       } else if (blacklist instanceof RegExp) {
-        replacer = function (key, val) {
+        replacer = function replacer(key, val) {
           if (blacklist.test(key)) {
             return undefined;
           }
@@ -897,11 +899,11 @@ draft.Element = (function () {
   }]);
 
   return Element;
-})();
+}();
 
 draft.Element.require(['event', 'position', 'rotation']);
 
-draft.Container = (function (_draft$Element) {
+draft.Container = function (_draft$Element) {
   _inherits(Container, _draft$Element);
 
   function Container(name) {
@@ -909,7 +911,7 @@ draft.Container = (function (_draft$Element) {
 
     // Initialize children array
 
-    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Container).call(this, name));
+    var _this3 = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, name));
 
     _this3.children = [];
     return _this3;
@@ -961,9 +963,9 @@ draft.Container = (function (_draft$Element) {
   }]);
 
   return Container;
-})(draft.Element);
+}(draft.Element);
 
-draft.Doc = (function (_draft$Container) {
+draft.Doc = function (_draft$Container) {
   _inherits(Doc, _draft$Container);
 
   function Doc(name) {
@@ -971,7 +973,7 @@ draft.Doc = (function (_draft$Container) {
 
     // Initialize elements container
 
-    var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(Doc).call(this, name));
+    var _this4 = _possibleConstructorReturn(this, (Doc.__proto__ || Object.getPrototypeOf(Doc)).call(this, name));
 
     _this4.elements = {};
 
@@ -983,7 +985,7 @@ draft.Doc = (function (_draft$Container) {
   }
 
   return Doc;
-})(draft.Container);
+}(draft.Container);
 
 draft.doc = function doc(name) {
   var newDoc = new draft.Doc(name);
@@ -994,17 +996,17 @@ draft.doc = function doc(name) {
   return newDoc;
 };
 
-draft.Group = (function (_draft$Container2) {
+draft.Group = function (_draft$Container2) {
   _inherits(Group, _draft$Container2);
 
   function Group() {
     _classCallCheck(this, Group);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Group).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Group.__proto__ || Object.getPrototypeOf(Group)).apply(this, arguments));
   }
 
   return Group;
-})(draft.Container);
+}(draft.Container);
 
 draft.Group.require(['system', 'units']);
 
@@ -1018,13 +1020,13 @@ draft.Container.mixin({
   }
 });
 
-draft.View = (function (_draft$Element2) {
+draft.View = function (_draft$Element2) {
   _inherits(View, _draft$Element2);
 
   function View() {
     _classCallCheck(this, View);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(View).apply(this, arguments));
+    return _possibleConstructorReturn(this, (View.__proto__ || Object.getPrototypeOf(View)).apply(this, arguments));
   }
 
   _createClass(View, [{
@@ -1048,7 +1050,7 @@ draft.View = (function (_draft$Element2) {
   }]);
 
   return View;
-})(draft.Element);
+}(draft.Element);
 
 draft.View.require('size');
 
@@ -1063,17 +1065,17 @@ draft.Group.mixin({
   }
 });
 
-draft.Point = (function (_draft$Element3) {
+draft.Point = function (_draft$Element3) {
   _inherits(Point, _draft$Element3);
 
   function Point() {
     _classCallCheck(this, Point);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Point).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Point.__proto__ || Object.getPrototypeOf(Point)).apply(this, arguments));
   }
 
   return Point;
-})(draft.Element);
+}(draft.Element);
 
 draft.Point.require('stroke');
 
@@ -1083,13 +1085,13 @@ draft.Group.mixin({
   }
 });
 
-draft.Line = (function (_draft$Point) {
+draft.Line = function (_draft$Point) {
   _inherits(Line, _draft$Point);
 
   function Line() {
     _classCallCheck(this, Line);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Line).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Line.__proto__ || Object.getPrototypeOf(Line)).apply(this, arguments));
   }
 
   _createClass(Line, [{
@@ -1100,7 +1102,7 @@ draft.Line = (function (_draft$Point) {
   }]);
 
   return Line;
-})(draft.Point);
+}(draft.Point);
 
 draft.Group.mixin({
   line: function line() {
@@ -1110,27 +1112,27 @@ draft.Group.mixin({
   }
 });
 
-draft.Shape = (function (_draft$Point2) {
+draft.Shape = function (_draft$Point2) {
   _inherits(Shape, _draft$Point2);
 
   function Shape() {
     _classCallCheck(this, Shape);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Shape).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Shape.__proto__ || Object.getPrototypeOf(Shape)).apply(this, arguments));
   }
 
   return Shape;
-})(draft.Point);
+}(draft.Point);
 
 draft.Shape.require(['fill', 'size']);
 
-draft.Rect = (function (_draft$Shape) {
+draft.Rect = function (_draft$Shape) {
   _inherits(Rect, _draft$Shape);
 
   function Rect() {
     _classCallCheck(this, Rect);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Rect).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Rect.__proto__ || Object.getPrototypeOf(Rect)).apply(this, arguments));
   }
 
   _createClass(Rect, [{
@@ -1143,7 +1145,7 @@ draft.Rect = (function (_draft$Shape) {
   }]);
 
   return Rect;
-})(draft.Shape);
+}(draft.Shape);
 
 draft.Rect.require('radius');
 
@@ -1156,13 +1158,13 @@ draft.Group.mixin({
   }
 });
 
-draft.Circle = (function (_draft$Shape2) {
+draft.Circle = function (_draft$Shape2) {
   _inherits(Circle, _draft$Shape2);
 
   function Circle() {
     _classCallCheck(this, Circle);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Circle).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Circle.__proto__ || Object.getPrototypeOf(Circle)).apply(this, arguments));
   }
 
   _createClass(Circle, [{
@@ -1173,7 +1175,7 @@ draft.Circle = (function (_draft$Shape2) {
   }]);
 
   return Circle;
-})(draft.Shape);
+}(draft.Shape);
 
 draft.Group.mixin({
   circle: function circle() {

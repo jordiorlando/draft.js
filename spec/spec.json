@@ -1,0 +1,104 @@
+{
+  "children": [
+    {
+      "children": [
+        {
+          "properties": {
+            "x": "50px",
+            "y": "60px",
+            "width": "100px",
+            "height": "120px"
+          },
+          "type": "rectangle"
+        },
+        {
+          "properties": {
+            "width": "150px",
+            "fill.color": "rgb(249, 121, 1)",
+            "fill.opacity": 0.75,
+            "stroke.color": "#0044cc",
+            "stroke.width": "2px"
+          },
+          "type": "circle"
+        },
+        {
+          "properties": {
+            "width": "800px",
+            "height": "250px"
+          },
+          "type": "view"
+        }
+      ],
+      "properties": {
+        "name": "test_page_1"
+      },
+      "type": "group"
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "type": "point"
+            },
+            {
+              "properties": {
+                "width": "75mm",
+                "height": "100mm"
+              },
+              "type": "rectangle"
+            },
+            {
+              "properties": {
+                "width": "100mm"
+              },
+              "type": "square"
+            },
+            {
+              "properties": {
+                "width": "75mm",
+                "height": "100mm"
+              },
+              "type": "ellipse"
+            },
+            {
+              "properties": {
+                "width": "100mm"
+              },
+              "type": "circle"
+            }
+          ],
+          "type": "group"
+        },
+        {
+          "children": {
+            "width": "300mm",
+            "height": "150mm"
+          },
+          "type": "view"
+        }
+      ],
+      "properties": {
+        "name": "test_page_2",
+        "units": "mm"
+      },
+      "type": "group"
+    }
+  ],
+  "elements": {
+    "circle": [],
+    "ellipse": [],
+    "group": [],
+    "line": [],
+    "point": [],
+    "rectangle": [],
+    "square": [],
+    "view": []
+  },
+  "properties": {
+    "name": "cool_document_name_1",
+    "system": "cartesian",
+    "units": "px"
+  },
+  "type": "doc"
+}

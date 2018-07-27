@@ -6,7 +6,7 @@
 * copyright Jordi Pakey-Rodriguez <jordi.orlando@hexa.io>
 * license MIT
 *
-* BUILT: Fri Feb 05 2016 10:46:44 GMT-0600 (CST)
+* BUILT: Thu Aug 25 2016 11:06:38 GMT-0500 (CDT)
 */
 ;(function(root, factory) {
   if (typeof define === 'function' && define.amd) {

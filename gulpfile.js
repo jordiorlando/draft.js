@@ -2,6 +2,7 @@
 /* eslint camelcase: ["error", {properties: "never"}] */
 
 const del = require('del');
+const pump = require('pump');
 
 const gulp = require('gulp');
 const babel = require('gulp-babel');
@@ -95,42 +96,50 @@ gulp.task('clean', function() {
   return del(['dist/*']);
 });
 
-gulp.task('es6', ['clean'], function() {
-  return gulp.src(src.map(value => value.replace('-fallback', '')))
-    .pipe(concat(name, {newLine: '\n'}))
-    .pipe(umd({
-      exports: umdName,
-      namespace: umdName
-    }))
-    .pipe(rename({suffix: '-es6'}))
-    .pipe(header(headerLong, {pkg: pkg}))
-    .pipe(size({showFiles: true, title: 'Full'}))
-    .pipe(gulp.dest('dist'));
+gulp.task('es6', ['clean'], function(cb) {
+  pump([
+      gulp.src(src),
+      concat(name, {newLine: '\n'}),
+      umd({
+        exports: umdName,
+        namespace: umdName
+      }),
+      rename({suffix: '-es6'}),
+      header(headerLong, {pkg: pkg}),
+      size({showFiles: true, title: 'Full'}),
+      gulp.dest('dist')
+    ],
+    cb
+  );
 });
 
 // BACKLOG: figure out why sourcemaps don't exactly work
-gulp.task('build', ['clean'], function() {
-  return gulp.src(src)
-    .pipe(concat(name, {newLine: '\n'}))
-    .pipe(babel({
-      plugins: ['array-includes', 'transform-remove-console'],
-      presets: ['es2015']
-    }))
-    .pipe(umd({
-      exports: umdName,
-      namespace: umdName
-    }))
-    .pipe(header(headerLong, {pkg: pkg}))
-    .pipe(size({showFiles: true, title: 'Full'}))
-    .pipe(gulp.dest('dist'))
-    .pipe(sourcemaps.init({loadMaps: true}))
-      .pipe(uglify())
-      .pipe(rename({suffix: '.min'}))
-      .pipe(header(headerShort, {pkg: pkg}))
-      .pipe(size({showFiles: true, title: 'Minified'}))
-      .pipe(size({showFiles: true, gzip: true, title: 'Gzipped'}))
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('dist'));
+gulp.task('build', ['clean'], function(cb) {
+  pump([
+      gulp.src(src),
+      concat(name, {newLine: '\n'}),
+      babel({
+        plugins: ['array-includes', 'transform-remove-console'],
+        presets: ['es2015']
+      }),
+      umd({
+        exports: umdName,
+        namespace: umdName
+      }),
+      header(headerLong, {pkg: pkg}),
+      size({showFiles: true, title: 'Full'}),
+      gulp.dest('dist'),
+      sourcemaps.init({loadMaps: true}),
+        uglify({compress: {sequences: false}}),
+        rename({suffix: '.min'}),
+        header(headerShort, {pkg: pkg}),
+        size({showFiles: true, title: 'Minified'}),
+        size({showFiles: true, gzip: true, title: 'Gzipped'}),
+      sourcemaps.write('.'),
+      gulp.dest('dist')
+    ],
+    cb
+  );
 });
 
 gulp.task('test', ['build'], function() {
