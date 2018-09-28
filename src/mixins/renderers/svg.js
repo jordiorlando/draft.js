@@ -61,144 +61,144 @@ draft.mixins.svg = {
         }
 
         switch (type) {
-          case 'line':
-            node = create('line');
+        case 'line':
+          node = create('line');
 
-            listener = function(prop, val) {
-              var size;
+          listener = function(prop, val) {
+            var size;
 
-              switch (prop) {
-                case 'y':
-                  val *= -1;
-                  size = 0;
-                  break;
-                case 'width':
-                  val = this.target.prop('x');
-                  // Falls through
-                case 'x':
-                  prop = 'x';
-                  size = this.target.prop('width') / 2;
-                  break;
-                default:
-                  return;
+            switch (prop) {
+            case 'y':
+              val *= -1;
+              size = 0;
+              break;
+            case 'width':
+              val = this.target.prop('x');
+              // Falls through
+            case 'x':
+              prop = 'x';
+              size = this.target.prop('width') / 2;
+              break;
+            default:
+              return;
+            }
+
+            node.setAttribute(`${prop}1`, val - size);
+            node.setAttribute(`${prop}2`, val + size);
+          };
+
+          break;
+        case 'group':
+        case 'rectangle':
+          node = node || create('rect');
+
+          listener = function(prop, val) {
+            var link;
+
+            switch (prop) {
+            case 'width':
+              link = 'x';
+              // Falls through
+            case 'height':
+              link = link || 'y';
+              listener.call(this, link, this.target.prop(link));
+              break;
+            case 'y':
+              link = 'height';
+              val *= -1;
+              // Falls through
+            case 'x':
+              link = link || 'width';
+              val -= this.target.prop(link) / 2;
+              break;
+            default:
+              return;
+            }
+
+            node.setAttribute(prop, val);
+          };
+
+          break;
+        case 'square':
+          node = node || create('rect');
+
+          listener = function(prop, val) {
+            switch (prop) {
+            case 'width':
+              node.setAttribute('height', val);
+
+              for (let link of ['x', 'y']) {
+                listener.call(this, link, this.target.prop(link));
               }
 
-              node.setAttribute(`${prop}1`, val - size);
-              node.setAttribute(`${prop}2`, val + size);
-            };
+              break;
+            case 'y':
+              val *= -1;
+              // Falls through
+            case 'x':
+              val -= this.target.prop('width') / 2;
+              break;
+            default:
+              return;
+            }
 
-            break;
-          case 'group':
-          case 'rectangle':
-            node = node || create('rect');
+            node.setAttribute(prop, val);
+          };
 
-            listener = function(prop, val) {
-              var link;
+          break;
+        case 'ellipse':
+          node = create('ellipse');
 
-              switch (prop) {
-                case 'width':
-                  link = 'x';
-                  // Falls through
-                case 'height':
-                  link = link || 'y';
-                  listener.call(this, link, this.target.prop(link));
-                  break;
-                case 'y':
-                  link = 'height';
-                  val *= -1;
-                  // Falls through
-                case 'x':
-                  link = link || 'width';
-                  val -= this.target.prop(link) / 2;
-                  break;
-                default:
-                  return;
-              }
+          listener = function(prop, val) {
+            switch (prop) {
+            case 'width':
+              prop = 'rx';
+              val.value /= 2;
+              break;
+            case 'height':
+              prop = 'ry';
+              val.value /= 2;
+              break;
+            case 'y':
+              val.value *= -1;
+              // Falls through
+            case 'x':
+              prop = `c${prop}`;
+              break;
+            default:
+              return;
+            }
 
-              node.setAttribute(prop, val);
-            };
+            node.setAttribute(prop, val);
+          };
 
-            break;
-          case 'square':
-            node = node || create('rect');
+          break;
+        case 'circle':
+          node = create('circle');
 
-            listener = function(prop, val) {
-              switch (prop) {
-                case 'width':
-                  node.setAttribute('height', val);
+          listener = function(prop, val) {
+            switch (prop) {
+            case 'diameter':
+            case 'width':
+              prop = 'r';
+              val.value /= 2;
+              break;
+            case 'y':
+              val.value *= -1;
+              // Falls through
+            case 'x':
+              prop = `c${prop}`;
+              break;
+            default:
+              return;
+            }
 
-                  for (let link of ['x', 'y']) {
-                    listener.call(this, link, this.target.prop(link));
-                  }
+            node.setAttribute(prop, val);
+          };
 
-                  break;
-                case 'y':
-                  val *= -1;
-                  // Falls through
-                case 'x':
-                  val -= this.target.prop('width') / 2;
-                  break;
-                default:
-                  return;
-              }
-
-              node.setAttribute(prop, val);
-            };
-
-            break;
-          case 'ellipse':
-            node = create('ellipse');
-
-            listener = function(prop, val) {
-              switch (prop) {
-                case 'width':
-                  prop = 'rx';
-                  val.value /= 2;
-                  break;
-                case 'height':
-                  prop = 'ry';
-                  val.value /= 2;
-                  break;
-                case 'y':
-                  val.value *= -1;
-                  // Falls through
-                case 'x':
-                  prop = `c${prop}`;
-                  break;
-                default:
-                  return;
-              }
-
-              node.setAttribute(prop, val);
-            };
-
-            break;
-          case 'circle':
-            node = create('circle');
-
-            listener = function(prop, val) {
-              switch (prop) {
-                case 'diameter':
-                case 'width':
-                  prop = 'r';
-                  val.value /= 2;
-                  break;
-                case 'y':
-                  val.value *= -1;
-                  // Falls through
-                case 'x':
-                  prop = `c${prop}`;
-                  break;
-                default:
-                  return;
-              }
-
-              node.setAttribute(prop, val);
-            };
-
-            break;
-          default:
-            return;
+          break;
+        default:
+          return;
         }
 
         // TODO: support all elements
